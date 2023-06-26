@@ -1,6 +1,9 @@
 <template>
-   <NavBar/>
-  <router-view/>
+  <NavBar/>
+
+  <router-view/> 
+  
+ 
 </template>
 
 <script>
@@ -11,7 +14,7 @@ export default{
   components: {NavBar},
   data(){
     return{
-
+      
     }
   }
 }

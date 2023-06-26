@@ -89,7 +89,6 @@ name:"StoreEdit",
      },
      methods:{
         edit(){
-            console.log(1)
             const self = this;
             let formdata = new FormData();
             formdata.append('storeid',self.storeid)

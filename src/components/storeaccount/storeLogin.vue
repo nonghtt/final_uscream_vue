@@ -16,26 +16,18 @@
           <label class="label_pwd">비밀번호</label>
           <span class="span_pwd"></span>
         </div>
-  
+
         <br/>
   
-       
           <button class="btn_login" v-on:click="login">로그인하기</button>
           </div>
       
     </div>
-  
-  
-  
-  
-  
-  
   </template>
-  
   
   <script>
   export default {
-    name: 'HomeView',
+    name: 'storeLogin',
     data(){
       return{
         storeid:'',
@@ -44,7 +36,7 @@
       }
     },
     components: {
-      // HelloWorld
+
     },
     methods:{
       login(){

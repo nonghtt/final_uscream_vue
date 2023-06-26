@@ -5,7 +5,7 @@
 
 
         <div class="div_storeid">
-        <input class="input_storeid" type="text" v-model="storeid"><br/>
+        <input class="input_storeid" type="text" v-model="storeid"><button>아이디중복확인</button><br/>
         <label class="label_storeid">아이디</label>
         <span class="span_storeid"></span>
         </div>
@@ -80,24 +80,24 @@ export default {
             alert('에러코드:'+res.status)
         }
     })
-    }
-    //     idcheck(){
-    //         const self = this;
-    //   self.$axios.get('/store/'+self.id)
-    //   .then(function(res){
-    //     if(res.status==200 ){
-    //       if(res.data.dto==null){
-    //         self.msg= '사용가능한 아이디'
-    //       }else{
-    //         self.msg='중복된 아이디'
-    //         self.id=''
-    //       }
-    //     }else{
-    //       alert('에러코드:'+res.status)
-    //     }
+    },
+        idcheck(){
+            const self = this;
+      self.$axios.get('http://localhost:8085/store/'+self.id)
+      .then(function(res){
+        if(res.status==200 ){
+          if(res.data.dto==null){
+            self.msg= '사용가능한 아이디'
+          }else{
+            self.msg='중복된 아이디'
+            self.id=''
+          }
+        }else{
+          alert('에러코드:'+res.status)
+        }
 
-    //   }); 
-    //     }
+      }); 
+        }
     }
 }
 </script>
