@@ -55,7 +55,6 @@ const routes = [
     name: 'storeLogin',
     component: storeLogin
   }
-  
 ]
 
 const router = createRouter({
