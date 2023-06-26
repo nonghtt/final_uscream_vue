@@ -31,15 +31,13 @@
                             계정관리
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">지점등록</a></li>
-                            <li><a class="dropdown-item" href="#">지점현황</a></li>
-                            <li><a class="dropdown-item" href="#">내정보</a></li>
+                            <li><router-link class="menu" to="/storeJoin">지점등록</router-link></li>
+                            <li><router-link class="menu" to="/storeState">지점현황</router-link></li>
+                            <li><router-link class="menu" to="/storeMyinfo">내정보</router-link></li>
                         </ul>
                     </li>
                     <li v-if="accounttype == 2" class="nav-item">
-                        <router-link class="nav-link active" to="/about">
-                            내정보
-                        </router-link>
+                        <router-link class="nav-link active" to="/storeMyinfo">내정보</router-link>
                     </li>
                     <li class="nav-item">
                         <router-link class="nav-link active" to="/about">
@@ -52,8 +50,9 @@
                             상품관리
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">발주현황</a></li>
+                            <li><router-link class="dropdown-item" to="/orderlist">발주현황</router-link></li>
                             <li v-if="accounttype == 1"><a class="dropdown-item" href="#">상품등록</a></li>
+                            <li v-if="accounttype == 1"><router-link class="dropdown-item" to="/productlist">상품리스트</router-link></li>
                             <li v-if="accounttype == 2"><a class="dropdown-item" href="#">재고관리</a></li>
                         </ul>
                     </li>
@@ -87,9 +86,13 @@
                 </router-link>
                 <router-link class="nav-link mailicon" to="/about">
                     <i class="fa-solid fa-envelope "></i>
+                    <span v-if="mail !=null"
+                        class="position-absolute top-30 start-250 translate-middle p-2 bg-danger border border-light rounded-circle">
+                        <span class="visually-hidden">New alerts</span>
+                    </span>
                 </router-link>
                 <router-link class="nav-link" to="/about" style="margin-left: 10px; margin-right: 10px;">
-                    LOGOUT
+                 <P v-on:click="logout"> LOGOUT </P>
                 </router-link>
 
             </div>
@@ -102,12 +105,28 @@ export default {
     name: "NavBar",
     data() {
         return {
-            accounttype: 1,
-            loginId: 1
+            // 테스트용 데이터
+            accounttype:null,
+            loginId: null,
+            mail:null
         }
     },
-
-
+    created: function(){
+        const self =this
+        if(sessionStorage.getItem("loginId")!=null){
+            self.loginId = sessionStorage.getItem("loginId");
+            self.accounttype = sessionStorage.getItem("accounttype")
+            
+        }
+    },
+    methods:{
+        logout(){
+            sessionStorage.removeItem('loginId')
+            sessionStorage.removeItem('type')
+            location.href = '/';
+            alert('로그아웃이 완료되었습니다.')
+        }
+    }
 }
 </script>
   
@@ -142,10 +161,19 @@ a {
 
 .mailicon {
     margin-left: 10px;
-    margin-right: 10px;
+    margin-right: 13px;
 }
-.logorouter{
+
+.logorouter {
     text-decoration: none;
+}
+
+.fa-house-chimney{
+    font-size: 23px;
+}
+.fa-envelope{
+    font-size: 23px;
+    
 }
 </style>
   

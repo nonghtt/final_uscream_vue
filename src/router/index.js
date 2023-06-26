@@ -1,20 +1,61 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '../views/HomeView.vue'
+import AboutView from '../views/AboutView.vue'
+import ProductList from '../components/product/ProductList.vue'
+import ProductOrder from '../components/product/ProductOrder.vue'
+import OrderList from '../components/product/OrderList.vue'
+import storeJoin from '@/components/storeaccount/storeJoin.vue'
+import storeMyinfo from '@/components/storeaccount/storeMyinfo.vue'
+import storeState from '@/components/storeaccount/storeState.vue'
+import storeLogin from '@/components/storeaccount/storeLogin.vue'
+
+
+
+
+
 
 const routes = [
-  {
-    path: '/',
-    name: 'home',
-    component: HomeView
-  },
+ 
   {
     path: '/about',
     name: 'about',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "about" */ '../views/AboutView.vue')
+    component: AboutView
+  },
+  {
+    path:'/productlist',
+    name: 'productlist',
+    component:ProductList
+  },
+  {
+    path:'/productorder',
+    name: 'productorder',
+    component:ProductOrder
+  },
+  {
+    path:'/orderlist',
+    name: 'orderlist',
+    component:OrderList
+  },
+  {
+    path: '/storeJoin',
+    name: 'storeJoin',
+    component: storeJoin
+  },
+  {
+    path: '/storeMyinfo',
+    name: 'storeMyinfo',
+    component: storeMyinfo
+  },
+  {
+    path: '/storeState',
+    name: 'storeState',
+    component: storeState
+  },
+  {
+    path: '/',
+    name: 'storeLogin',
+    component: storeLogin
   }
+  
 ]
 
 const router = createRouter({
