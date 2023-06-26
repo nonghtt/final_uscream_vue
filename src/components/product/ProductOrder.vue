@@ -54,7 +54,7 @@ export default {
             this.checkedProduct();
         },
         checkedProduct() {
-            let storeid = "store1"
+            let storeid = sessionStorage.getItem("loginId")
             this.checkedproduct = [];
             for (let i = 0; i < this.checked.length; i++) {
                 if (this.checked[i]) {
@@ -83,8 +83,6 @@ export default {
             // formdata.append("dto", JSON.stringify(this.checkedproduct));
             // formdata.append("dto", this.checkedproduct);
             // alert(JSON.stringify(this.checkedproduct))
-            alert(this.checkedproduct);
-            alert(this.checkedproduct.array);
 
            /*  this.checkedproduct.forEach((element) => {
                 alert(element);
@@ -96,7 +94,7 @@ export default {
                 "Content-Type":'application/json'
             }})
             .then(function(res){
-                alert(res.data.ordercnt)
+                alert(res.data.ordercnt+"개의 상품이 발주신청 되었습니다.")
         })
     }
 }
