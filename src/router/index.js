@@ -104,6 +104,7 @@ const routes = [
     component: OrderDetail,
     props: true
   },
+  {
     path: '/ReceiveMsg',
     name: 'ReceiveMsg',
     component: ReceiveMsg
