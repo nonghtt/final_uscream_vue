@@ -14,10 +14,16 @@
     "@fortawesome/free-solid-svg-icons": "^6.4.0",
     "@fortawesome/vue-fontawesome": "^3.0.3",
     "@fullcalendar/core": "^6.1.8",
+    "@fullcalendar/daygrid": "^6.1.8",
+    "@fullcalendar/interaction": "^6.1.8",
     "@fullcalendar/vue3": "^6.1.8",
+<<<<<<< HEAD
+    "axios": "^1.4.0",
+=======
 
     "axios": "^1.4.0",
 
+>>>>>>> ed1930bcf48a0edfc6730bd9404f1db26a380e9d
     "bootstrap": "^5.3.0",
     "core-js": "^3.8.3",
     "vue": "^3.2.13",
