@@ -8,10 +8,25 @@ import storeMyinfo from '@/components/storeaccount/storeMyinfo.vue'
 import storeState from '@/components/storeaccount/storeState.vue'
 import storeLogin from '@/components/storeaccount/storeLogin.vue'
 
+
 import ScheDule from '@/components/schedule/ScheDule.vue'
 import EmpAdd from '@/components/emp/EmpAdd.vue'
 import EmpList from '@/components/emp/EmpList.vue'
 import WorkLogs from '@/components/worklogs/WorkLogs.vue'
+
+import BranchSales from '@/components/sales/BranchSales.vue'
+
+
+import OrderDetail from '@/components/product/OrderDetail.vue'
+
+import ReceiveMsg from '@/components/msg/ReceiveMsg.vue'
+import SideBar from '../views/SideBar.vue'
+
+
+
+
+
+
 
 const routes = [
  
@@ -56,6 +71,7 @@ const routes = [
     component: storeLogin
   },
 
+
   {
     path : '/schedule',
     name : 'schedule',
@@ -75,6 +91,30 @@ const routes = [
     path : '/worklogs',
     name : 'worklogs',
     component : WorkLogs
+  },
+  {
+
+    path: '/branchsales',
+    name: 'branchsales',
+    component: BranchSales
+  },
+  {
+    path: '/OrderDetail',
+    name: 'OrderDetail',
+    component: OrderDetail,
+    props: true
+  },
+    path: '/ReceiveMsg',
+    name: 'ReceiveMsg',
+    component: ReceiveMsg
+  },
+  {
+    path: '/SideBar',
+    name: 'SideBar',
+    component: SideBar
+
+
+
   }
 ]
 
