@@ -106,9 +106,9 @@ export default {
     data() {
         return {
             // 테스트용 데이터
-            accounttype:null,
-            loginId: null,
-            mail:null
+            accounttype: 1,
+            loginId: 'asdfa',
+            mail:1
         }
     },
     created: function(){
@@ -122,7 +122,7 @@ export default {
     methods:{
         logout(){
             sessionStorage.removeItem('loginId')
-            sessionStorage.removeItem('type')
+            sessionStorage.removeItem('accounttype')
             location.href = '/';
             alert('로그아웃이 완료되었습니다.')
         }

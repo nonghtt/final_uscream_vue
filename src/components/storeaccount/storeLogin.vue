@@ -1,7 +1,22 @@
 <template>
     <div id="login" class="login">
-      <div class="text_login">LOGIN</div>
+      <!-- <div class="text_login">LOGIN</div> -->
+
+
+      <div>
+        <img src="../../assets/bckimg.jpg" 
+            style="width:100%; height:100%;"
+            class="background_img"></div>
+      
       <div id="login_window">
+      <div class="brandname">USCREAM</div>
+        <div style="height:40px;"></div>
+          <div class="title_login" role="alert" style="font-size:25px; font-weight:bold;">
+        LOGIN</div>
+
+      
+         
+
         <!-- <router-link class="logorouter" to="/">
         <img class="logo" style="width:50px; height:50px;" src="../assets/uscreamlogo.png"></router-link> -->
           
@@ -18,10 +33,10 @@
         </div>
 
         <br/>
-  
+        <br/>
+        <br/>
           <button class="btn_login" v-on:click="login">로그인하기</button>
           </div>
-      
     </div>
   </template>
   
@@ -86,30 +101,42 @@
   
   /* 버튼 색 바꾸기 */
   .btn_login{
-  background-color: rgb(128, 129, 128);
+  background-color: #eb34a4;
   border:0;
   color:white;
-  border-radius: 10%;
   font-size:20px;
+  width:300px;
+  font-weight:bold;
   }
   
   /* 로그인창 윈도우 위치조정 */
   #login_window{
-  width: 400px;height: 400px;border: 1px solid #dcdcdc;
+  width: 400px;height: 450px;border: 1px solid #dcdcdc;
   position: absolute; left: 50%; top: 50%; 
   transform: translate(-50%, -50%); text-align: center;
   border-radius: 15%;
   box-shadow: 20px 20px 20px grey;
+  background-color: white;
+  }
+  
+  .brandname{
+   color: #eb34a4;
+   font-size:30px;
+   font-weight: bold;
+  }
+  .title_login{
+    background-color: #eb34a4;
+    color:white;
+    margin:0;
+    /* border-radius:  0 0; */
   }
   
   
-  
-  
         /* 마우스 올리면 버튼 올라오는 기능 */
-      .btn_login:hover,
+      /* .btn_login:hover,
       .btn_login:focus-visible{
           transform: translateY(-1rem);
-      }
+      } */
   
       
      
@@ -127,7 +154,7 @@
     position: relative;
     width: 300px;
     margin-left: 50px;
-    margin-top: 100px;
+    margin-top: 50px;
   }
   
   .input_storeid {
@@ -144,7 +171,7 @@
   }
   
   /* .input_storeid::placeholder { color: #aaaaaa; } */
-  .input_storeid::placeholder { color: #e13b3b; }
+  .input_storeid::placeholder { color: #aaaaaa; }
   .input_storeid:focus { outline: none; }
   
   .span_storeid {
@@ -188,7 +215,7 @@
     position: relative;
     width: 300px;
     margin-left: 50px;
-    margin-top: 100px;
+    margin-top: 50px;
   }
   
   .input_pwd {
