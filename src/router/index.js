@@ -25,6 +25,7 @@ import TempMsg from '@/components/msg/TempMsg.vue'
 import DelMsg from '@/components/msg/DelMsg.vue'
 import SideBar from '../views/SideBar.vue'
 
+import NoticeList from '@/components/notice/NoticeList.vue'
 
 
 
@@ -131,9 +132,11 @@ const routes = [
     path: '/SideBar',
     name: 'SideBar',
     component: SideBar
-
-
-
+  },
+  {
+    path: '/NoticeList',
+    name: 'NoticeList',
+    component: NoticeList
   }
 ]
 
