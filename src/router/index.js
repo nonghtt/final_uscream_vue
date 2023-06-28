@@ -7,7 +7,8 @@ import storeJoin from '@/components/storeaccount/storeJoin.vue'
 import storeMyinfo from '@/components/storeaccount/storeMyinfo.vue'
 import storeState from '@/components/storeaccount/storeState.vue'
 import storeLogin from '@/components/storeaccount/storeLogin.vue'
-
+import ReceiveMsg from '@/components/msg/ReceiveMsg.vue'
+import SideBar from '../views/SideBar.vue'
 
 
 
@@ -54,6 +55,16 @@ const routes = [
     path: '/',
     name: 'storeLogin',
     component: storeLogin
+  },
+  {
+    path: '/ReceiveMsg',
+    name: 'ReceiveMsg',
+    component: ReceiveMsg
+  },
+  {
+    path: '/SideBar',
+    name: 'SideBar',
+    component: SideBar
   }
 ]
 
