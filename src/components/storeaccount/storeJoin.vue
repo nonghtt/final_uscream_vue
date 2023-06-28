@@ -1,11 +1,11 @@
 <template lang="">
     <div id="join" class="join">
 
-          <div>
+          <!-- <div>
             <img src="../../assets/bckimg.jpg" 
             style="width:100%; height:100%;"
             class="background_img">
-          </div>
+          </div> -->
 
   <div class="join_window">
               <div style="height:30px;">
@@ -24,6 +24,7 @@
                   <label class="label_storename">지점명</label>
                   <span class="span_storename"></span>
             </div>
+            <div class="example">(ex) 오리역점</div>
         
         
             
@@ -33,6 +34,7 @@
           <label class="label_storeid">아이디</label>
           <span class="span_storeid"></span>
           </div>
+          <div class="example">(ex) 지역코드 + 숫자 KG001</div>
             <button v-on:click="idcheck">중복체크</button><br/>
             {{idmsg}}
 
@@ -75,9 +77,10 @@
 
 
             
-            <input type="file" accept="image/*"/>
+            <input type="file" ref="fileInput" @change="handleFileUpload" accept="image/*"/>
 
 
+         
 
 
 
@@ -94,9 +97,13 @@
                   
           <div class="box2" id="div_outline">
 
-            <img src="../../assets/1.png" 
-                      style="width:100%; height:100%;"
-                      class="img_main">
+            <h2>주소로 위치 보기</h2>
+      <div>
+        <label>주소:</label>
+        <input type="text" v-model="address" placeholder="주소를 입력하세요" />
+        <button class="btn_location" @click="showLocation" >위치 보기</button>
+      </div>
+      <div id="map"></div>
           </div>
 
 
@@ -107,6 +114,8 @@
 
 
 <script>
+import axios from "axios";
+
 export default {
     name: "StoreJoin",
     data(){
@@ -118,8 +127,18 @@ export default {
             accounttype:'',
             location: 0,
             idmsg:'',
-            pwdmsg:''
+            pwdmsg:'',
+            address: "오리역",
+            map: null,
+            marker: null
         }
+    },
+    mounted() {
+      if (window.kakao && window.kakao.maps) {
+        this.loadMap();
+      } else {
+        this.loadScript();
+      }
     },
     methods :{
         join(){
@@ -138,10 +157,8 @@ export default {
         self.$axios.post('http://localhost:8085/store', formdata
         // ,{ headers: { "Content-Type": "multipart/form-data" } }
         )
-    
         .then(function(res){
          if(res.status==200){
-        
             alert(self.storeid+"님, 회원가입이 완료되었습니다. 축하드립니다.")
             if(self.accounttype ==2){
             self.$axios.get('http://localhost:8085/products').then(function(res){
@@ -194,13 +211,8 @@ export default {
             // self.pwd = ''
             self.pwd_confirm=''
           }
-
      },
-        checkpassword(){
-          // 비밀번호 형식 검사(영문, 숫자, 특수문자)
-        //  const validatePassword = /^(?=.*[a-zA-z])(?=.*[0-9])(?=.*[$`~!@$!%*#^?&\\(\\)\-_=+]).{8,16}$/
-        },
-        clean_input_id(){
+      clean_input_id(){
           this.idmsg = ''
         }
         
@@ -220,6 +232,74 @@ export default {
         // }
 
 
+    ,
+    loadScript() {
+        const script = document.createElement("script");
+        script.src =
+          "//dapi.kakao.com/v2/maps/sdk.js?appkey=90a9e14a8d8d8c4e2a9a92bd4ca90bbb&autoload=false";
+        script.onload = () => window.kakao.maps.load(this.loadMap.bind(this));
+  
+        document.head.appendChild(script);
+      },
+      loadMap() {
+        const container = document.getElementById("map");
+        const options = {
+          center: new window.kakao.maps.LatLng(37.541, 126.986),
+          level: 3
+        };
+  
+        this.map = new window.kakao.maps.Map(container, options);
+  
+        this.showLocation();
+      },
+      showLocation() {
+        if (this.address === "") {
+          alert("주소를 입력하세요.");
+          return;
+        }
+  
+        const encodedAddress = encodeURIComponent(this.address);
+        const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=AIzaSyAEMcBVXcTsB5UmbNou29kkZkSPpq4mDJA`;
+  
+        axios
+          .get(apiUrl)
+          .then(response => {
+            const result = response.data.results[0];
+            if (result) {
+              const location = result.geometry.location;
+              const latitude = location.lat;
+              const longitude = location.lng;
+  
+              const position = new window.kakao.maps.LatLng(latitude, longitude);
+  
+              if (this.marker) {
+                this.marker.setMap(null);
+              }
+  
+              this.map.setCenter(position);
+              this.map.setLevel(3);
+  
+              // Custom marker image
+              const markerImage = new window.kakao.maps.MarkerImage(
+              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-lJDJem-WwpIuCvdiHHHtx8bC1ub8lmtrsmx5hCMd4v3tM11x45XkwU79KF8qTxP3BqQ&usqp=CAU",// 마커 이미지 URL로 변경
+                new window.kakao.maps.Size(50, 50)
+              );
+  
+              this.marker = new window.kakao.maps.Marker({
+                position: position,
+                image: markerImage // Custom marker image 설정
+              });
+  
+              this.marker.setMap(this.map);
+            } else {
+              alert("주소를 찾을 수 없습니다.");
+            }
+          })
+          .catch(error => {
+            console.error("Error:", error);
+            alert("주소를 가져오는 도중 오류가 발생했습니다.");
+          });
+      }
     },
     watch: {
       'password':function(){
@@ -232,10 +312,11 @@ export default {
 
 
 <style scoped>
-.background_img{
-  z-index: 1;
-}
-
+#map {
+    width: 100%;
+    height: 400px;
+    border-radius: 30%;
+    }
 
 .text_join{
 position: absolute; left: 50%; top: 20%; 
@@ -248,7 +329,7 @@ background-color: rgb(128, 129, 128);
 border-radius: 10%;
 color:white;
 /* div겹치기위한 속성, 숫자가 클수록 위로 옴 */
-z-index:6;
+
 }
 
 /* 버튼 색 바꾸기 */
@@ -259,6 +340,8 @@ color:white;
 border-radius: 10%;
 font-size:20px;
 font-weight:bold;
+
+
 }
 
 
@@ -274,17 +357,16 @@ border-radius: 15%;
 box-shadow: 20px 20px 20px grey;
 overflow:auto;
 background-color: white;
-z-index: 2;
 }
 
-* {
+/* * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
     font-size: 0;
     letter-spacing: 0;
     word-spacing: 0;
-}
+} */
 
 #div_outline {
     /* display: inline-block; */
@@ -298,14 +380,14 @@ z-index: 2;
     /* background-color: #50e04a; */
     width:50%;
     height:100%;
-    z-index:3;
+
 }
 
 .box2 {
     /* background-color: #64acff; */
     width:50%;
     height:100%;
-    z-index:3;
+
 }
 
 
@@ -359,7 +441,7 @@ z-index: 2;
     padding-left: 10px;
     position: relative;
     background: none;
-    z-index: 5;
+  
   }
   
   /* .input_storeid::placeholder { color: #aaaaaa; } */
@@ -421,7 +503,6 @@ z-index: 2;
     padding-left: 10px;
     position: relative;
     background: none;
-    z-index: 5;
   }
   
   .input_pwd::placeholder { color: #aaaaaa; }
@@ -481,7 +562,6 @@ z-index: 2;
     padding-left: 10px;
     position: relative;
     background: none;
-    z-index: 5;
   }
   
   /* .input_storename::placeholder { color: #aaaaaa; } */
@@ -542,7 +622,7 @@ z-index: 2;
     padding-left: 10px;
     position: relative;
     background: none;
-    z-index: 5;
+  
   }
   
   /* .input_pwd_confirm::placeholder { color: #aaaaaa; } */
@@ -604,7 +684,7 @@ z-index: 2;
     padding-left: 10px;
     position: relative;
     background: none;
-    z-index: 5;
+
   }
   
  
