@@ -8,10 +8,10 @@ import storeMyinfo from '@/components/storeaccount/storeMyinfo.vue'
 import storeState from '@/components/storeaccount/storeState.vue'
 import storeLogin from '@/components/storeaccount/storeLogin.vue'
 
-
-
-
-
+import ScheDule from '@/components/schedule/ScheDule.vue'
+import EmpAdd from '@/components/emp/EmpAdd.vue'
+import EmpList from '@/components/emp/EmpList.vue'
+import WorkLogs from '@/components/worklogs/WorkLogs.vue'
 
 const routes = [
  
@@ -54,6 +54,27 @@ const routes = [
     path: '/',
     name: 'storeLogin',
     component: storeLogin
+  },
+
+  {
+    path : '/schedule',
+    name : 'schedule',
+    component : ScheDule
+  },
+  {
+    path : '/empadd',
+    name : 'empadd',
+    component : EmpAdd
+  },
+  {
+    path : '/emplist',
+    name : 'emplist',
+    component : EmpList
+  },
+  {
+    path : '/worklogs',
+    name : 'worklogs',
+    component : WorkLogs
   }
 ]
 
