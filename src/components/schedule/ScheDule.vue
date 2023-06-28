@@ -78,7 +78,7 @@
   };
   </script>
   
-  <style>
+  <style scoped>
   #sdBody {
     padding-top: 30px;
     padding-bottom : 30px;
