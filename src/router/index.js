@@ -22,6 +22,7 @@ import OrderDetail from '@/components/product/OrderDetail.vue'
 import ReceiveMsg from '@/components/msg/ReceiveMsg.vue'
 import SideBar from '../views/SideBar.vue'
 
+import NoticeList from '@/components/notice/NoticeList.vue'
 
 
 
@@ -113,9 +114,11 @@ const routes = [
     path: '/SideBar',
     name: 'SideBar',
     component: SideBar
-
-
-
+  },
+  {
+    path: '/NoticeList',
+    name: 'NoticeList',
+    component: NoticeList
   }
 ]
 

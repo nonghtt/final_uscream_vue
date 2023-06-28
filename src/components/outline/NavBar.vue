@@ -40,7 +40,7 @@
                         <router-link class="nav-link active" to="/storeMyinfo">내정보</router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link active" to="/about">
+                        <router-link class="nav-link active" to="/NoticeList">
                             공지사항
                         </router-link>
                     </li>
