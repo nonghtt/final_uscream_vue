@@ -444,6 +444,7 @@ background-color: white;
   
   }
   
+  
   /* .input_storeid::placeholder { color: #aaaaaa; } */
   .input_storeid::placeholder { color: #aaaaaa; }
   .input_storeid:focus { outline: none; }

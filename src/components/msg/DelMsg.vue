@@ -3,7 +3,7 @@
     
         <div class="topbar">
             <span>
-                <h4> 받은 메일함  </h4>
+                <h4> 보낸 메일함  </h4>
             </span>
             <span>
                 <h4>  {{ count }}  / {{ countall }} </h4>
@@ -14,7 +14,7 @@
     
             <div class="middlebar">
                 <input type="button" value="메일 작성">
-                <input type="button" value="휴지통으로">
+                <input type="button" value="영구 삭제">
              
             </div>    
             <div class="searchbar">
@@ -29,8 +29,8 @@
     
                     <td class="check">
                         <input  style='zoom:1.5;' type ="checkbox" class="checkbox_icon">
-                        <img class="lcon" src="../../assets/starnomal.png" v-on:click="mark">
-                        <img class="lcon" src="../../assets/msgnomal.png"  v-on:click="read">
+                        <img class="lcon" src="../../assets/starnomal.png">
+                        <img class="lcon" src="../../assets/msgnomal.png">
                     </td>
                     <td>{{ msg.sender.storeid }}</td>
                     <td>{{ msg.title }}</td>
@@ -48,41 +48,35 @@
             return {
               list : [],
               countall: 0,
-              count:0,
-              msgnum:0
+              count:0
                }
         },
         created: function () {
             const self = this;
             let id = sessionStorage.getItem("loginId");
-            self.$axios.get("http://localhost:8085/msg/"+id)
+            self.$axios.get("http://localhost:8085/msg/del/"+id)
                 .then(function (res) {
     
-                    
+            
                 self.list = res.data.msglist ;
-                self.countall=res.data.CountByReceiver;
-                self.count=res.data.CountByReceiverAndRead;
-    
+                self.countall=res.data.CountByDel;
+                self.count=res.data.CountByDelRead;
                     
+                
                 })
-    },
-    methods:{
-        mark(){
-            const self = this 
-            let num = self.list.msgnum;
-            
-            alert(num);
-            
-            self.$axios.patch("http://localhost:8085/msg/mark/check/"+num)
-            
-    
-        },
-        read(){
-    
-        }
     }
     }
     </script>
+    
+    
+    
+    
+    
+    
+    
+    
+    
+    
     
     
     
@@ -91,7 +85,6 @@
     h3{
         font-size: large;
     }
-    
     .container{
         margin: 5px 5px 5px 5px;
     }
@@ -160,3 +153,4 @@
     
     
     </style>
+    

@@ -7,9 +7,7 @@ import storeJoin from '@/components/storeaccount/storeJoin.vue'
 import storeMyinfo from '@/components/storeaccount/storeMyinfo.vue'
 import storeState from '@/components/storeaccount/storeState.vue'
 import storeLogin from '@/components/storeaccount/storeLogin.vue'
-import location from '@/components/storeaccount/location.vue'
-import latitude from '@/components/storeaccount/latitude.vue'
-import marker from '@/components/storeaccount/marker.vue'
+
 
 import ScheDule from '@/components/schedule/ScheDule.vue'
 import EmpAdd from '@/components/emp/EmpAdd.vue'
@@ -22,8 +20,12 @@ import BranchSales from '@/components/sales/BranchSales.vue'
 import OrderDetail from '@/components/product/OrderDetail.vue'
 
 import ReceiveMsg from '@/components/msg/ReceiveMsg.vue'
+import SendMsg from '@/components/msg/SendMsg.vue'
+import TempMsg from '@/components/msg/TempMsg.vue'
+import DelMsg from '@/components/msg/DelMsg.vue'
 import SideBar from '../views/SideBar.vue'
 
+import NoticeList from '@/components/notice/NoticeList.vue'
 
 
 
@@ -72,21 +74,8 @@ const routes = [
     name: 'storeLogin',
     component: storeLogin
   },
-  {
-    path: '/location',
-    name: 'location',
-    component: location
-  },
-  {
-    path: '/latitude',
-    name: 'latitude',
-    component: latitude
-  },
-  {
-    path: '/marker',
-    name: 'marker',
-    component: marker
-  },
+
+
   {
     path : '/schedule',
     name : 'schedule',
@@ -125,9 +114,29 @@ const routes = [
     component: ReceiveMsg
   },
   {
+    path: '/SendMsg',
+    name: 'SendMsg',
+    component: SendMsg
+  },
+  {
+    path: '/TempMsg',
+    name: 'TempMsg',
+    component: TempMsg
+  },
+  {
+    path: '/DelMsg',
+    name: 'DelMsg',
+    component: DelMsg
+  },
+  {
     path: '/SideBar',
     name: 'SideBar',
     component: SideBar
+  },
+  {
+    path: '/NoticeList',
+    name: 'NoticeList',
+    component: NoticeList
   }
 ]
 

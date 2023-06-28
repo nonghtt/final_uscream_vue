@@ -23,7 +23,9 @@ export default {
         self.$axios.get('http://localhost:8085/store')//비동기 요청
         .then(function(res){
             if(res.status==200){
+       
                 self.list = res.data.storelist
+       
             }else{
                 alert('에러코드:' + res.status)
             }
