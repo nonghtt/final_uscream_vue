@@ -86,21 +86,12 @@ methods:{
 
 
 
-
-
-
-
-
-
-
-
-
-
 <style scoped>
 
 h3{
     font-size: large;
 }
+
 .container{
     margin: 5px 5px 5px 5px;
 }

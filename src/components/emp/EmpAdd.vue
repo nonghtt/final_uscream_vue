@@ -326,10 +326,12 @@ export default {
 </script>
 
 <style scoped>
+
 #eaBody {
     max-width: 100%;
     margin: 0 auto;
     padding-top: 30px;
     padding-bottom: 30px;
 }
+
 </style>
