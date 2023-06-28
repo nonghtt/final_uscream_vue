@@ -7,7 +7,9 @@ import storeJoin from '@/components/storeaccount/storeJoin.vue'
 import storeMyinfo from '@/components/storeaccount/storeMyinfo.vue'
 import storeState from '@/components/storeaccount/storeState.vue'
 import storeLogin from '@/components/storeaccount/storeLogin.vue'
-
+import location from '@/components/storeaccount/location.vue'
+import latitude from '@/components/storeaccount/latitude.vue'
+import marker from '@/components/storeaccount/marker.vue'
 
 import ScheDule from '@/components/schedule/ScheDule.vue'
 import EmpAdd from '@/components/emp/EmpAdd.vue'
@@ -70,8 +72,21 @@ const routes = [
     name: 'storeLogin',
     component: storeLogin
   },
-
-
+  {
+    path: '/location',
+    name: 'location',
+    component: location
+  },
+  {
+    path: '/latitude',
+    name: 'latitude',
+    component: latitude
+  },
+  {
+    path: '/marker',
+    name: 'marker',
+    component: marker
+  },
   {
     path : '/schedule',
     name : 'schedule',
@@ -113,9 +128,6 @@ const routes = [
     path: '/SideBar',
     name: 'SideBar',
     component: SideBar
-
-
-
   }
 ]
 

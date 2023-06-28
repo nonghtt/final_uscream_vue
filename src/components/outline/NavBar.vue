@@ -108,8 +108,8 @@ export default {
         return {
             // 테스트용 데이터
             accounttype: 1,
-            loginId: 'asdfa',
-            mail:1
+            loginId: 1,
+            mail: null,
         }
     },
     created: function(){
