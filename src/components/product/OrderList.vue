@@ -1,52 +1,82 @@
 <template>
-    <div class="container">
+    <div class="container ">
         <h3>발주 현황</h3>
-            <table class="table table-light table-striped table-bordered">
-                <tr>
-                    <th>발주번호</th>
-                    <th>제목</th>
-                    <th>발주 총액</th>
-                    <th>신청날짜</th>
-                    <th>승인날짜</th>
-                    <th>승인 여부</th>
-                </tr>
-                <tr v-for="(order,i) in orderlist" :key="i">
-                    <td>{{ order.ORDERNUM }}</td>
-                    <td>?</td>
-                    <td>{{ order.TOTALCOST }}원</td>
-                    <td>{{ order.ORDERDATE }}</td>
-                    <td>{{ order.CONFIRMDATE }}</td>
-                    <td>{{ order.CONFIRMCHECK }}</td>
-                    <td><p ></p></td>
-                
-                </tr>
-                
-            </table>
-            <button type="button"><router-link to="/productorder">발주신청</router-link></button>
+        <button type="button" v-if="accounttype == 2" class="col1"><router-link class="orderbtn"
+                to="/productorder">발주신청</router-link></button>
+        <table class="table table-light table-striped table-bordered">
+            <tr>
+                <th>발주번호</th>
+                <th>제목</th>
+                <th>발주 총액</th>
+                <th>신청날짜</th>
+                <th>승인날짜</th>
+                <th>승인 여부</th>
+            </tr>
+            <tr v-for="(order, i) in orderlist" :key="i">
+                <td>{{ order.ORDERNUM }}</td>
+                <td>
+                    <div @click="detail(order.STORE, order.ORDERDATE)" style="margin-bottom: 0; background-color: none;">
+                        {{ order.STORE }}의 {{ order.ORDERDATE }} 발주내역</div>
+                </td>
+                <td>{{ order.TOTALCOST }}원</td>
+                <td>{{ order.ORDERDATE }}</td>
+                <td v-if="order.CONFIRMDATE == null">승인 대기중</td>
+                <td v-if="order.CONFIRMDATE != null">{{ order.CONFIRMDATE }}</td>
+                <td v-if="order.CHECKCONFIRM == 0">승인 대기중</td>
+                <td v-if="order.CHECKCONFIRM != 0">승인 완료</td>
+
+            </tr>
+
+        </table>
+
     </div>
 </template>
 <script>
 
-export default{
+export default {
     name: "OrderList",
-    data(){
-        return{
-            orderlist:[],
-            title:[]
+    data() {
+        return {
+            orderlist: [],
+            title: [],
+            accounttype: sessionStorage.getItem("accounttype"),
+            store: sessionStorage.getItem("loginId")
         }
     },
-    created: function(){
-        const self = this;
-  self.$axios.get("http://localhost:8085/orders/orderlist").then(function(res) {
-    self.orderlist = res.data.orderlist;
-    console.log(self.orderlist);
+    created: function () {
+        if (this.accounttype == 1) {
+            const self = this;
+            self.$axios.get("http://localhost:8085/orders/orderlist").then(function (res) {
+                self.orderlist = res.data.orderlist;
 
-   /*  let strs = res.data.orderlist;
-    alert(res.data.orderlist);
-    let titlelist = strs.split('#');
-    alert(titlelist); */
-  });
-    },
+            });
+        }else if(this.accounttype ==2){ 
+            const self = this;
+            self.$axios.get("http://localhost:8085/orders/orderlist/"+self.store).then(function (res) {
+                self.orderlist = res.data.orderlist;
+                console.log(self.orderlist)
 
+        })
+    }
+},
+    methods: {
+        detail(storeid, orderdate) {
+
+            this.$router.push({
+                name: 'OrderDetail',
+                query: { storeid, orderdate }
+            });
+        }
+    }
 }
 </script>
+<style scoped>
+.orderbtn {
+    text-decoration: none;
+    color: black
+}
+
+* {
+    text-align: center;
+}
+</style>
