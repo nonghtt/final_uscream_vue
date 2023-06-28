@@ -3,12 +3,17 @@
   <NavBar/>
   <div class="middlepage">
     
-<div class="sidebar">
-  <SideBar/>
-</div>
+  <div class="sidebar">
+    <SideBar/>
+  </div>
+  <router-view/> 
+
 
 <router-view/> 
 </div>
+
+  </div>
+
   
 
 </template>
@@ -33,8 +38,11 @@ export default{
 }
 
 .sidebar{
-  width:13%;
+  width:300px;
   text-align: left;
+  border-right: 1px solid black;
+  background-color: whitesmoke;
+  height:770px;
 }
 
 .middlepage{

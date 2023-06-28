@@ -3,32 +3,34 @@
 
     <div class="topbar">
         <span>
-            <h4>받은 메일함  </h4>
+            <h4> 받은 메일함  </h4>
         </span>
         <span>
             <h4>  {{ count }}  / {{ countall }} </h4>
         </span>
-
-        <span class="searchbar">
-            <form>
-                <input type="text" name="searchbar" placeholder="제목을 입력하세요" autocomplete="off">
-                <input type="submit" value="검색">
-            </form>
-        </span>
         
     </div>
-    <div class="middlebar">
-        <input type="button" value="메일 보내기">
-        <input type="button" value="휴지통으로">
-        <input type="button" value="즐겨찾기">
-    </div>
+<div class="middlebar_container">
+
+        <div class="middlebar">
+            <input type="button" value="메일 작성">
+            <input type="button" value="휴지통으로">
+         
+        </div>    
+        <div class="searchbar">
+            <form>
+                <input type="text" name="searchbar" placeholder="메일 검색" autocomplete="off">
+                <input type="submit" value="검색">
+            </form>
+        </div>
+</div>
     <table class="main">
             <tr v-for="(msg, index) in list" :key="index">
 
                 <td class="check">
-                    <input type ="checkbox">
-                    <img class="lcon" src="../../assets/uscreamlogo.png">
-                    <img class="lcon" src="../../assets/uscreamlogo.png">
+                    <input  style='zoom:1.5;' type ="checkbox" class="checkbox_icon">
+                    <img class="lcon" src="../../assets/starnomal.png" v-on:click="mark">
+                    <img class="lcon" src="../../assets/msgnomal.png"  v-on:click="read">
                 </td>
                 <td>{{ msg.sender.storeid }}</td>
                 <td>{{ msg.title }}</td>
@@ -46,7 +48,8 @@ export default {
         return {
           list : [],
           countall: 0,
-          count:0
+          count:0,
+          msgnum:0
            }
     },
     created: function () {
@@ -56,35 +59,61 @@ export default {
             .then(function (res) {
 
                 
-                self.list = res.data.msglist ;
-               self.countall=res.data.CountByReceiver;
-               self.count=res.data.CountByReceiverAndRead;
-                
+            self.list = res.data.msglist ;
+            self.countall=res.data.CountByReceiver;
+            self.count=res.data.CountByReceiverAndRead;
 
                 
             })
+},
+methods:{
+    mark(){
+        const self = this 
+        let num = self.list.msgnum;
+        
+        alert(num);
+        
+        self.$axios.patch("http://localhost:8085/msg/mark/check/"+num)
+        
+
+    },
+    read(){
+
+    }
 }
 }
 </script>
 
 
+
 <style scoped>
+
+h3{
+    font-size: large;
+}
+
 .container{
     margin: 5px 5px 5px 5px;
 }
 
 .topbar{
-    display: flex;
+   text-align: center;
     margin-top: 2%;
-    margin-bottom: 4%;
+    margin-bottom: 2%;
+    
+}
+middlebar_container{
     
 }
 .middlebar{
-    text-align: right;
+    display:inline-block;
+
     margin-bottom: 10px;
 }
 .searchbar{
-    margin-left: auto;
+    float:right;
+
+    display: inline-block;
 }
 
 .main{
@@ -93,8 +122,8 @@ export default {
 }
 
 td {
-    padding-top: 5px;
-    padding-bottom: 10px;
+    padding-top: 7px;
+    padding-bottom: 12px;
   }
 
 td:nth-child(1) {
@@ -103,10 +132,12 @@ td:nth-child(1) {
 
 td:nth-child(2) {
   width: 15%; 
+  text-align: left;
 }
 
 td:nth-child(3) {
   width: 50%; 
+  text-align: left;
 }
 
 td:nth-child(4) {
@@ -114,16 +145,17 @@ td:nth-child(4) {
 }
 
 .check{
-    text-align: center;
-    
+    display: flex;
+    align-items: center;
+    width:40px;
 }
 
 
 .lcon {
-    width: 30px;
-    height: 50px;
-    margin-left: 3px;
-    margin-right: 3px;
+    width: 20px;
+    height: 30px;
+    margin-left: 20px;
+    margin-right: 8px;
 }
 
 
