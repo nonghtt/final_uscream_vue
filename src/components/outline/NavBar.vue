@@ -52,7 +52,7 @@
                         <ul class="dropdown-menu">
                             <li><router-link class="dropdown-item" to="/orderlist">발주현황</router-link></li>
                             <li v-if="accounttype == 1"><a class="dropdown-item" href="#">상품등록</a></li>
-                            <li v-if="accounttype == 1"><router-link class="dropdown-item" to="/productlist">상품리스트</router-link></li>
+                            <li v-if="accounttype == 1"><router-link class="dropdown-item" active-class="active" to="/productlist" >상품리스트</router-link></li>
                             <li v-if="accounttype == 2"><a class="dropdown-item" href="#">재고관리</a></li>
                         </ul>
                     </li>
@@ -62,14 +62,15 @@
                             직원관리
                         </a>
                         <ul class="dropdown-menu">
-                            <li><a class="dropdown-item" href="#">직원등록</a></li>
-                            <li><a class="dropdown-item" href="#">직원명단</a></li>
-                            <li><a class="dropdown-item" href="#">업무스케줄</a></li>
-                            <li><a class="dropdown-item" href="#">근태관리</a></li>
+                            <li><router-link class="dropdown-item" to="/empadd">직원등록</router-link></li>
+                            <li><router-link class="dropdown-item" to="/emplist">직원명단</router-link></li>
+                            <li><router-link class="dropdown-item" to="/schedule">업무스케줄</router-link></li>
+                            <!-- <li><a class="dropdown-item" href="../schedule/ScheDule.vue">업무스케줄</a></li> -->
+                            <li><router-link class="dropdown-item" to="/worklogs">근태관리</router-link></li>
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link active" to="/about">
+                        <router-link class="nav-link active" to="/branchsales">
                             매출관리
                         </router-link>
                     </li>
@@ -84,7 +85,7 @@
                 <router-link class="nav-link mailicon" to="/about">
                     <i class="fa-solid fa-house-chimney"></i>
                 </router-link>
-                <router-link class="nav-link mailicon" to="/about">
+                <router-link class="nav-link mailicon" to="/ReceiveMsg">
                     <i class="fa-solid fa-envelope "></i>
                     <span v-if="mail !=null"
                         class="position-absolute top-30 start-250 translate-middle p-2 bg-danger border border-light rounded-circle">
@@ -106,9 +107,9 @@ export default {
     data() {
         return {
             // 테스트용 데이터
-            accounttype:null,
-            loginId: null,
-            mail:null
+            accounttype: 1,
+            loginId: 'asdfa',
+            mail:1
         }
     },
     created: function(){
@@ -122,7 +123,7 @@ export default {
     methods:{
         logout(){
             sessionStorage.removeItem('loginId')
-            sessionStorage.removeItem('type')
+            sessionStorage.removeItem('accounttype')
             location.href = '/';
             alert('로그아웃이 완료되었습니다.')
         }
@@ -174,6 +175,10 @@ a {
 .fa-envelope{
     font-size: 23px;
     
+}
+
+a{
+    text-decoration : none;
 }
 </style>
   

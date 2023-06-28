@@ -1,11 +1,25 @@
 <template lang="">
     <div id="myinfo" class="myinfo">
-     <div class="text_myinfo">지점 정보 확인</div>   
-     <div class="edit_window">      
-    
-        <br/>
+
+      <div>
+        <img src="../../assets/bckimg.jpg" 
+            style="width:100%; height:100%;"
+            class="background_img"></div>
+
+     <div class="edit_window">
+      <div class="brandname">USCREAM</div>      
+      <div style="height:0px;">
+              </div>
+
+              <div class="title_myinfo" role="alert" style="font-size:25px; font-weight:bold;">
+        지점 정보 확인</div>        
+
+
+<!-- 왼쪽 컨테이너 -->
+<div class="box1" id="div_outline">     
+  <br/><br/>   
         <div class="div_storeid">
-            <input class="input_storeid" type="text" v-model="storeid" readonly><br/>
+            <input class="input_storeid" type="text" v-model="storeid"><br/>
             <label class="label_storeid">storeid</label>
             <span class="span_storeid"></span>
         </div>        
@@ -35,11 +49,34 @@
         
         
         <div class="div_accounttype">
-        <input class="input_accounttype" type="text" v-model="accounttype" readonly><br/>
+        <input class="input_accounttype" type="text" v-model="accounttype"><br/>
         <label class="label_accounttype">accounttype</label>
         <span class="span_accounttype"></span>
         </div>
 
+</div>
+
+            <!-- 오른쪽 컨테이너 -->
+                    
+            <div class="box2" id="div_outline">
+              <div class="div_location">
+                
+            <input class="input_location" type="password" v-model="location">    
+            <label class="label_location">location</label>
+            <span class="span_location"></span>
+            ↓지도들어갈꺼임↓ 
+        </div>
+
+        
+
+
+
+
+
+    <img src="../../assets/1.png" 
+              style="width:100%; height:100%;"
+              class="img_main">
+    </div>
 
         <br/><br/>
         <button class="btn_edit" v-on:click="edit">수정하기</button>
@@ -117,7 +154,7 @@ name:"StoreEdit",
 <style scoped>
 
 .text_myinfo{
-position: absolute; left: 50%; top: 28%; 
+position: absolute; left: 50%; top: 10%; 
 transform: translate(-50%, -50%); text-align: center;
 border-radius: 15%;
 font-size:30px;
@@ -141,6 +178,26 @@ font-size:20px;
 font-weight:bold;
 }
 
+#div_outline {
+    /* display: inline-block; */
+    float: left;
+    line-height: 100%;
+    text-align: center;
+    font-size: 20px;
+}
+
+.brandname{
+   color: #eb34a4;
+   font-size:30px;
+   font-weight: bold;
+   vertical-align: center;
+  }
+
+.title_myinfo{
+  background-color: #eb34a4;
+  color:white;
+}
+
 .btn_cancle{
     background-color: rgb(128, 129, 128);
 border:0;
@@ -153,12 +210,13 @@ font-weight:bold;
 
 /* 내정보(myinfo) 윈도우 위치조정하기 */
 .edit_window{
-width: 400px;height: 400px;border: 1px solid #dcdcdc;
-position: absolute; left: 50%; top: 50%; 
+width: 800px;height: 800px;border: 1px solid #dcdcdc;
+position: absolute; left: 50%; top: 55%; 
 transform: translate(-50%, -50%); text-align: center;
 border-radius: 15%;
 box-shadow: 20px 20px 20px grey;
 overflow:auto;
+background-color: white;
 }
 
 /* 스크롤바 없애기 */
@@ -488,4 +546,66 @@ overflow:auto;
   width: 100%;
  
 }
+
+
+/* input(location) 창 꾸미기 */
+  
+.div_location {
+    position: relative;
+    width: 300px;
+    margin-left: 50px;
+    margin-top: 50px;
+  }
+  
+  .input_location {
+    font-size: 15px;
+    color: #222222;
+    width: 300px;
+    border: none;
+    border-bottom: solid #aaaaaa 1px;
+    padding-bottom: 10px;
+    padding-left: 10px;
+    position: relative;
+    background: none;
+    z-index: 5;
+  }
+  
+ 
+  .input_location::placeholder { color: #aaaaaa; }
+  .input_location:focus { outline: none; }
+  
+  .span_location {
+    display: block;
+    position: absolute;
+    bottom: 0;
+    left: 0%;  /* right로만 바꿔주면 오 - 왼 */
+    background-color: #666;
+    width: 0;
+    height: 2px;
+    border-radius: 2px;
+    transition: 0.5s;
+  }
+  
+  .label_location {
+    position: absolute;
+    color: #aaaaaa;
+    left: 10px;
+    font-size: 20px;
+    bottom: 8px;
+    transition: all .2s;
+  }
+  
+  .input_location:focus ~ .label_location, .input_location:valid ~ .label_location {
+    font-size: 16px;
+    bottom: 40px;
+    /* 커서올렸을때 글자가 변하는 색 >>>>> 나중에 상의해서 변경하는 */
+    /* color: #666; */
+    color:#666;
+    font-weight: bold;
+  }
+  
+  .input_location:focus ~ .span_location, .input_location:valid ~ .span_location {
+    width: 100%;
+   
+  }
 </style>
