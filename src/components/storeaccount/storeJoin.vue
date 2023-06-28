@@ -362,6 +362,7 @@ z-index: 2;
     z-index: 5;
   }
   
+  
   /* .input_storeid::placeholder { color: #aaaaaa; } */
   .input_storeid::placeholder { color: #aaaaaa; }
   .input_storeid:focus { outline: none; }

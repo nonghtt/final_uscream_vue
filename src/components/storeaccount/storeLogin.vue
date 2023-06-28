@@ -26,6 +26,7 @@
           <span class="span_storeid"></span>
           </div>
   
+          
           <div class="div_pwd">
           <input class="input_pwd" type="password" v-model="pwd" required>
           <label class="label_pwd">비밀번호</label>
