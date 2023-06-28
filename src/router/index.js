@@ -20,6 +20,9 @@ import BranchSales from '@/components/sales/BranchSales.vue'
 import OrderDetail from '@/components/product/OrderDetail.vue'
 
 import ReceiveMsg from '@/components/msg/ReceiveMsg.vue'
+import SendMsg from '@/components/msg/SendMsg.vue'
+import TempMsg from '@/components/msg/TempMsg.vue'
+import DelMsg from '@/components/msg/DelMsg.vue'
 import SideBar from '../views/SideBar.vue'
 
 
@@ -108,6 +111,21 @@ const routes = [
     path: '/ReceiveMsg',
     name: 'ReceiveMsg',
     component: ReceiveMsg
+  },
+  {
+    path: '/SendMsg',
+    name: 'SendMsg',
+    component: SendMsg
+  },
+  {
+    path: '/TempMsg',
+    name: 'TempMsg',
+    component: TempMsg
+  },
+  {
+    path: '/DelMsg',
+    name: 'DelMsg',
+    component: DelMsg
   },
   {
     path: '/SideBar',
