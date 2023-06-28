@@ -69,7 +69,7 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link active" to="/about">
+                        <router-link class="nav-link active" to="/branchsales">
                             매출관리
                         </router-link>
                     </li>

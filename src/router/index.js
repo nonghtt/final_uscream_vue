@@ -7,10 +7,7 @@ import storeJoin from '@/components/storeaccount/storeJoin.vue'
 import storeMyinfo from '@/components/storeaccount/storeMyinfo.vue'
 import storeState from '@/components/storeaccount/storeState.vue'
 import storeLogin from '@/components/storeaccount/storeLogin.vue'
-
-
-
-
+import BranchSales from '@/components/sales/BranchSales.vue'
 
 
 const routes = [
@@ -54,6 +51,11 @@ const routes = [
     path: '/',
     name: 'storeLogin',
     component: storeLogin
+  },
+  {
+    path: '/branchsales',
+    name: 'branchsales',
+    component: BranchSales
   }
 ]
 
