@@ -8,9 +8,10 @@
                 <th>발주번호</th>
                 <th>제목</th>
                 <th>발주 총액</th>
+                <th>승인 금액</th>
                 <th>신청날짜</th>
                 <th>승인날짜</th>
-                <th>승인 여부</th>
+                <th>처리 여부</th>
             </tr>
             <tr v-for="(order, i) in orderlist" :key="i">
                 <td>{{ order.ORDERNUM }}</td>
@@ -19,11 +20,13 @@
                         {{ order.STORE }}의 {{ order.ORDERDATE }} 발주내역</div>
                 </td>
                 <td>{{ order.TOTALCOST }}원</td>
+                <td>{{ order.ORDERCOST }}원</td>
                 <td>{{ order.ORDERDATE }}</td>
-                <td v-if="order.CONFIRMDATE == null">승인 대기중</td>
+                <td v-if="order.CONFIRMDATE == null">처리중</td>
                 <td v-if="order.CONFIRMDATE != null">{{ order.CONFIRMDATE }}</td>
-                <td v-if="order.CHECKCONFIRM == 0">승인 대기중</td>
-                <td v-if="order.CHECKCONFIRM != 0">승인 완료</td>
+                <td>{{ order.STATUS }}</td>
+               <!--  <td v-if="order.CHECKCONFIRM == 0">승인 대기중</td>
+                <td v-if="order.CHECKCONFIRM != 0">승인 완료</td> -->
 
             </tr>
 

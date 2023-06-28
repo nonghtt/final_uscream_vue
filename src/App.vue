@@ -7,8 +7,8 @@
   <SideBar/>
 </div>
 
-    <router-view/> 
-  </div>
+<router-view/> 
+</div>
   
 
 </template>
@@ -27,7 +27,7 @@ export default{
   }
 }
 </script>
-<style>
+<style scoped>
 .nav-link{
     display: inline;
 }
