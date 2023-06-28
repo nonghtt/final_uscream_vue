@@ -25,7 +25,7 @@
 
         </table>
         <button type="button" class="btn btn-info" v-on:click="add">발주</button>
-        {{ checkedproduct }}
+        
     </div>
 </template>
 <script>

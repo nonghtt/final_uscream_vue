@@ -7,6 +7,9 @@ import storeJoin from '@/components/storeaccount/storeJoin.vue'
 import storeMyinfo from '@/components/storeaccount/storeMyinfo.vue'
 import storeState from '@/components/storeaccount/storeState.vue'
 import storeLogin from '@/components/storeaccount/storeLogin.vue'
+
+import OrderDetail from '@/components/product/OrderDetail.vue'
+
 import ReceiveMsg from '@/components/msg/ReceiveMsg.vue'
 import SideBar from '../views/SideBar.vue'
 
@@ -57,6 +60,12 @@ const routes = [
     component: storeLogin
   },
   {
+
+    path: '/OrderDetail',
+    name: 'OrderDetail',
+    component: OrderDetail,
+    props: true
+
     path: '/ReceiveMsg',
     name: 'ReceiveMsg',
     component: ReceiveMsg
@@ -65,6 +74,7 @@ const routes = [
     path: '/SideBar',
     name: 'SideBar',
     component: SideBar
+
   }
 ]
 
