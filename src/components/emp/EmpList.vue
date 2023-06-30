@@ -1,7 +1,7 @@
 <template>
     <div id="elBody">
         <h3>{{ storename }}점 직원</h3>
-
+        <div>아직.. 수정..삭제..스케줄보기 안됩니다... 주말동안 해올게요/...</div>
         <div class="row row-cols-1 row-cols-md-3 g-4">
             <div class="col" v-for="emp in list" :key="emp.empnum" :id="emp.empnum">
                 <div class="card text-center" style="width: 18rem;" :id="'emp' + emp.empnum">
@@ -17,16 +17,20 @@
                         </div>
                         <div>
                             <!-- Button trigger modal -->
-                            <button type="button" class="btn custom-btn empsBtn" data-bs-toggle="modal" data-bs-target="#exampleModal1">
+                            <button type="button" class="btn custom-btn empsBtn" data-bs-toggle="modal" data-bs-target="#editEmp">
                                 수정
-                            </button>                     
-                            <button @click='empDel(emp.empnum)' class="btn custom-btn empsBtn">삭제</button>
+                            </button>
+                             <!-- Button trigger modal -->
+                             <button type="button" class="btn custom-btn empsBtn" data-bs-toggle="modal" data-bs-target="#delEmp">
+                                삭제
+                            </button>                      
+                            <!-- <button @click='empDel(emp.empnum)' class="btn custom-btn empsBtn">삭제</button> -->
                         </div>
                     </div>
                 </div>
 
-                <!-- Modal -->
-                <div class="modal fade" id="exampleModal1" tabindex="-1" aria-labelledby="exampleModalLabel"
+                <!-- 수정 Modal -->
+                <div class="modal fade" id="editEmp" tabindex="-1" aria-labelledby="exampleModalLabel"
                     aria-hidden="true">
                     <div class="modal-dialog">
                         <div class="modal-content">
@@ -41,6 +45,26 @@
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
                                 <button type="button" class="btn custom-btn">수정</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 삭제 Modal -->
+                <div class="modal fade" id="delEmp" tabindex="-1" aria-labelledby="exampleModalLabel"
+                    aria-hidden="true">
+                    <div class="modal-dialog">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h5 class="modal-title" id="exampleModalLabel">{{ emp.empname }}</h5>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                삭제
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+                                <button type="button" class="btn custom-btn" @click='empDel(emp.empnum)'>삭제</button>
                             </div>
                         </div>
                     </div>
