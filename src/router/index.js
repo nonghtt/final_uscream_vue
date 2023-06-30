@@ -36,6 +36,7 @@ import DetailMsg from '@/components/msg/DetailMsg.vue'
 import SideBar from '../views/SideBar.vue'
 
 import NoticeList from '@/components/notice/NoticeList.vue'
+import NoticeWriter from '@/components/notice/NoticeWriter.vue'
 
 
 
@@ -171,6 +172,12 @@ const routes = [
     path: '/NoticeList',
     name: 'NoticeList',
     component: NoticeList
+  },
+  {
+
+    path: '/NoticeWriter',
+    name: '/NoticeWriter',
+    component: NoticeWriter
   },
   {
     path:'/inventory',
