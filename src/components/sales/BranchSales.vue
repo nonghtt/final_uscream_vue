@@ -44,10 +44,18 @@
 
 <script>
 import * as echarts from 'echarts/core';
+import {
+  ToolboxComponent,
+  TooltipComponent,
+  GridComponent,
+  LegendComponent
+} from 'echarts/components';
 import { TooltipComponent, LegendComponent } from 'echarts/components';
 import { PieChart } from 'echarts/charts';
 import { LabelLayout } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
+import { BarChart, LineChart } from 'echarts/charts';
+import { UniversalTransition } from 'echarts/features';
 
 export default {
   name: 'BranchSales',
@@ -71,6 +79,7 @@ export default {
       selectMonth: null,
       selectYear2: null,
       myChart: null,
+      myChart2: null,
       // option: [],
     };
   },
@@ -82,12 +91,19 @@ export default {
       LegendComponent,
       PieChart,
       CanvasRenderer,
-      LabelLayout
+      LabelLayout,
+      ToolboxComponent,
+      GridComponent,
+      BarChart,
+      LineChart,
+      UniversalTransition
     ]);
   },
   mounted() {
     this.myChart = echarts.init(document.getElementById('donutchart'));
     this.renderChart();
+    this.myChart2 = echarts.init(document.getElementById('linechart'));
+    this.getYearlyNetsales();
   },
   methods: {
     getSearchCriteria() {
@@ -282,6 +298,89 @@ export default {
                   const monthNetsales = item.MNETSALES;
                   const formattedMonthNetsales = monthNetsales.toLocaleString();
                   self['monthlyNetsales' + month] = formattedMonthNetsales;
+
+
+            //       const option = {
+            //         tooltip: {
+            //         trigger: 'axis',
+            //         axisPointer: {
+            //         type: 'cross',
+            //         crossStyle: {
+            //           color: '#999'
+            //         }
+            //       }
+            //     },
+            //     toolbox: {
+            //       feature: {
+            //         dataView: { show: true, readOnly: false },
+            //         magicType: { show: true, type: ['line', 'bar'] },
+            //         restore: { show: true },
+            //         saveAsImage: { show: true }
+            //       }
+            //     },
+            //     legend: {
+            //       data: [ '월별 순매출' ]
+            //     },
+            //     xAxis: [
+            //       {
+            //         type: 'category',
+            //         data: [
+            //         '1월',
+            //         '2월',
+            //         '3월',
+            //         '4월',
+            //         '5월',
+            //         '6월',
+            //         '7월',
+            //         '8월',
+            //         '9월',
+            //         '10월',
+            //         '11월',
+            //         '12월'
+            //         ],
+            //         axisPointer: {
+            //           type: 'shadow'
+            //         }
+            //       }
+            //     ]
+            //     series: [
+            //       {
+            //         name: '금액',
+            //         type: 'pie',
+            //         radius: ['40%', '70%'],
+            //         center: ['50%', '70%'],
+
+            //         startAngle: 180,
+            //         label: {
+            //           show: true,
+            //           formatter(param) {
+            //             return param.name + ' (' + param.percent * 2 + '%)';
+            //           }
+            //         },
+            //         data: [
+            //           { value: totalPayroll, name: '인건비' },
+            //           { value: totalOrder, name: '발주금액' },
+            //           { value: totalNetsales, name: '순매출' },
+            //           {
+
+            //             value: totalPayroll + totalOrder + totalNetsales,
+            //             itemStyle: {
+
+            //               color: 'none',
+            //               decal: {
+            //                 symbol: 'none'
+            //               }
+            //             },
+            //             label: {
+            //               show: false
+            //             }
+            //           }
+            //         ]
+            //       }
+            //     ]
+            //   };
+            //   self.myChart.setOption(option);
+
                 } else {
                   self['monthlyNetsales' + month] = 0;
                 }
@@ -312,49 +411,4 @@ export default {
     }
   }
 }
-
-
-
-    // getYearlyNetsales() {
-    //   const self = this;
-    //   const storeId = this.storeId;
-    //   const year = this.selectYear2;
-
-    //   if (year) {
-    //     console.log(year);
-
-    //     self.$axios
-    //       .get(`http://localhost:8085/netsales/${storeId}/${year}`)
-    //       .then(response => {
-    //         const data = response.data;
-    //         self.list4 = response.data.list;
-
-    //         console.log(data);
-    //         console.log(self.list4);
-
-    //         for (let i = 0; i < 12; i++) {
-    //           self['monthlyNetsales' + (i + 1)] = 0;
-    //         }
-
-    //         if (self.list4 && self.list4.length > 0) {
-    //           for (let i = 0; i < self.list4.length; i++) {
-    //             const monthNetsales = self.list4[i].MNETSALES;
-    //             const formattedMonthNetsales = monthNetsales.toLocaleString();
-    //             self['monthlyNetsales' + (i + 1)] = formattedMonthNetsales;
-    //           }
-    //         } else {
-    //           // 데이터가 없는 경우에도 초기화를 수행
-    //           for (let i = 0; i < 12; i++) {
-    //             self['monthlyNetsales' + (i + 1)] = 0;
-    //           }
-    //         }
-
-
-    //       })
-    //       .catch(error => {
-    //         console.error(error);
-    //       });
-    //   }
-    // },
-
 </script>
