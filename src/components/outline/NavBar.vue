@@ -51,9 +51,8 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><router-link class="dropdown-item" to="/orderlist">발주현황</router-link></li>
-                            <li v-if="accounttype == 1"><a class="dropdown-item" href="#">상품등록</a></li>
                             <li v-if="accounttype == 1"><router-link class="dropdown-item" active-class="active" to="/productlist" >상품리스트</router-link></li>
-                            <li v-if="accounttype == 2"><a class="dropdown-item" href="#">재고관리</a></li>
+                            <li v-if="accounttype == 2"><router-link class="dropdown-item" active-class="active" to="/inventory" >재고관리</router-link></li>
                         </ul>
                     </li>
                     <li v-if="accounttype == 2" class="nav-item dropdown">
@@ -85,9 +84,12 @@
                 <router-link class="nav-link mailicon" to="/about">
                     <i class="fa-solid fa-house-chimney"></i>
                 </router-link>
+                <router-link class="nav-link mailicon" to="/storeMyinfo">
+                    <i class="fa-solid fa-user"></i>
+                </router-link>
                 <router-link class="nav-link mailicon" to="/ReceiveMsg">
                     <i class="fa-solid fa-envelope "></i>
-                    <span v-if="mail !=null"
+                    <span v-if="mail != null"
                         class="position-absolute top-30 start-250 translate-middle p-2 bg-danger border border-light rounded-circle">
                         <span class="visually-hidden">New alerts</span>
                     </span>
@@ -117,7 +119,6 @@ export default {
         if(sessionStorage.getItem("loginId")!=null){
             self.loginId = sessionStorage.getItem("loginId");
             self.accounttype = sessionStorage.getItem("accounttype")
-            
         }
     },
     methods:{

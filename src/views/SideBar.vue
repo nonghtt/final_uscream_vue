@@ -13,7 +13,7 @@
     </div>
 
     <ul v-on:click="receivemsg"><img class="sidebar_icon" src="../assets/receivemsg.svg">받은 메시지    </ul><Br/>
-    <ul v-on:click="adddmsg"><img class="sidebar_icon" src="../assets/addmsg.svg">메세지 작성    </ul><Br/>
+    <ul v-on:click="addmsg"><img class="sidebar_icon" src="../assets/addmsg.svg">메세지 작성    </ul><Br/>
     <ul v-on:click="sendmsg"><img class="sidebar_icon" src="../assets/sendmsg.svg">보낸 메시지    </ul><Br/>
     <ul v-on:click="tempmsg"><img class="sidebar_icon" src="../assets/tempmsg.svg">임시 보관함    </ul><Br/>
     <ul v-on:click="delmsg"><img class="sidebar_icon" src="../assets/delmsg.svg">휴지통         </ul><Br/>

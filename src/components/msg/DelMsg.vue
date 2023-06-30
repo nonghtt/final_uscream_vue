@@ -3,7 +3,7 @@
     
         <div class="topbar">
             <span>
-                <h4> 보낸 메일함  </h4>
+                <h4> 휴지통  </h4>
             </span>
             <span>
                 <h4>  {{ count }}  / {{ countall }} </h4>
@@ -43,7 +43,7 @@
     
     <script>
     export default {
-        name: "ReceiveMsg",
+        name: "DelMsg",
         data() {
             return {
               list : [],
@@ -95,9 +95,9 @@
         margin-bottom: 2%;
         
     }
-    middlebar_container{
+    /* middlebar_container{
         
-    }
+    } */
     .middlebar{
         display:inline-block;
     
