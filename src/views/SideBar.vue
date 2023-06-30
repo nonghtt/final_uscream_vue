@@ -71,11 +71,11 @@ methods:{
 
 <style scoped>
 
-.SideBar{
+/* .SideBar{
     margin-top: 3%;
    
     
-}
+} */
 
 .sidebar_icon{
     width: 20px;

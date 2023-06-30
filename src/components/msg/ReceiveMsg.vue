@@ -39,9 +39,8 @@
 
                 </td>
                 <td>{{ msg.sender.storeid }}</td>
-                <td v-on:click="detail(msg.num)" >{{ msg.title }}</td>
+                <td v-on:click="detail(msg.msgnum)" >{{ msg.title }}</td>
                 <td>{{ msg.msgdate }}</td>
-               
             </tr>
     </table>
 </div>
@@ -59,8 +58,8 @@ export default {
           count:0,
           markimg:require("../../assets/staron.png"),
           markimg2:require("../../assets/starnomal.png"),
-          readimg:require("../../assets/msgnomal.png"),
-          readimg2:require("../../assets/msgnonread.png"),
+          readimg:require("../../assets/msgread.png"),
+          readimg2:require("../../assets/msgnoread.png"),
            }
     },
     created: function () {
@@ -90,13 +89,14 @@ methods:{
         const self = this
         self.$axios.patch("http://localhost:8085/msg/read/check/"+num)
         if(read){
-                self.readimg=require("../../assets/msgnonread.png")
+                self.readimg=require("../../assets/msgread.png")
             }
 
         window.location.reload();
     },
     detail(num){
         const self= this
+        self.$axios.patch("http://localhost:8085/msg/read/check/"+num)
         self.$router.push({name:'DetailMsg',query:{'num':num}})
 
 

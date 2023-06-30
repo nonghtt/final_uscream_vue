@@ -30,7 +30,7 @@
                     <td class="check">
                         <input  style='zoom:1.5;' type ="checkbox" class="checkbox_icon">
                         <img class="lcon" src="../../assets/starnomal.png">
-                        <img class="lcon" src="../../assets/msgnomal.png">
+                        <img class="lcon" src="../../assets/msgread.png">
                     </td>
                     <td>{{ msg.sender.storeid }}</td>
                     <td>{{ msg.title }}</td>

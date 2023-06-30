@@ -15,7 +15,7 @@
             <tr><td>보내는 사람</td><td><input type="text" class="enter"  v-model="sender" readonly></td></tr>
             <tr><td>받는 사람</td><td><input type="text" class="enter" v-model="receiver"></td></tr>
             <tr><td>제목</td><td><input type="text" class="enter" v-model="title"></td></tr>
-            <tr><td>첨부</td><td><input type="file" name="file" class="enter" multiple='true'></td></tr>
+            <tr><td>첨부</td><td><input type="file" name="file" ref="msgfile" @change="selectmsgfile" class="enter" multiple='true'></td></tr>
             <tr><td colspan="2"><textarea rows="20" cols="30" v-model="content"></textarea></td></tr>
 
         </form>
@@ -44,6 +44,12 @@
         created: function () {
     },
     methods:{
+
+        selectmsgfile(){
+            for(let i=0;i<this.file.length;i++){
+                this.file = this.$refs.msgfile.files[0]
+            }
+        },
         addmsg(){
             let form = new FormData();
             form.append('sender',this.sender);

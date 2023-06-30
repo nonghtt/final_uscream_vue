@@ -11,10 +11,10 @@
                 <input type="button" value="휴지통">
             </div>
         <tabel>
-            <tr><td colapan="2">{{ title }}</td></tr>
-            <tr><td>보낸 사람</td><td><input type="text" class="enter" v-model="dto.sender"></td></tr>
-            <tr><td>받는 사람</td><td><input type="text" class="enter" v-model="dto.receiver"></td></tr>
-            <tr><td>{{ dto.date }}</td></tr>
+            <tr><td></td><td><input type="text" v-model="dto.title" class="enter title" readonly></td></tr>
+            <tr><td>보낸 사람</td><td><input type="text" class="enter" v-model="dto.sender.storeid" readonly></td></tr>
+            <tr><td>받는 사람</td><td><input type="text" class="enter" v-model="dto.receiver.storeid" readonly></td></tr>
+            <tr><td class="bottom">{{ dto.msgdate }}</td></tr>
             <tr><td colspan="2"><textarea rows="20" cols="30" v-model="dto.content"></textarea></td></tr>
         </tabel>
 
@@ -31,13 +31,13 @@
             countall: 0,
             count:0,
             id:sessionStorage.getItem("loginId"),
-           dto:[]
+            dto:[]
             }
         },
         created: function () {
             const self = this
-            let num = self.num
-            
+            let num = self.num; 
+
             self.$axios.get("http://localhost:8085/msg/detail/"+num)
             .then(function (res) {
 
@@ -46,6 +46,8 @@
             // self.count=res.data.CountByReceiverAndRead;
 
             })
+           
+
     },
     methods:{
       
@@ -61,8 +63,6 @@
     .topbar{    
         display: flex;
         text-align: center;
-
-
     }
     p{
     text-align: center;
@@ -82,9 +82,14 @@
         border-bottom: 1px solid rgba(0,0,0,.1);
     }
     td{
-        font-weight: bold;
+        font-weight: 600;
     }
     
+    .title{
+        font-weight: bold;
+        font-size:20px;
+       
+    }
     .enter{
         display: inline-block;
         width: 1100px;
@@ -94,6 +99,8 @@
         padding-top:3px;
         border-bottom: 1px solid rgba(0,0,0,.1);
     }
+    
+
 
     input[type=file]::file-selector-button {
   width: 100px;
