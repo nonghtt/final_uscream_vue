@@ -1,10 +1,10 @@
 <template lang="">
     <div id="myinfo" class="myinfo">
 
-      <div>
+      <!-- <div>
         <img src="../../assets/bckimg.jpg" 
             style="width:100%; height:100%;"
-            class="background_img"></div>
+            class="background_img"></div> -->
 
      <div class="edit_window">
       <div class="brandname">USCREAM</div>      

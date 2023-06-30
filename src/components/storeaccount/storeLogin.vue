@@ -39,6 +39,16 @@
           <button class="btn_login" v-on:click="login">로그인하기</button>
           </div>
     </div>
+
+
+
+
+
+    <div class="test">
+      <li><router-link class="test" to="/location">위도출력</router-link></li>
+      <li><router-link class="test" to="/latitude">주소입력</router-link></li>
+      <li><router-link class="test" to="/marker">합친거</router-link></li>
+    </div>
   </template>
   
   <script>
