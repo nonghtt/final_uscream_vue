@@ -85,9 +85,12 @@
                 <router-link class="nav-link mailicon" to="/about">
                     <i class="fa-solid fa-house-chimney"></i>
                 </router-link>
+                <router-link class="nav-link mailicon" to="/storeMyinfo">
+                    <i class="fa-solid fa-user"></i>
+                </router-link>
                 <router-link class="nav-link mailicon" to="/ReceiveMsg">
                     <i class="fa-solid fa-envelope "></i>
-                    <span v-if="mail !=null"
+                    <span v-if="mail != null"
                         class="position-absolute top-30 start-250 translate-middle p-2 bg-danger border border-light rounded-circle">
                         <span class="visually-hidden">New alerts</span>
                     </span>
@@ -117,7 +120,6 @@ export default {
         if(sessionStorage.getItem("loginId")!=null){
             self.loginId = sessionStorage.getItem("loginId");
             self.accounttype = sessionStorage.getItem("accounttype")
-            
         }
     },
     methods:{

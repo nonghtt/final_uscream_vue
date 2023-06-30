@@ -7,6 +7,10 @@ import storeJoin from '@/components/storeaccount/storeJoin.vue'
 import storeMyinfo from '@/components/storeaccount/storeMyinfo.vue'
 import storeState from '@/components/storeaccount/storeState.vue'
 import storeLogin from '@/components/storeaccount/storeLogin.vue'
+import latitude from '@/components/storeaccount/latitude.vue'
+import location from '@/components/storeaccount/location.vue'
+import marker from '@/components/storeaccount/marker.vue'
+
 
 
 import ScheDule from '@/components/schedule/ScheDule.vue'
@@ -70,11 +74,25 @@ const routes = [
     component: storeState
   },
   {
+    path: '/latitude',
+    name: 'latitude',
+    component: latitude
+  },
+  {
+    path: '/location',
+    name: 'location',
+    component: location
+  },
+  {
+    path: '/marker',
+    name: 'marker',
+    component: marker
+  },
+  {
     path: '/',
     name: 'storeLogin',
     component: storeLogin
   },
-
 
   {
     path : '/schedule',
