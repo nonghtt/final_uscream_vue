@@ -7,7 +7,7 @@
     <SideBar/>
   </div>
   <router-view/> 
-  </div>
+</div>
 
   
 

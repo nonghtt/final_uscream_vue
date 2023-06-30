@@ -43,7 +43,7 @@
     
     <script>
     export default {
-        name: "ReceiveMsg",
+        name: "SendMsg",
         data() {
             return {
               list : [],
