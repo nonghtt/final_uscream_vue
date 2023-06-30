@@ -46,9 +46,7 @@
 import * as echarts from 'echarts/core';
 import {
   ToolboxComponent,
-  TooltipComponent,
   GridComponent,
-  LegendComponent
 } from 'echarts/components';
 import { TooltipComponent, LegendComponent } from 'echarts/components';
 import { PieChart } from 'echarts/charts';
