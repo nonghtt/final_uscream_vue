@@ -7,9 +7,13 @@ import storeJoin from '@/components/storeaccount/storeJoin.vue'
 import storeMyinfo from '@/components/storeaccount/storeMyinfo.vue'
 import storeState from '@/components/storeaccount/storeState.vue'
 import storeLogin from '@/components/storeaccount/storeLogin.vue'
+
+import StoreInventory from '@/components/product/StoreInventory.vue'
+
 import latitude from '@/components/storeaccount/latitude.vue'
 import location from '@/components/storeaccount/location.vue'
 import marker from '@/components/storeaccount/marker.vue'
+
 
 
 
@@ -167,7 +171,13 @@ const routes = [
     path: '/NoticeList',
     name: 'NoticeList',
     component: NoticeList
-  }
+  },
+  {
+    path:'/inventory',
+    name:'StoreInventory',
+    component :StoreInventory
+  },
+  
 ]
 
 const router = createRouter({

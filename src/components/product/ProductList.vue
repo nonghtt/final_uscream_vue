@@ -16,7 +16,46 @@
                 </div>
             </div>
         </div>
+        <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
+  제품등록
+</button>
     </div>
+
+    <div class="modal fade" id="staticBackdrop" data-bs-backdrop="static" data-bs-keyboard="false" tabindex="-1"
+            aria-labelledby="staticBackdropLabel" aria-hidden="true">
+            <div class="modal-dialog">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="staticBackdropLabel">상품등록</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <table>
+                            <tr>
+                                <th>제품명</th>
+                                <td><input type="text" v-model="productname"></td>
+                            </tr>
+                            <tr>
+                                <th>제품 이미지</th>
+                                <td><input type="file" ref="productimg" @change="selectimg"></td>
+                            </tr>
+                            <tr>
+                                <th>상품설명</th>
+                                <td><textarea v-model="productinfo"></textarea></td>
+                            </tr>
+                            <tr>
+                                <th>제품 가격</th>
+                                <input type="number" v-model="cost">
+                            </tr>
+                        </table>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-primary" @click="addproduct">등록</button>
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                    </div>
+                </div>
+            </div>
+        </div>
 </template>
 
 <script>
@@ -25,7 +64,11 @@ export default {
     data() {
         return {
             card: "card",
-            productlist: []
+            productlist: [],
+            productname:'',
+            productinfo:'',
+            pimg:'',
+            cost:''
         }
     },
     created: function () {
@@ -33,6 +76,29 @@ export default {
         self.$axios.get("http://localhost:8085/products").then(function (res) {
             self.productlist = res.data.list
         })
+    },
+    methods:{
+        selectimg(){
+            this.pimg = this.$refs.productimg.files[0]
+            console.log(this.pimg)
+        },
+        addproduct(){
+            const self = this;
+            let formdata = new FormData()
+            let orderble = true
+            formdata.append("productname",this.productname)
+            formdata.append("pimg",this.pimg)
+            formdata.append("productinfo",this.productinfo)
+            formdata.append("cost",this.cost)
+            formdata.append("orderble",orderble)
+            self.$axios.post('http://localhost:8085/products',formdata,{
+                headers: {
+                    'contnet-type' :'multipart/form-data'
+                }
+            }).then(function(res){
+                console.log(res)
+            })
+        }
     }
 }
 </script>

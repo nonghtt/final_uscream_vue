@@ -3,12 +3,12 @@
   <NavBar />
   <div class="middlepage">
 
-
     <div class="sidebar">
       <SideBar />
     </div>
     <router-view />
   </div>
+
 
 </template>
 
