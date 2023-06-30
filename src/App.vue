@@ -1,7 +1,8 @@
 <template>
-  <div>
+ 
   <NavBar />
   <div class="middlepage">
+
 
     <div class="sidebar">
       <SideBar />
@@ -9,7 +10,6 @@
     <router-view />
   </div>
 
-</div>
 </template>
 
 <script>

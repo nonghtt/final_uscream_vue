@@ -1,43 +1,233 @@
-<template lang="">
-    <div>
-        <div>지점현황</div>
-        <tr class="storename"><th>지점이름</th><th>지점장이름</th></tr>
-        <tr v-for="prod in list" :key="prod.num">
-            <td><a v-on:click="detail(prod.storeid)">{{prod.storename}}</a></td>
-            <td>{{prod.managername}}</td>
-        </tr>
+<template>
+  <div style="position:flex;">
+  <div class="searchbar">
+    <label>주소:</label>
+      <input type="text" v-model="address" placeholder="주소를 입력하세요" />
+      <button @click="showLocation">위치 보기</button>
+      <button @click="sendlocation">위도경도값 보내기</button>
+
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <br/>
+      <div>메시지사이드바 빠지면 width 600에서 300으로 바꿔야함</div>
     </div>
+
+
+
+
+
+  
+  <div>
+    <div id="map"></div>
+  </div>
+</div>
 </template>
+
+<style scoped>
+
+.searchbar{
+  width:300px;
+  height:1000px;
+  z-index:2;
+  background-color: darkgray;
+}
+
+#map {
+  position: fixed;
+    top: 76px;
+    left: 600px;
+    width: 100%;
+    height: 100%;
+}
+</style>
+
 <script>
+
+import axios from "axios";
+
 export default {
-    name: 'storeState',
-    data(){
-        return{
-            loginId: null,
-            list:[]
-        }
+  name: "AddressToLocation",
+  data() {
+    return {
+      address: "오리역",
+      map: null,
+      marker: null,
+      storename:''
+    };
+  },
+  mounted() {
+    if (window.kakao && window.kakao.maps) {
+      this.loadMap();
+    } else {
+      this.loadScript();
+    }
+  },
+  methods: {
+    loadScript() {
+      const script = document.createElement("script");
+      script.src =
+        "//dapi.kakao.com/v2/maps/sdk.js?appkey=90a9e14a8d8d8c4e2a9a92bd4ca90bbb&autoload=false";
+      script.onload = () => window.kakao.maps.load(this.loadMap.bind(this));
+
+      document.head.appendChild(script);
     },
-    created:function(){
-        this.loginId = sessionStorage.getItem('loginId')
-        const self = this;
-        self.$axios.get('http://localhost:8085/store')//비동기 요청
-        .then(function(res){
-            if(res.status==200){
-       
-                self.list = res.data.storelist
-       
-            }else{
-                alert('에러코드:' + res.status)
+    loadMap() {
+      const container = document.getElementById("map");
+      const options = {
+        center: new window.kakao.maps.LatLng(37.541, 126.986),
+        level: 3
+      };
+
+      this.map = new window.kakao.maps.Map(container, options);
+
+      this.showLocation();
+    },
+    showLocation() {
+      if (this.address === "") {
+        alert("주소를 입력하세요.");
+        return;
+      }
+
+      const encodedAddress = encodeURIComponent(this.address);
+      const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=AIzaSyAEMcBVXcTsB5UmbNou29kkZkSPpq4mDJA`;
+
+      axios
+        .get(apiUrl)
+        .then(response => {
+          const result = response.data.results[0];
+          if (result) {
+            const location = result.geometry.location;
+            const latitude = location.lat;
+            const longitude = location.lng;
+
+
+            //지도의 중심좌표를 설정하는 코드(LatLng)
+            const position = new window.kakao.maps.LatLng(latitude, longitude);
+
+
+          
+
+
+
+            if (this.marker) {
+              this.marker.setMap(null);
             }
+
+            this.map.setCenter(position);
+            this.map.setLevel(3);
+
+            // Custom marker image
+            const markerImage = new window.kakao.maps.MarkerImage(
+              "https://velog.velcdn.com/images/heesoo_tory/post/41e69776-b413-4f6b-9b4e-c8f2858ad78a/image.png"
+              , // 강아지 모양 이미지 URL로 변경
+              new window.kakao.maps.Size(50, 50)
+            );
+
+            this.marker = new window.kakao.maps.Marker({
+              position: position,
+              image: markerImage // Custom marker image 설정
+            });
+
+            this.marker.setMap(this.map);
+          } else {
+            alert("주소를 찾을 수 없습니다.");
+          }
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          alert("주소를 가져오는 도중 오류가 발생했습니다.");
         });
     },
-    methods:{
-        detail(storeid){
-            this.$router.push({name:'storeDetail', query:{storeid:storeid}})
-        }
-    }
-}
-</script>
-<style scoped>
+
+
+
+
+
+
+
+
+
     
-</style>
+
+
+
+    sendlocation(){
+      
+      // 버튼을 누르면 위도 경도 값이 이클립스에 x/y로 데이터가 전송되어야 하는데.
+      // axios를 통해서 /store add할때 필요한 controller로 데이터를 보내고 post메서드를 통해서
+      // 다른데이터 제끼고 그 내가 필요한 x와 y값만 넣어줄수 있을까? 아니면 그것만 받는거지. 
+ 
+
+
+
+      const self =this;
+
+
+      if (this.address === "") {
+        alert("주소를 입력하세요.");
+        return;
+      }
+
+      const encodedAddress = encodeURIComponent(this.address);
+      const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=AIzaSyAEMcBVXcTsB5UmbNou29kkZkSPpq4mDJA`;
+
+      axios
+        .get(apiUrl)
+        .then(response => {
+          const result = response.data.results[0];
+          if (result) {
+            const location = result.geometry.location;
+            const latitude = location.lat;
+            const longitude = location.lng;
+
+            const position = new window.kakao.maps.LatLng(latitude, longitude);
+
+// 이클립스로 데이터 보내는 곳
+      let formdata = new FormData();
+      formdata.append('storename',self.storename);
+      formdata.append('x', latitude);
+      formdata.append('y', longitude);
+
+      self.$axios.post('http://localhost:8085/store',formdata)
+      .then(function(res){
+        alert(res.data.x)
+      })
+
+
+            if (this.marker) {
+              this.marker.setMap(null);
+            }
+
+            this.map.setCenter(position);
+            this.map.setLevel(3);
+
+            // Custom marker image
+            const markerImage = new window.kakao.maps.MarkerImage(
+              "https://media.istockphoto.com/id/1268251949/ko/%EB%B2%A1%ED%84%B0/%ED%94%8C%EB%9E%AB-%EC%95%A0%EC%99%84-%EB%8F%99%EB%AC%BC-gps-%EB%A1%9C%EA%B3%A0-%EB%94%94%EC%9E%90%EC%9D%B8-%EA%B0%9C-%EB%A7%B5-%EB%A7%88%EC%BB%A4-%EB%B2%A1%ED%84%B0-%EB%8F%99%EB%AC%BC-%EC%82%B0%EC%B1%85%EC%9D%80-%EC%9C%84%EC%B9%98-%EC%9C%84%EC%B9%98%EC%97%90-%EC%A3%BC%EC%9D%98%ED%95%A9%EB%8B%88%EB%8B%A4-%EC%95%A0%EC%99%84-%EB%8F%99%EB%AC%BC-%EC%9B%B9-%EC%9D%91%EC%9A%A9-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8%EC%97%90-%EB%8C%80%ED%95%9C-%EB%84%A4%EB%B9%84%EA%B2%8C%EC%9D%B4%EC%85%98-%EA%B8%B0%ED%98%B8-%EA%B7%80%EC%97%AC%EC%9A%B4-%ED%96%89%EB%B3%B5-%EA%B0%95%EC%95%84%EC%A7%80.jpg?s=612x612&w=0&k=20&c=hBf2iFyW03qcuBKd_WoD8g96ZA6sk1dwHk3SMuZoIQg=", // 강아지 모양 이미지 URL로 변경
+              new window.kakao.maps.Size(50, 50)
+            );
+
+            this.marker = new window.kakao.maps.Marker({
+              position: position,
+              image: markerImage // Custom marker image 설정
+            });
+
+            this.marker.setMap(this.map);
+          } else {
+            alert("주소를 찾을 수 없습니다.");
+          }
+        })
+        .catch(error => {
+          console.error("Error:", error);
+          alert("주소를 가져오는 도중 오류가 발생했습니다.");
+        });
+
+    }
+  }
+};
+</script>
