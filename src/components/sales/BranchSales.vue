@@ -1,44 +1,45 @@
 <template>
   <h6>매출 조회</h6>
   <div>
-    <div id="salesSummary">
-      <table>
-        <tr>
-          <td>{{ yesterdaySales }}</td>
-          <td>{{ monthTotalSales }}</td>
-        </tr>
-        <tr>
-          <td>전일 총 매출</td>
-          <td>조회월 기준 누적 총 매출</td>
-        </tr>
-      </table>
-    </div>
-    <div id="dailySales">
-      캘린더 삽입
-    </div>
-    <div id="netsalesAnalysis">
-      순매출 분석
-      <select v-model="selectYear">
-        <option v-for="year in years" :key="year" :value="year">{{ year }}년</option>
-      </select>
-      <select v-model="selectMonth">
-        <option v-for="month in months" :key="month" :value="month">{{ month }}월</option>
-      </select>
-      <button @click="renderChart">조회</button>
-      <h6>총매출: {{ monthSales }}</h6>
-      <!-- <h6>인건비: {{ monthPayroll }}</h6>
-    <h6>발주금액: {{ monthOrder }}</h6>
-    <h6>순매출: {{ monthNetsales }}</h6> -->
-      <div id="donutchart" style="width: 600px; height: 400px"></div>
-    </div>
-    <div id="yearlyNetsales">
-      월별 순매출
-      <select v-model="selectYear2">
-        <option v-for="year in years" :key="year" :value="year">{{ year }}년</option>
-      </select>
-      <button @click="getYearlyNetsales">조회</button>
-      <div id="linechart" style="width: 800px; height: 400px"></div>
-    </div>
+  <div id="salesSummary">
+    <table>
+      <tr>
+        <td>{{ yesterdaySales }}</td>
+        <td>{{ monthTotalSales }}</td>
+      </tr>
+      <tr>
+        <td>전일 총 매출</td>
+        <td>조회월 기준 누적 총 매출</td>
+      </tr>
+    </table>
+  </div>
+  <div id="dailySales">
+    캘린더 삽입
+  </div>
+  </div>
+
+  <div>
+  <div id="netsalesAnalysis">
+    순매출 분석
+    <select v-model="selectYear">
+      <option v-for="year in years" :key="year" :value="year">{{ year }}년</option>
+    </select>
+    <select v-model="selectMonth">
+      <option v-for="month in months" :key="month" :value="month">{{ month }}월</option>
+    </select>
+    <button @click="renderChart">조회</button>
+    <h6>총매출: {{ monthSales }}</h6>
+    <div id="donutchart" style="width: 600px; height: 300px"></div>
+  </div>
+
+  <div id="yearlyNetsales">
+    월별 순매출
+    <select v-model="selectYear2">
+      <option v-for="year in years" :key="year" :value="year">{{ year }}년</option>
+    </select>
+    <button @click="getYearlyNetsales">조회</button>
+    <div id="linechart" style="height: 400px"></div> 
+  </div>
   </div>
 </template>
 
@@ -84,6 +85,7 @@ export default {
   created() {
     this.getSearchCriteria();
     this.monthlyNetsales = Array(12).fill(0);
+
     echarts.use([
       TooltipComponent,
       LegendComponent,
@@ -98,9 +100,15 @@ export default {
     ]);
   },
   mounted() {
+    const currentDate = new Date();
+    this.selectYear = currentDate.getFullYear();
+    this.selectMonth = currentDate.getMonth();
+    this.selectYear2 = currentDate.getFullYear();
+
     this.myChart = echarts.init(document.getElementById('donutchart'));
-    this.renderChart();
     this.myChart2 = echarts.init(document.getElementById('linechart'));
+
+    this.renderChart();
     this.getYearlyNetsales();
   },
   methods: {
@@ -294,113 +302,96 @@ export default {
                 const item = self.list4.find(obj => obj.MONTH === month);
                 if (item) {
                   const monthNetsales = item.MNETSALES;
-                  const formattedMonthNetsales = monthNetsales.toLocaleString();
-                  self['monthlyNetsales' + month] = formattedMonthNetsales;
+                  self['monthlyNetsales' + month] = monthNetsales;
 
+                  // 1월부터 12월까지의 순매출 출력 (현재 월까지만 가져옴)
+                  // console.log(self['monthlyNetsales1']); 
+                  // console.log(self['monthlyNetsales2']);
+                  // console.log(self['monthlyNetsales3']);
+                  // console.log(self['monthlyNetsales4']);
+                  // console.log(self['monthlyNetsales5']);
+                  // console.log(self['monthlyNetsales6']);
+                  // console.log(self['monthlyNetsales7']);
+                  // console.log(self['monthlyNetsales8']);
+                  // console.log(self['monthlyNetsales9']);
+                  // console.log(self['monthlyNetsales10']);
+                  // console.log(self['monthlyNetsales11']);
+                  // console.log(self['monthlyNetsales12']);
 
-            //       const option = {
-            //         tooltip: {
-            //         trigger: 'axis',
-            //         axisPointer: {
-            //         type: 'cross',
-            //         crossStyle: {
-            //           color: '#999'
-            //         }
-            //       }
-            //     },
-            //     toolbox: {
-            //       feature: {
-            //         dataView: { show: true, readOnly: false },
-            //         magicType: { show: true, type: ['line', 'bar'] },
-            //         restore: { show: true },
-            //         saveAsImage: { show: true }
-            //       }
-            //     },
-            //     legend: {
-            //       data: [ '월별 순매출' ]
-            //     },
-            //     xAxis: [
-            //       {
-            //         type: 'category',
-            //         data: [
-            //         '1월',
-            //         '2월',
-            //         '3월',
-            //         '4월',
-            //         '5월',
-            //         '6월',
-            //         '7월',
-            //         '8월',
-            //         '9월',
-            //         '10월',
-            //         '11월',
-            //         '12월'
-            //         ],
-            //         axisPointer: {
-            //           type: 'shadow'
-            //         }
-            //       }
-            //     ]
-            //     series: [
-            //       {
-            //         name: '금액',
-            //         type: 'pie',
-            //         radius: ['40%', '70%'],
-            //         center: ['50%', '70%'],
-
-            //         startAngle: 180,
-            //         label: {
-            //           show: true,
-            //           formatter(param) {
-            //             return param.name + ' (' + param.percent * 2 + '%)';
-            //           }
-            //         },
-            //         data: [
-            //           { value: totalPayroll, name: '인건비' },
-            //           { value: totalOrder, name: '발주금액' },
-            //           { value: totalNetsales, name: '순매출' },
-            //           {
-
-            //             value: totalPayroll + totalOrder + totalNetsales,
-            //             itemStyle: {
-
-            //               color: 'none',
-            //               decal: {
-            //                 symbol: 'none'
-            //               }
-            //             },
-            //             label: {
-            //               show: false
-            //             }
-            //           }
-            //         ]
-            //       }
-            //     ]
-            //   };
-            //   self.myChart.setOption(option);
+                  const option = {
+                    tooltip: {
+                      // trigger: 'axis',
+                      axisPointer: {
+                        type: '',
+                        crossStyle: {
+                          color: '#999'
+                        }
+                      }
+                    },
+                    toolbox: {
+                      feature: {
+                        dataView: { show: true, readOnly: false },
+                        magicType: { show: true, type: ['line', 'bar'] },
+                        // restore: { show: true },
+                        saveAsImage: { show: true }
+                      }
+                    },
+                    legend: {
+                      data: ['월별 순매출']
+                    },
+                    xAxis: [
+                      {
+                        type: 'category',
+                        data: [
+                          '1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'
+                        ]
+                      }
+                    ],
+                    yAxis: [
+                      {
+                        type: 'value',
+                        name: '',
+                        min: 0,
+                        max: 50000,
+                        interval: 10000,
+                        axisLabel: {
+                          formatter: '{value} 원'
+                        }
+                      }
+                    ],
+                    series: [
+                      {
+                        name: '월별 순매출',
+                        type: 'bar',
+                        tooltip: {
+                          valueFormatter: function(value) {
+                            return value.toLocaleString() + ' 원';
+                          }
+                        },
+                        data: [
+                          parseInt(self['monthlyNetsales1']),
+                          parseInt(self['monthlyNetsales2']),
+                          parseInt(self['monthlyNetsales3']),
+                          parseInt(self['monthlyNetsales4']),
+                          parseInt(self['monthlyNetsales5']),
+                          parseInt(self['monthlyNetsales6']),
+                          parseInt(self['monthlyNetsales7']),
+                          parseInt(self['monthlyNetsales8']),
+                          parseInt(self['monthlyNetsales9']),
+                          parseInt(self['monthlyNetsales10']),
+                          parseInt(self['monthlyNetsales11']),
+                          parseInt(self['monthlyNetsales12'])
+                        ]
+                      },
+                    ]
+                  };
+                  self.myChart2.setOption(option);
 
                 } else {
                   self['monthlyNetsales' + month] = 0;
                 }
               }
             }
-
-            // 1월부터 12월까지의 순매출 출력 (현재 월까지만 가져옴)
-            // console.log(self['monthlyNetsales1']); 
-            // console.log(self['monthlyNetsales2']);
-            // console.log(self['monthlyNetsales3']);
-            // console.log(self['monthlyNetsales4']);
-            // console.log(self['monthlyNetsales5']);
-            // console.log(self['monthlyNetsales6']);
-            // console.log(self['monthlyNetsales7']);
-            // console.log(self['monthlyNetsales8']);
-            // console.log(self['monthlyNetsales9']);
-            // console.log(self['monthlyNetsales10']);
-            // console.log(self['monthlyNetsales11']);
-            // console.log(self['monthlyNetsales12']);
-
-
-
           })
           .catch(error => {
             console.error(error);

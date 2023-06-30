@@ -3,19 +3,21 @@
         <button @click="testGrade">등급 추가 버튼 (한 번만 눌러야함..))</button>
 
         <div id="divEmp">
-            <h4>직원 등록</h4>
-            <div>
-                <div>직원 이름 </div>
-                <div><input type="text" v-model="empname"></div>
+            <h3>직원 등록</h3>
+
+            <div class="mb-3">
+                <label for="empName" class="form-label">직원 이름</label>
+                <input type="text" class="form-control"  v-model="empname" placeholder="홍길동">
             </div>
-            <div>
-                <div>입사 날짜</div>
-                <div><input type="date" v-model="joindate"></div>
+
+            <div class="mb-3">
+                <label for="empDate" class="form-label">입사 날짜</label>
+                <input type="date" class="form-control"  v-model="joindate">
             </div>
-            <div>
-                <div>등급</div>
-                <div>
-                    <select v-model="selectedGrade" @change="gradeChange()">
+
+            <div class="mb-3">
+                <label for="empGrade" class="form-label">등급</label>
+                <select v-model="selectedGrade" @change="gradeChange()" class="form-select">
                         <option disabled :key=0 :value="none">
                             --등급 선택--
                         </option>
@@ -23,16 +25,17 @@
                             {{ item.gnum }} : {{ item.salary }}
                         </option>
                     </select>
-
-
-                </div>
-
             </div>
-            <div>
-                <div>컬러</div>
-                <div><input type="color" v-model="color"></div>
+
+            <div class="mb-3">
+                <label for="empDate" class="form-label">컬러</label>
+                <input type="color" class="form-control form-control-color"  v-model="color">
             </div>
+ 
+          
             <div><button @click="empAdd()">등록</button></div>
+
+
         </div>
 
         <div id="divSchedule">
@@ -50,6 +53,7 @@
                 <ul>
                     <li>
                         <span>
+                            <!-- <input type="checkbox" v-model='week' :true-value="trueValueMethod('Sun')" :false-value="falseValueMethod('Sun')">SUN -->
                             <input type="checkbox" v-model='week' value="Sun">SUN
                         </span>
                         <span class="workTime" id="workTimeSun">
@@ -59,6 +63,7 @@
                     </li>
                     <li>
                         <span>
+                            <!-- <input type="checkbox" v-model='week' :true-value="trueValueMethod('Mon')" :false-value="falseValueMethod('Mon')">MON -->
                             <input type="checkbox" v-model='week' value="Mon">MON
                         </span>
                         <span class="workTime" id="workTimeMon">
@@ -114,9 +119,9 @@
                 </ul>
             </div>
             <div>
-                <button @click="addBasicSchedule">스케줄 등록</button> 
+                <button @click="addBasicSchedule">스케줄 등록</button>
             </div>
-           
+
         </div>
     </div>
 </template>
@@ -133,30 +138,30 @@ export default {
             color: '',              // emp dto 
             gradeList: [],          // 등급 리스트 보여주기
             selectedGrade: '',      // 등급 선택 
-            week : [],              // 요일 선택 
-            startdate : null,       // 언제부터 언제까지 반복할건지 
-            enddate : null,
-            startTimeSun : null,    // 요일별로 선택한 시간 받아오기
-            endTimeSun : null,
-            startTimeMon : null,
-            endTimeMon : null,
-            startTimeTue : null,
-            endTimeTue : null,
-            startTimeWed : null,
-            endTimeWed : null,
-            startTimeThu : null,
-            endTimeThu : null,
-            startTimeFri : null,
-            endTimeFri : null,
-            startTimeSat : null,
-            endTimeSat : null,      
-            empnum : ''               // schedule 넣을 때 필요함.
+            week: [],               // 요일 선택 
+            startdate: null,        // 언제부터 언제까지 반복할건지 
+            enddate: null,
+            startTimeSun: null,     // 요일별로 선택한 시간 받아오기
+            endTimeSun: null,
+            startTimeMon: null,
+            endTimeMon: null,
+            startTimeTue: null,
+            endTimeTue: null,
+            startTimeWed: null,
+            endTimeWed: null,
+            startTimeThu: null,
+            endTimeThu: null,
+            startTimeFri: null,
+            endTimeFri: null,
+            startTimeSat: null,
+            endTimeSat: null,
+            empnum: ''               // schedule 넣을 때 필요함.
         }
     },
     created: function () {
         const self = this;
-        //let storeid = self.id;
 
+        // grade 셀렉버튼 창 만들어주기 위해서 
         self.$axios.get(`http://localhost:8085/grade/all`)
             .then(function (res) {
                 if (res.status == 200 && res.data.flag == true) {
@@ -164,21 +169,25 @@ export default {
                     console.log(self.gradeList)
                 }
             })
-
     },
     mounted: function () {
+        // 직원 등록 전에 스케줄 등록 none
         document.getElementById("divSchedule").style.display = "none";
+
+        // 요일 선택을 해야 시간 선택이 보일 수 있게 
         const workTime = document.getElementsByClassName("workTime");
-        for(let i=0; i<workTime.length; i++){
+        for (let i = 0; i < workTime.length; i++) {
             workTime[i].style.display = "none";
         }
     },
     methods: {
+        // 등급 선택 
         gradeChange() {
             const self = this;
             self.grade = self.selectedGrade
-            console.log("gradeChange() self.grade :" + self.grade);
+            //console.log("gradeChange() self.grade :" + self.grade);
         },
+        // 이 함수는 지울 예정 (데이터 넣기 편하라고 넣어둔 함수)
         testGrade() {
             let mul = [1, 1.2, 1.4, 1.6];
             for (let i = 0; i < 4; i++) {
@@ -196,6 +205,7 @@ export default {
                     })
             }
         },
+        // 직원 등록 
         empAdd() {
             let empForm = new FormData();
             empForm.append("storeid", this.id);
@@ -204,129 +214,132 @@ export default {
             empForm.append("grade", this.grade);
             empForm.append("color", this.color);
 
-            console.log(this.id);
-            console.log(this.empname);
-            console.log(this.joindate);
-            console.log(this.grade);
-            console.log(this.color);
-
             const self = this;
             self.$axios.post('http://localhost:8085/emp', empForm)
                 .then(function (res) {
-                    console.log(res.status)
-                    console.log(res.data.dto)
-                    console.log(res.data.dto.empnum)
-                    self.empnum =  res.data.dto.empnum
-                    document.getElementById('divEmp').style.display = 'none';
-                    document.getElementById('divSchedule').style.display = 'block';
+                    self.empnum = res.data.dto.empnum      // 직원 num 넣어주기 → 스케줄 등록할 때 num 필요함 
+                    document.getElementById('divEmp').style.display = 'none';       // 등록하면 직원 등록창 사라지고
+                    document.getElementById('divSchedule').style.display = 'block'; // 등록하면 스케줄 등록창 추가하기 
                 })
-
-    
         },
-        scheduleCheckbox(){
+        // 체크하면 체크한 부분 보여주기 
+        scheduleCheckbox() {
             console.log(this.week);
             const checkedWeek = this.week;
-            if(checkedWeek.length > 0){
-               for(let i=0; i<checkedWeek.length; i++){          
+            if (checkedWeek.length > 0) {
+                for (let i = 0; i < checkedWeek.length; i++) {
                     let dayId = 'workTime' + checkedWeek[i]
                     console.log(dayId)
                     document.getElementById(dayId).style.display = "block";
-               }
+                }
             }
 
         },
-        timeCheck(startTime, endTime){        //  startTime, endTime을 체크해줄거에요
+        timeCheck(startTime, endTime) {        //  startTime, endTime을 체크해줄거에요
             let flag = true
-            if(startTime>endTime){
+            if (startTime > endTime) {
                 flag = false
             }
-            
+
             return flag;
         },
-        addBasicSchedule(){
-            console.log("클릭!")
-            const checkedWeek = this.week;
-            let startdate = new Date(this.startdate)
-            const enddate = new Date(this.enddate)
-            const empnum = this.empnum
-            console.log("empnum :"+empnum)
-            console.log(startdate)
-            console.log(enddate)
-            if(startdate > enddate){
-                console.log("끝날짜가 시작날짜보다 나중이어야 해요!!!")
+        addBasicSchedule() {
+            const self = this
+            const checkedWeek = self.week;
+            //console.log("checkedWeek :" + checkedWeek);
+            let startdate = new Date(self.startdate)
+            const enddate = new Date(self.enddate)
+            //console.log("startdate :" + startdate)
+            //console.log("enddate :" + enddate)
+
+            if (startdate > enddate) {
+                alert("끝날짜가 시작날짜보다 나중이어야 해요!!!")
             }
-            /*
-                만약 checkedWeek[0] 가 널이 아니면
-                그때 값이 있는거니까 넣어주면 될것같아요~?
-            */
-            while(startdate <= enddate){
-                if(checkedWeek[0] && startdate.getDay()==7){
-                    console.log("일요일");
-                    console.log(startdate)
-                } else if (checkedWeek[1] && startdate.getDay()==1){
-                    console.log("월요일");
-                } else if (checkedWeek[2] && startdate.getDay()==2){
-                    console.log("화요일");
-                }  else if (checkedWeek[3] && startdate.getDay()==3){
-                    console.log("수요일");
-                }else if (checkedWeek[4] && startdate.getDay()==4){
-                    console.log("목요일");
-                }else if (checkedWeek[5] && startdate.getDay()==5){
-                    console.log("금요일");
-                }else if (checkedWeek[16] && startdate.getDay()==6){
-                    console.log("토요일");
+
+            let start = ''
+            let end = ''
+
+            // 첫날짜부터 마지막 날짜까지 while문으로 돌리기 
+            while (startdate <= enddate) {
+                start = ''
+                end = ''
+
+                if (checkedWeek[0] && startdate.getDay() == 0) {
+                    start = self.startTimeSun   // 설정한 시작 시간 넣어주기 
+                    end = self.endTimeSun       // 설정한 끝 시간 넣어주기 
+                    this.basicScheduleAdd(start, end, startdate)    // 스케줄 추가하기 (함수)
+                } else if (checkedWeek[1] && startdate.getDay() == 1) {
+                    start = self.startTimeMon
+                    end = self.endTimeMon
+                    this.basicScheduleAdd(start, end, startdate)
+                } else if (checkedWeek[2] && startdate.getDay() == 2) {
+                    start = self.startTimeTue
+                    end = self.endTimeTue
+                    this.basicScheduleAdd(start, end, startdate)
+                } else if (checkedWeek[3] && startdate.getDay() == 3) {
+                    start = self.startTimeWed
+                    end = self.endTimeWed
+                    this.basicScheduleAdd(start, end, startdate)
+                } else if (checkedWeek[4] && startdate.getDay() == 4) {
+                    start = self.startTimeThu
+                    end = self.endTimeThu
+                    this.basicScheduleAdd(start, end, startdate)
+                } else if (checkedWeek[5] && startdate.getDay() == 5) {
+                    start = self.startTimeFri
+                    end = self.endTimeFri
+                    this.basicScheduleAdd(start, end, startdate)
+                } else if (checkedWeek[6] && startdate.getDay() == 6) {
+                    start = self.startTimeSat
+                    end = self.endTimeSat
+                    this.basicScheduleAdd(start, end, startdate)
                 }
                 startdate.setDate(startdate.getDate() + 1);
             }
 
-            // 일요일부터 토요일까지 돌려! 
-            if(checkedWeek[0]){
-                let startTime = this.startTimeSun
-                let endTime = this.endTimeSun
-                console.log(checkedWeek[0])
-                console.log(this.startTimeSun)
-                console.log(this.endTimeSun)
-                let flag = this.timeCheck(startTime, endTime)
-                console.log("일요일의 플래그는요 : "+flag)
+
+        },
+        basicScheduleAdd(start, end, day) {     // 스케줄 추가 함수
+            const self = this;
+            let formData = new FormData()
+
+            let dateObj = new Date(day)
+            let year = dateObj.getFullYear();
+            let month = String(dateObj.getMonth() + 1).padStart(2, "0");
+            let day2 = String(dateObj.getDate()).padStart(2, "0");
+            let formattedDate = `${year}-${month}-${day2}`;             // 얜 string
+
+            let startTime = formattedDate + 'T' + start + ':00'
+            let endTime = formattedDate + 'T' + end + ':00'
+
+            // console.log("startTime :" +startTime);
+            // console.log("endTime :" +endTime);
+            // console.log("formattedDate :" +formattedDate);
+            // console.log("typeof formattedDate :"+typeof formattedDate)
+
+            formData.append("storeid", self.id)
+            formData.append("emp", self.empnum)
+            formData.append("bsdate", formattedDate)
+            formData.append("starttime", startTime)
+            formData.append("endtime", endTime)
+
+            if (startTime != null && endTime != null) {
+                self.$axios.post('http://localhost:8085/basicschedule', formData)
+                    .then(function (res) {
+                        if (res.status == 200) {
+                            console.log("res.data.flag :" + res.data.flag)
+                        }
+                    })
+            } else {
+                console.log("null 오류 : startTime" + startTime + " / endTime" + endTime);
             }
-            if(checkedWeek[1]){
-                console.log(checkedWeek[1])
-                console.log(this.startTimeMon)
-                console.log(this.endTimeMon)
-            }
-            if(checkedWeek[2]){
-                console.log(checkedWeek[2])
-                console.log(this.startTimeTue)
-                console.log(this.endTimeTue)
-            }
-            if(checkedWeek[3]){
-                console.log(checkedWeek[3])
-                console.log(this.startTimeWed)
-                console.log(this.endTimeWed)
-            }
-            if(checkedWeek[4]){
-                console.log(checkedWeek[4])
-                console.log(this.startTimeThu)
-                console.log(this.endTimeThu)
-            }
-            if(checkedWeek[5]){
-                console.log(checkedWeek[5])
-                console.log(this.startTimeFri)
-                console.log(this.endTimeFri)
-            }
-            if(checkedWeek[6]){
-                console.log(checkedWeek[6])
-                console.log(this.startTimeSat)
-                console.log(this.endTimeSat)
-            }
+
         }
-        
+
     }
 }
 </script>
 
 <style scoped>
-
 #eaBody {
     max-width: 100%;
     margin: 0 auto;
@@ -334,4 +347,9 @@ export default {
     padding-bottom: 30px;
 }
 
+#h3 {
+    text-align: center;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
 </style>

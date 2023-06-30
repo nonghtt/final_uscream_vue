@@ -1,12 +1,6 @@
 <template lang="">
     <div id="join" class="join">
 
-          <!-- <div>
-            <img src="../../assets/bckimg.jpg" 
-            style="width:100%; height:100%;"
-            class="background_img">
-          </div> -->
-
   <div class="join_window">
               <div style="height:30px;">
               </div>
@@ -27,24 +21,38 @@
             <div class="example">(ex) 오리역점</div>
         
         
-            
         
         <div class="div_storeid">
           <input class="input_storeid" type="text" v-model="storeid" required>
           <label class="label_storeid">아이디</label>
           <span class="span_storeid"></span>
           </div>
-          <div class="example">(ex) 지역코드 + 숫자 KG001</div>
+
+          <div class="descript">
+            <i class="fa-solid fa-circle-question"
+                @mouseenter="iddescription=true"
+                @mouseleave="iddescription=false"></i></div>
             <button v-on:click="idcheck">중복체크</button><br/>
             {{idmsg}}
 
-            
+<div v-if="iddescription" class="iddescript_window">(ex) 지역코드 + 숫자 KG001</div>
 
               <div class="div_pwd">
-                <input class="input_pwd" type="password" v-model="pwd" required>
-                <label class="label_pwd">비밀번호</label>
-                <span class="span_pwd"></span>
+                <input class="input_pwd" type="password" v-model="password" required>
+                <label class="label_pwd">비밀번호</label>  
+                         <p v-if="passwordError">{{ passwordError }}</p>
               </div>
+           <div class="image-container">   
+              <i class="fa-solid fa-circle-question" 
+                      @mouseenter="showDescription = true"
+                      @mouseleave="showDescription = false"></i><button @click="validatePassword">확인</button>
+                    <!-- 비밀번호 정규식 설명창 -->
+                      <div v-if="showDescription" class="validation">
+                        최소 8 자, 하나 이상의 대문자, 하나의 소문자 및 하나의 숫자 정규식</div>
+          </div>
+                        
+              <span class="span_pwd"></span>
+              
 
             <div class="div_pwd_confirm">
                   <input class="input_pwd_confirm" type="password" @click="clean_input_pwd" v-model="pwd_confirm" required><br/>
@@ -61,6 +69,8 @@
             </div>
 
 
+            
+
             <input class="select" name="type" type="radio" id="radio" v-model="accounttype" value="1" checked><label for="radio"><div id="text_float">본사</div></label>
                   <input class="select" name="type" type="radio" id="radio2" v-model="accounttype" value="2" ><label for="radio2"><div class="text_branch">지점</div></label><br/> 
             
@@ -71,25 +81,6 @@
                   <span class="span_accounttype"></span>
             </div> -->
 
-
-
-
-
-
-            
-            <input type="file" ref="fileInput" @change="handleFileUpload" accept="image/*"/>
-
-
-         
-
-
-
-
-
-
-
-    <button class="btn_join" v-on:click="join">가입하기</button>
-
   </div>
           
 
@@ -97,24 +88,51 @@
                   
           <div class="box2" id="div_outline">
 
-            <h2>주소로 위치 보기</h2>
-      <div>
-        <label>주소:</label>
-        <input type="text" v-model="address" placeholder="주소를 입력하세요" />
-        <button class="btn_location" @click="showLocation" >위치 보기</button>
+    
+            <div class="profile_manager"
+            style="margin-top:60px;">
+    지점장 사진
+    <div>
+  
+    <img :src="previewImageUrl" class="profile" 
+    v-if="previewImageUrl" style="width:200px; height:200px;" /><br/>
+    <label class="custom-file-upload">
+      <input type="file" @change="previewImage" alt="../assets/1.png"/>
+      <span>파일 선택</span>
+    </label>
+  </div>
+  </div>
+
+            
+<br/><br/>
+  <div>
+    진짜 지도 띄울거임↓↓↓↓↓↓↓↓↓↓
+      <!-- <div class="div_map">
+        <div>주소:&nbsp;
+        <input type="text" v-model="address" placeholder="주소를 입력하세요" />&nbsp;
+        <button class="btn_location" @click="showLocation" >검색</button></div>
       </div>
-      <div id="map"></div>
-          </div>
+      <div id="map"></div> -->
+       
+    
+    </div>
+    
+    
+    </div>
+        
+
+<div> <button class="btn_join" v-on:click="join">가입하기</button></div></div>
 
 
-        </div>
+
+
 </div>
 
 </template>
 
 
 <script>
-import axios from "axios";
+// import axios from "axios";
 
 export default {
     name: "StoreJoin",
@@ -128,18 +146,31 @@ export default {
             location: 0,
             idmsg:'',
             pwdmsg:'',
+            previewImageUrl: null,
             address: "오리역",
             map: null,
-            marker: null
-        }
-    },
-    mounted() {
-      if (window.kakao && window.kakao.maps) {
-        this.loadMap();
-      } else {
-        this.loadScript();
-      }
-    },
+            marker: null,
+            latitude: 0,
+            longtide: 0,
+            password: '',
+           passwordError: '',
+           iddescription:'',
+           showDescription: false
+          }
+        },
+        created:function(){
+          this.initialImage();
+        },
+        
+ 
+    // mounted() {
+    //   if (window.kakao && window.kakao.maps) {
+    //     this.loadMap();
+    //   } else {
+    //     this.loadScript();
+    //   }
+    // },
+
     methods :{
         join(){
         const self = this;
@@ -149,6 +180,8 @@ export default {
         formdata.append('pwd',self.pwd);
         formdata.append('managername',self.managername);
         formdata.append('accounttype',self.accounttype);
+        // formdata.append('x',self.latitutde);
+        // formdata.append('y',self.longtitude);
 
         //폼양식에서 사용자가 이미지 추가한 부분을 id(simg)로 당겨오는 곳
         // const file = document.getElementById('f1')
@@ -184,7 +217,6 @@ export default {
     },
         idcheck(){
             const self = this;
-            alert('눌렀노?')
       self.$axios.get('http://localhost:8085/store/'+self.storeid).then(function(res){
         if(res.status==200){
           alert(res.data.dto.storeid)
@@ -214,7 +246,17 @@ export default {
      },
       clean_input_id(){
           this.idmsg = ''
-        }
+        },   previewImage(event) {
+      const file = event.target.files[0];
+      const reader = new FileReader();
+
+      reader.onload = (e) => {
+        this.previewImageUrl = e.target.result;
+      };
+
+      reader.readAsDataURL(file);
+    }
+       
         
         // ,
         // final_check(){
@@ -231,76 +273,94 @@ export default {
         //   }
         // }
 
-
     ,
-    loadScript() {
-        const script = document.createElement("script");
-        script.src =
-          "//dapi.kakao.com/v2/maps/sdk.js?appkey=90a9e14a8d8d8c4e2a9a92bd4ca90bbb&autoload=false";
-        script.onload = () => window.kakao.maps.load(this.loadMap.bind(this));
-  
-        document.head.appendChild(script);
-      },
-      loadMap() {
-        const container = document.getElementById("map");
-        const options = {
-          center: new window.kakao.maps.LatLng(37.541, 126.986),
-          level: 3
-        };
-  
-        this.map = new window.kakao.maps.Map(container, options);
-  
-        this.showLocation();
-      },
-      showLocation() {
-        if (this.address === "") {
-          alert("주소를 입력하세요.");
-          return;
-        }
-  
-        const encodedAddress = encodeURIComponent(this.address);
-        const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=AIzaSyAEMcBVXcTsB5UmbNou29kkZkSPpq4mDJA`;
-  
-        axios
-          .get(apiUrl)
-          .then(response => {
-            const result = response.data.results[0];
-            if (result) {
-              const location = result.geometry.location;
-              const latitude = location.lat;
-              const longitude = location.lng;
-  
-              const position = new window.kakao.maps.LatLng(latitude, longitude);
-  
-              if (this.marker) {
-                this.marker.setMap(null);
-              }
-  
-              this.map.setCenter(position);
-              this.map.setLevel(3);
-  
-              // Custom marker image
-              const markerImage = new window.kakao.maps.MarkerImage(
-              "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-lJDJem-WwpIuCvdiHHHtx8bC1ub8lmtrsmx5hCMd4v3tM11x45XkwU79KF8qTxP3BqQ&usqp=CAU",// 마커 이미지 URL로 변경
-                new window.kakao.maps.Size(50, 50)
-              );
-  
-              this.marker = new window.kakao.maps.Marker({
-                position: position,
-                image: markerImage // Custom marker image 설정
-              });
-  
-              this.marker.setMap(this.map);
-            } else {
-              alert("주소를 찾을 수 없습니다.");
-            }
-          })
-          .catch(error => {
-            console.error("Error:", error);
-            alert("주소를 가져오는 도중 오류가 발생했습니다.");
-          });
+    initialImage(){ 
+      // 이미지를 미리 채워넣을 URL
+      const initialImageUrl = "https://image.idus.com/image/files/3c589c029d9447d797d85b583c5fe822_720.jpg";
+      this.previewImageUrl = initialImageUrl;
+    },
+    validatePassword() {
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+      if (passwordRegex.test(this.password)) {
+        this.passwordError = '사용가능한 비밀번호입니다.'; // 비밀번호가 유효하면 에러 메시지를 지웁니다.
+        // 여기에 비밀번호가 유효한 경우 수행할 작업을 추가할 수 있습니다.
+
+      } else {
+        this.passwordError = '비밀번호 형식이 유효하지 않습니다.';
       }
     },
+    }
+    // loadScript() {
+    //     const script = document.createElement("script");
+    //     script.src =
+    //       "//dapi.kakao.com/v2/maps/sdk.js?appkey=90a9e14a8d8d8c4e2a9a92bd4ca90bbb&autoload=false";
+    //     script.onload = () => window.kakao.maps.load(this.loadMap.bind(this));
+  
+    //     document.head.appendChild(script);
+    //   },
+    //   loadMap() {
+    //     const container = document.getElementById("map");
+    //     const options = {
+    //       center: new window.kakao.maps.LatLng(37.541, 126.986),
+    //       level: 3
+    //     };
+  
+    //     this.map = new window.kakao.maps.Map(container, options);
+  
+    //     this.showLocation();
+    //   },
+    //   showLocation() {
+    //     if (this.address === "") {
+    //       alert("주소를 입력하세요.");
+    //       return;
+    //     }
+  
+    //     const encodedAddress = encodeURIComponent(this.address);
+    //     const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=AIzaSyAEMcBVXcTsB5UmbNou29kkZkSPpq4mDJA`;
+  
+    //     axios
+    //       .get(apiUrl)
+    //       .then(response => {
+    //         const result = response.data.results[0];
+    //         if (result) {
+    //           const location = result.geometry.location;
+    //           const latitude = location.lat;
+    //           const longitude = location.lng;
+  
+    //           const position = new window.kakao.maps.LatLng(latitude, longitude);
+  
+    //           if (this.marker) {
+    //             this.marker.setMap(null);
+    //           }
+  
+    //           this.map.setCenter(position);
+    //           this.map.setLevel(3);
+  
+    //           // Custom marker image
+    //           const markerImage = new window.kakao.maps.MarkerImage(
+    //             // "../../../assets/1.png",
+    //           //이미지 경로를 url 설정하는 것 말고 이미지.png 자체로 등록할 수 없나..? 후...
+    //           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-lJDJem-WwpIuCvdiHHHtx8bC1ub8lmtrsmx5hCMd4v3tM11x45XkwU79KF8qTxP3BqQ&usqp=CAU",// 마커 이미지 URL로 변경
+    //             new window.kakao.maps.Size(50, 50)
+    //           );
+  
+    //           this.marker = new window.kakao.maps.Marker({
+    //             position: position,
+    //             image: markerImage // Custom marker image 설정
+    //           });
+  
+    //           this.marker.setMap(this.map);
+    //         } else {
+    //           alert("주소를 찾을 수 없습니다.");
+    //         }
+    //       })
+    //       .catch(error => {
+    //         console.error("Error:", error);
+    //         alert("주소를 가져오는 도중 오류가 발생했습니다.");
+    //       });
+    //   }
+    // }
+    ,
     watch: {
       'password':function(){
         this.checkpassword
@@ -312,12 +372,11 @@ export default {
 
 
 <style scoped>
-#map {
-    width: 100%;
-    height: 400px;
-    border-radius: 30%;
-    }
 
+
+.profile{
+  border-radius:15%;
+}
 .text_join{
 position: absolute; left: 50%; top: 20%; 
 transform: translate(-50%, -50%); text-align: center;
@@ -328,8 +387,6 @@ font-weight:bold;
 background-color: rgb(128, 129, 128);
 border-radius: 10%;
 color:white;
-/* div겹치기위한 속성, 숫자가 클수록 위로 옴 */
-
 }
 
 /* 버튼 색 바꾸기 */
@@ -340,12 +397,26 @@ color:white;
 border-radius: 10%;
 font-size:20px;
 font-weight:bold;
-
-
 }
 
 
-
+/* 파일추가 버튼 꾸미기 1 */
+.custom-file-upload {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  color: #333;
+  border-radius: 4px;
+  cursor: pointer;
+}
+/* 파일추가 버튼 꾸미기 2 */
+.custom-file-upload input[type="file"] {
+  display: none;
+}
+/* 파일추가 버튼 꾸미기 3 */
+.custom-file-upload span {
+  margin-left: 5px;
+}
 
 
 /* 회원가입 윈도우 위치 조정 */
@@ -359,14 +430,11 @@ overflow:auto;
 background-color: white;
 }
 
-/* * {
+*{
     padding: 0;
     margin: 0;
     box-sizing: border-box;
-    font-size: 0;
-    letter-spacing: 0;
-    word-spacing: 0;
-} */
+}
 
 #div_outline {
     /* display: inline-block; */
@@ -387,7 +455,7 @@ background-color: white;
     /* background-color: #64acff; */
     width:50%;
     height:100%;
-
+    vertical-align: middle;
 }
 
 
@@ -415,12 +483,30 @@ background-color: white;
 
 
 .title_join{
-  background-color: #eb34a4;
+  background-color: #8eb443;
   color:white;
 }
 
+/* 아이디 설명 및 예시 창 */
+.descript{
+position: relative;
+  display: inline-block;
+}
 
+.iddescript_window{
+  z-index:3;
+  background-color: antiquewhite;
+}
 
+/* 비밀번호 유효성검사 확인 창 */
+.validation{
+  z-index:3;
+  background-color: antiquewhite;
+}
+image-container{
+  position: relative;
+  display: inline-block;
+}
 
   /* input(storeid) 창 꾸미기 */
   
@@ -441,7 +527,7 @@ background-color: white;
     padding-left: 10px;
     position: relative;
     background: none;
-  
+    z-index:5;
   }
   
   
@@ -475,7 +561,7 @@ background-color: white;
     bottom: 40px;
     /* 커서올렸을때 글자가 변하는 색 >>>>> 나중에 상의해서 변경하는 */
     /* color: #666; */
-    color:#666;
+    color:#eb34a4;
     font-weight: bold;
   }
   
@@ -504,6 +590,7 @@ background-color: white;
     padding-left: 10px;
     position: relative;
     background: none;
+    z-index:5;
   }
   
   .input_pwd::placeholder { color: #aaaaaa; }
@@ -563,6 +650,7 @@ background-color: white;
     padding-left: 10px;
     position: relative;
     background: none;
+    z-index:5;
   }
   
   /* .input_storename::placeholder { color: #aaaaaa; } */
@@ -595,7 +683,7 @@ background-color: white;
     bottom: 40px;
     /* 커서올렸을때 글자가 변하는 색 >>>>> 나중에 상의해서 변경하는 */
     /* color: #666; */
-    color:#666;
+    color:#eb34a4;
     font-weight: bold;
   }
   
@@ -623,7 +711,7 @@ background-color: white;
     padding-left: 10px;
     position: relative;
     background: none;
-  
+    z-index:5;
   }
   
   /* .input_pwd_confirm::placeholder { color: #aaaaaa; } */
@@ -656,7 +744,7 @@ background-color: white;
     bottom: 40px;
     /* 커서올렸을때 글자가 변하는 색 >>>>> 나중에 상의해서 변경하는 */
     /* color: #666; */
-    color:#666;
+    color:#eb34a4;
     font-weight: bold;
   }
   
@@ -685,7 +773,7 @@ background-color: white;
     padding-left: 10px;
     position: relative;
     background: none;
-
+    z-index:5;
   }
   
  
@@ -718,7 +806,7 @@ background-color: white;
     bottom: 40px;
     /* 커서올렸을때 글자가 변하는 색 >>>>> 나중에 상의해서 변경하는 */
     /* color: #666; */
-    color:#666;
+    color:#eb34a4;
     font-weight: bold;
   }
   
@@ -726,4 +814,19 @@ background-color: white;
     width: 100%;
    
   }
+
+
+
+  #map {
+    width: 100%;
+    height: 400px;
+    border-radius: 30%;
+    margin-top: 25px;
+  }
+  .div_map{
+    margin-top: 25px;
+    padding-right: 10px;
+  }
+
+  
 </style>

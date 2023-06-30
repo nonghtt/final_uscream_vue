@@ -1,184 +1,200 @@
 <template>
-    <nav v-if="loginId == null" class="navbar navbar-expand-lg bg-light">
-        <div class="container-fluid">
-            <div></div>
-            <div class="justify-content-center">
-                <a class="navbar-brand " href="#">
-                    <router-link class="logorouter" to="/">
-                        <img class="logo" src="../../assets/uscreamlogo.png">USCREAM
-                    </router-link>
-                </a>
-            </div>
-            <div></div>
-        </div>
-    </nav>
-    <nav v-if="loginId != null" class="navbar navbar-expand-lg bg-light">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="#">
-                <router-link to="/">
-                    <img class="logo" src="../../assets/uscreamlogo.png">
-                </router-link>
-            </a>
-            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarSupportedContent"
-                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
-                <span class="navbar-toggler-icon"></span>
-            </button>
-            <div class="collapse navbar-collapse" id="navbarSupportedContent">
-                <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-                    <li v-if="accounttype == 1" class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            계정관리
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><router-link class="menu" to="/storeJoin">지점등록</router-link></li>
-                            <li><router-link class="menu" to="/storeState">지점현황</router-link></li>
-                            <li><router-link class="menu" to="/storeMyinfo">내정보</router-link></li>
-                        </ul>
-                    </li>
-                    <li v-if="accounttype == 2" class="nav-item">
-                        <router-link class="nav-link active" to="/storeMyinfo">내정보</router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link class="nav-link active" to="/NoticeList">
-                            공지사항
-                        </router-link>
-                    </li>
-                    <li class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            상품관리
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><router-link class="dropdown-item" to="/orderlist">발주현황</router-link></li>
-                            <li v-if="accounttype == 1"><a class="dropdown-item" href="#">상품등록</a></li>
-                            <li v-if="accounttype == 1"><router-link class="dropdown-item" active-class="active" to="/productlist" >상품리스트</router-link></li>
-                            <li v-if="accounttype == 2"><a class="dropdown-item" href="#">재고관리</a></li>
-                        </ul>
-                    </li>
-                    <li v-if="accounttype == 2" class="nav-item dropdown">
-                        <a class="nav-link dropdown-toggle" href="#" role="button" data-bs-toggle="dropdown"
-                            aria-expanded="false">
-                            직원관리
-                        </a>
-                        <ul class="dropdown-menu">
-                            <li><router-link class="dropdown-item" to="/empadd">직원등록</router-link></li>
-                            <li><router-link class="dropdown-item" to="/emplist">직원명단</router-link></li>
-                            <li><router-link class="dropdown-item" to="/schedule">업무스케줄</router-link></li>
-                            <!-- <li><a class="dropdown-item" href="../schedule/ScheDule.vue">업무스케줄</a></li> -->
-                            <li><router-link class="dropdown-item" to="/worklogs">근태관리</router-link></li>
-                        </ul>
-                    </li>
-                    <li class="nav-item">
-                        <router-link class="nav-link active" to="/branchsales">
-                            매출관리
-                        </router-link>
-                    </li>
-                    <li class="nav-item">
-                        <router-link class="nav-link" to="/about">
-                            고객의소리
-                        </router-link>
-                    </li>
-                </ul>
-            </div>
-            <div class="d-flex justify-content-end">
-                <router-link class="nav-link mailicon" to="/about">
-                    <i class="fa-solid fa-house-chimney"></i>
-                </router-link>
-                <router-link class="nav-link mailicon" to="/ReceiveMsg">
-                    <i class="fa-solid fa-envelope "></i>
-                    <span v-if="mail !=null"
-                        class="position-absolute top-30 start-250 translate-middle p-2 bg-danger border border-light rounded-circle">
-                        <span class="visually-hidden">New alerts</span>
-                    </span>
-                </router-link>
-                <router-link class="nav-link" to="/about" style="margin-left: 10px; margin-right: 10px;">
-                 <P v-on:click="logout"> LOGOUT </P>
-                </router-link>
 
-            </div>
+<div class="container">
+
+    <div class="topbar">
+        <span>
+            <h4> 받은 메일함  </h4>
+        </span>
+        <span>
+            <h4>  {{ count }}  / {{ countall }} </h4>
+        </span>
+        
+    </div>
+<div class="middlebar_container" style="border-bottom: 1px solid;">
+
+        <div class="middlebar">
+            <input type="button" value="메일 작성">
+            <input type="button" value="휴지통으로">
+         
+        </div>    
+        <div class="searchbar">
+            <form>
+                <input type="text" name="searchbar" placeholder="메일 검색" autocomplete="off">
+                <input type="submit" value="검색">
+            </form>
         </div>
-    </nav>
+</div>
+    <table class="main">
+            <tr v-for="(msg, index) in list" :key="index">
+
+                <td class="check">
+                    <input type ="checkbox" class="checkbox_icon" v-model="check[index]">
+                    <img class="lcon" :src="markimg"  v-if="msg.mark==1" v-on:click="mark(msg.msgnum,msg.mark)">
+                    <img class="lcon" :src="markimg2"  v-else v-on:click="mark(msg.msgnum,msg.mark)">
+
+
+                    <img class="lcon" :src="readimg" v-if="msg.readcheck==1" v-on:click="read(msg.msgnum,msg.readcheck)">
+                    <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum,msg.readcheck)">
+
+                </td>
+                <td>{{ msg.sender.storeid }}</td>
+                <td v-on:click="detail(msg.num)" >{{ msg.title }}</td>
+                <td>{{ msg.msgdate }}</td>
+               
+            </tr>
+    </table>
+</div>
 </template>
   
 <script>
+
 export default {
-    name: "NavBar",
+    name: "ReceiveMsg",
     data() {
         return {
-            // 테스트용 데이터
-            accounttype: null,
-            loginId: null,
-            mail:null
-        }
+          list : [],
+          check:[],
+          countall: 0,
+          count:0,
+          markimg:require("../../assets/staron.png"),
+          markimg2:require("../../assets/starnomal.png"),
+          readimg:require("../../assets/msgnomal.png"),
+          readimg2:require("../../assets/msgnonread.png"),
+           }
     },
-    created: function(){
-        const self =this
-        if(sessionStorage.getItem("loginId")!=null){
-            self.loginId = sessionStorage.getItem("loginId");
-            self.accounttype = sessionStorage.getItem("accounttype")
-            
+    created: function () {
+        const self = this;
+        let id = sessionStorage.getItem("loginId");
+        self.$axios.get("http://localhost:8085/msg/"+id)
+            .then(function (res) {
+            self.list = res.data.msglist ;
+            self.countall=res.data.CountByReceiver;
+            self.count=res.data.CountByReceiverAndRead;
+            })
+},
+methods:{
+    mark(num,mark){
+        const self = this 
+        self.$axios.patch("http://localhost:8085/msg/mark/check/"+num)
+        
+        if(mark){
+                self.markimg=require("../../assets/staron.png")
+        }else {
+            self.markimg=require("../../assets/starnomal.png")
         }
+        
+        window.location.reload();
     },
-    methods:{
-        logout(){
-            sessionStorage.removeItem('loginId')
-            sessionStorage.removeItem('accounttype')
-            location.href = '/';
-            alert('로그아웃이 완료되었습니다.')
+    read(num,read){
+        const self = this
+        self.$axios.patch("http://localhost:8085/msg/read/check/"+num)
+        if(read){
+                self.readimg=require("../../assets/msgnonread.png")
+            }
+
+        window.location.reload();
+    },
+    detail(num){
+        const self= this
+        self.$router.push({name:'DetailMsg',query:{'num':num}})
+
+
         }
-    }
+        }
+    
+    
+    
 }
 </script>
   
-  <!-- Add "scoped" attribute to limit CSS to this component only -->
+ 
 <style scoped>
-* {
-    font-size: 20px;
+
+
+
+h3{
+    font-size: large;
 }
 
-.logo {
-    width: 50px;
-    height: 60px;
+.container{
+    margin: 5px 5px 5px 5px;
 }
 
-h3 {
-    margin: 40px 0 0;
-}
-
-ul {
-    list-style-type: none;
-    padding: 0;
-}
-
-li {
-    display: inline-block;
-    margin: 0 10px;
-}
-
-a {
-    color: black
-}
-
-.mailicon {
-    margin-left: 10px;
-    margin-right: 13px;
-}
-
-.logorouter {
-    text-decoration: none;
-}
-
-.fa-house-chimney{
-    font-size: 23px;
-}
-.fa-envelope{
-    font-size: 23px;
+.topbar{
+   text-align: center;
+    margin-top: 2%;
+    margin-bottom: 2%;
     
 }
-
-a{
-    text-decoration : none;
+/* middlebar_container{
+    
+    
+} */
+.middlebar{
+    display:inline-block;
+    margin-bottom: 10px;
 }
+.searchbar{
+    float:right;
+
+    display: inline-block;
+}
+
+.main{
+    width:100%;
+    text-align: center;
+}
+
+table{
+    border-radius:6px;
+}
+
+tr{
+    border-bottom: 1px solid rgba(0,0,0,.1);
+}
+
+td {
+    padding-top: 7px;
+    padding-bottom: 12px;
+  }
+
+td:nth-child(1) {
+  width: 20%; 
+}
+
+td:nth-child(2) {
+  width: 15%; 
+  text-align: left;
+}
+
+td:nth-child(3) {
+  width: 50%; 
+  text-align: left;
+}
+
+td:nth-child(4) {
+  width: 15%; 
+}
+
+.check{
+    display: flex;
+    align-items: center;
+    width:40px;
+}
+
+
+.lcon {
+    width: 20px;
+    height: 30px;
+    margin-left: 20px;
+    margin-right: 8px;
+}
+
+.checkbox_icon{
+    zoom:1.5;
+}
+
+
 </style>
   

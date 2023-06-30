@@ -80,9 +80,13 @@
         &nbsp;<router-link to="/" class="btn_cancle">수정취소</router-link>
     </div>
     </div>
+
+
         <!-- <h3>kakao map configuration</h3>
        지도가 보여질 영역 -->
 <!-- <div id="map" style="width:500px;height:400px;"></div> -->
+
+
 </template>
 
 <script>
