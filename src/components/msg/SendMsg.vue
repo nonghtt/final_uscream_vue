@@ -1,4 +1,5 @@
 <template>
+
     <div class="container">
     
         <div class="topbar">
@@ -10,7 +11,7 @@
             </span>
             
         </div>
-    <div class="middlebar_container">
+    <div class="middlebar_container" style="border-bottom: 1px solid;">
     
             <div class="middlebar">
                 <input type="button" value="메일 작성">
@@ -28,27 +29,38 @@
                 <tr v-for="(msg, index) in list" :key="index">
     
                     <td class="check">
-                        <input  style='zoom:1.5;' type ="checkbox" class="checkbox_icon">
-                        <img class="lcon" src="../../assets/starnomal.png">
-                        <img class="lcon" src="../../assets/msgnomal.png">
+                        <input type ="checkbox" class="checkbox_icon" v-model="check[index]">
+                        <img class="lcon" :src="markimg"  v-if="msg.mark==1" v-on:click="mark(msg.msgnum,msg.mark)">
+                        <img class="lcon" :src="markimg2"  v-else v-on:click="mark(msg.msgnum,msg.mark)">
+    
+    
+                        <img class="lcon" :src="readimg" v-if="msg.readcheck==1" v-on:click="read(msg.msgnum,msg.readcheck)">
+                        <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum,msg.readcheck)">
+    
                     </td>
                     <td>{{ msg.sender.storeid }}</td>
-                    <td>{{ msg.title }}</td>
+                    <td v-on:click="detail(msg.msgnum)" >{{ msg.title }}</td>
                     <td>{{ msg.msgdate }}</td>
+                   
                 </tr>
-    
         </table>
     </div>
     </template>
-    
+      
     <script>
+    
     export default {
         name: "SendMsg",
         data() {
             return {
               list : [],
+              check:[],
               countall: 0,
-              count:0
+              count:0,
+              markimg:require("../../assets/staron.png"),
+              markimg2:require("../../assets/starnomal.png"),
+              readimg:require("../../assets/msgread.png"),
+              readimg2:require("../../assets/msgnoread.png"),
                }
         },
         created: function () {
@@ -61,31 +73,53 @@
                 self.list = res.data.msglist ;
                 self.countall=res.data.CountBySender;
                 self.count=res.data.CountBySenderRead;
-                    
-    
-                    
                 })
-    }
+    },
+    methods:{
+        mark(num,mark){
+            const self = this 
+            self.$axios.patch("http://localhost:8085/msg/mark/check/"+num)
+            
+            if(mark){
+                    self.markimg=require("../../assets/staron.png")
+            }else {
+                self.markimg=require("../../assets/starnomal.png")
+            }
+            
+            window.location.reload();
+        },
+        read(num,read){
+            const self = this
+            self.$axios.patch("http://localhost:8085/msg/read/check/"+num)
+            if(read){
+                    self.readimg=require("../../assets/msgread.png")
+                }
+    
+            window.location.reload();
+        },
+        detail(num){
+            const self= this
+            self.$axios.patch("http://localhost:8085/msg/read/check/"+num)
+            self.$router.push({name:'DetailMsg',query:{'num':num}})
+    
+    
+            }
+            }
+        
+        
+        
     }
     </script>
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
-    
+      
+     
     <style scoped>
+    
+    
     
     h3{
         font-size: large;
     }
+    
     .container{
         margin: 5px 5px 5px 5px;
     }
@@ -96,12 +130,12 @@
         margin-bottom: 2%;
         
     }
-    middlebar_container{
+    /* middlebar_container{
         
-    }
+        
+    } */
     .middlebar{
         display:inline-block;
-    
         margin-bottom: 10px;
     }
     .searchbar{
@@ -113,6 +147,14 @@
     .main{
         width:100%;
         text-align: center;
+    }
+    
+    table{
+        border-radius:6px;
+    }
+    
+    tr{
+        border-bottom: 1px solid rgba(0,0,0,.1);
     }
     
     td {
@@ -152,6 +194,10 @@
         margin-right: 8px;
     }
     
+    .checkbox_icon{
+        zoom:1.5;
+    }
+    
     
     </style>
-    
+      
