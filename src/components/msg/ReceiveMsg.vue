@@ -1,4 +1,5 @@
 <template>
+
 <div class="container">
 
     <div class="topbar">
@@ -45,7 +46,7 @@
     </table>
 </div>
 </template>
-
+  
 <script>
 
 export default {
@@ -98,14 +99,19 @@ methods:{
         const self= this
         self.$router.push({name:'DetailMsg',query:{'num':num}})
 
-    }
-}
+
+        }
+        }
+    
+    
+    
 }
 </script>
-
-
-
+  
+ 
 <style scoped>
+
+
 
 h3{
     font-size: large;
@@ -190,5 +196,5 @@ td:nth-child(4) {
 }
 
 
-
 </style>
+  
