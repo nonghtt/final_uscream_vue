@@ -22,12 +22,11 @@
                         </select>
                     </div>
                     <div class="col3">
-                        <input v-model="schVal" type="text" class="schText" placeholder="검색어" @keypress.enter.prevent="getBoardList" />
+                        <input v-model="schVal" type="text" class="schText" placeholder="검색어"
+                            @keypress.enter.prevent="getBoardList" />
                     </div>
                     <div class="col2">
-                        <button type="button" class="schbtn" @click="getBoardList">
-                            검색
-                        </button>
+                        <button type="button" class="schbtn" @click="getBoardList">검색</button>
                     </div>
                 </div>
                 <div class="row">
@@ -43,14 +42,14 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="item in noticelist" :key="item.noticenum" @click="detail(item)" style="cursor: pointer;">
+                                <tr v-for="item in noticelist" :key="item.noticenum" @click="detail(item)"
+                                    style="cursor: pointer;">
                                     <td class="text-center">{{ item.noticenum }}</td>
-                                    <td class="text-center">{{ item.category }}</td>
+                                    <td class="text-center">{{ categoryText(item.category) }}</td>
                                     <td class="text-center">{{ item.title }}</td>
                                     <td class="text-center">{{ formatDate(item.wdate) }}</td>
                                     <td class="text-center">{{ item.cnt }}</td>
                                 </tr>
-
                             </tbody>
                         </table>
                     </div>
@@ -79,17 +78,34 @@ export default {
             this.getBoardList(); // 추가: 페이지가 생성될 때 공지사항 리스트를 가져옴
         } else if (this.accounttype == 2) {
             const self = this;
-            self.$axios.get("http://localhost:8085/notices" + parseInt(self.store)).then(function (res) {
+            self.$axios.get("http://localhost:8085/notices/" + parseInt(self.store)).then(function (res) {
                 self.noticelist = res.data.list;
-                console.log(self.noticelist);
+                console.log(res.data.list)
             });
+        }
+    },
+    computed: {
+        categoryText() {
+            return (item) => {
+                console.log("이건item"+item)
+                if (this.schbox === 'category') {
+                
+                    if (item.category === '1') {
+                        return '칭찬';
+                    } else if (item.category === '2') {
+                        return '불만';
+                    }
+                }
+                console.log(item.category)
+                return '';
+            };
         }
     },
     methods: {
         detail(item) {
             this.$router.push({
-                name: "NoticeDetail",
-                query: { storeid: item.storeid, noticedate: item.noticedate },
+                name: "NoticeList",
+                query: { noticenum: item.noticenum, category: item.category, title: item.title, wdate: item.wdate, cnt: item.cnt },
             });
         },
         formatDate(dateString) {
@@ -97,6 +113,7 @@ export default {
             return formattedDate;
         },
         getBoardList() {
+            console.log(this.schbox, this.schVal);
             let url = "http://localhost:8085/notices";
 
             if (this.schbox && this.schVal) {
@@ -139,5 +156,4 @@ export default {
 
 * {
     text-align: center;
-}
-</style>
+}</style>
