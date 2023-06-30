@@ -1,17 +1,13 @@
 <template>
-  
-  <NavBar/>
+ 
+  <NavBar />
   <div class="middlepage">
-    
-  <div class="sidebar">
-    <SideBar/>
+
+    <div class="sidebar">
+      <SideBar />
+    </div>
+    <router-view />
   </div>
-  <router-view/> 
-
-
-
-</div>
-
 
 
 </template>
@@ -19,34 +15,32 @@
 <script>
 import NavBar from '@/components/outline/NavBar'
 import SideBar from '@/views/SideBar.vue'
-export default{
+export default {
   name: 'App',
-  components: {NavBar, SideBar},
+  components: { NavBar, SideBar },
 
-  data(){
-    return{
-      
+  data() {
+    return {
+
     }
   }
 }
 </script>
 <style scoped>
-.nav-link{
-    display: inline;
+.nav-link {
+  display: inline;
 }
 
-.sidebar{
-  width:300px;
+.sidebar {
+  width: 300px;
   text-align: left;
   border-right: 1px solid black;
   background-color: whitesmoke;
-  height:770px;
+  height: 770px;
 }
 
-.middlepage{
+.middlepage {
 
   display: flex;
 }
-
-
 </style>
