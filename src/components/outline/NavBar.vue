@@ -51,9 +51,8 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><router-link class="dropdown-item" to="/orderlist">발주현황</router-link></li>
-                            <li v-if="accounttype == 1"><a class="dropdown-item" href="#">상품등록</a></li>
                             <li v-if="accounttype == 1"><router-link class="dropdown-item" active-class="active" to="/productlist" >상품리스트</router-link></li>
-                            <li v-if="accounttype == 2"><a class="dropdown-item" href="#">재고관리</a></li>
+                            <li v-if="accounttype == 2"><router-link class="dropdown-item" active-class="active" to="/inventory" >재고관리</router-link></li>
                         </ul>
                     </li>
                     <li v-if="accounttype == 2" class="nav-item dropdown">

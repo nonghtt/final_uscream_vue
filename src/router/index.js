@@ -7,6 +7,7 @@ import storeJoin from '@/components/storeaccount/storeJoin.vue'
 import storeMyinfo from '@/components/storeaccount/storeMyinfo.vue'
 import storeState from '@/components/storeaccount/storeState.vue'
 import storeLogin from '@/components/storeaccount/storeLogin.vue'
+import StoreInventory from '@/components/product/StoreInventory.vue'
 
 
 import ScheDule from '@/components/schedule/ScheDule.vue'
@@ -137,7 +138,13 @@ const routes = [
     path: '/NoticeList',
     name: 'NoticeList',
     component: NoticeList
-  }
+  },
+  {
+    path:'/inventory',
+    name:'StoreInventory',
+    component :StoreInventory
+  },
+  
 ]
 
 const router = createRouter({

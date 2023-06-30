@@ -20,7 +20,12 @@
                         {{ order.STORE }}의 {{ order.ORDERDATE }} 발주내역</div>
                 </td>
                 <td>{{ order.TOTALCOST }}원</td>
-                <td>{{ order.ORDERCOST }}원</td>
+                <td v-if="order.ORDERCOST!=0">{{ order.ORDERCOST }}원</td>
+                <td v-else-if="order.ORDERCOST ==0 && order.STATUS== '처리완료'">0원</td>
+                <td v-else>처리중</td>
+                
+                
+
                 <td>{{ order.ORDERDATE }}</td>
                 <td v-if="order.CONFIRMDATE == null">처리중</td>
                 <td v-if="order.CONFIRMDATE != null">{{ order.CONFIRMDATE }}</td>
