@@ -7,7 +7,14 @@ import storeJoin from '@/components/storeaccount/storeJoin.vue'
 import storeMyinfo from '@/components/storeaccount/storeMyinfo.vue'
 import storeState from '@/components/storeaccount/storeState.vue'
 import storeLogin from '@/components/storeaccount/storeLogin.vue'
+
 import StoreInventory from '@/components/product/StoreInventory.vue'
+
+import latitude from '@/components/storeaccount/latitude.vue'
+import location from '@/components/storeaccount/location.vue'
+import marker from '@/components/storeaccount/marker.vue'
+
+
 
 
 import ScheDule from '@/components/schedule/ScheDule.vue'
@@ -21,9 +28,11 @@ import BranchSales from '@/components/sales/BranchSales.vue'
 import OrderDetail from '@/components/product/OrderDetail.vue'
 
 import ReceiveMsg from '@/components/msg/ReceiveMsg.vue'
+import AddMsg from '@/components/msg/AddMsg.vue'
 import SendMsg from '@/components/msg/SendMsg.vue'
 import TempMsg from '@/components/msg/TempMsg.vue'
 import DelMsg from '@/components/msg/DelMsg.vue'
+import DetailMsg from '@/components/msg/DetailMsg.vue'
 import SideBar from '../views/SideBar.vue'
 
 import NoticeList from '@/components/notice/NoticeList.vue'
@@ -71,11 +80,25 @@ const routes = [
     component: storeState
   },
   {
+    path: '/latitude',
+    name: 'latitude',
+    component: latitude
+  },
+  {
+    path: '/location',
+    name: 'location',
+    component: location
+  },
+  {
+    path: '/marker',
+    name: 'marker',
+    component: marker
+  },
+  {
     path: '/',
     name: 'storeLogin',
     component: storeLogin
   },
-
 
   {
     path : '/schedule',
@@ -115,6 +138,11 @@ const routes = [
     component: ReceiveMsg
   },
   {
+    path: '/AddMsg',
+    name: 'AddMsg',
+    component: AddMsg
+  },
+  {
     path: '/SendMsg',
     name: 'SendMsg',
     component: SendMsg
@@ -128,6 +156,11 @@ const routes = [
     path: '/DelMsg',
     name: 'DelMsg',
     component: DelMsg
+  },
+  {
+    path: '/DetailMsg',
+    name: 'DetailMsg',
+    component: DetailMsg
   },
   {
     path: '/SideBar',

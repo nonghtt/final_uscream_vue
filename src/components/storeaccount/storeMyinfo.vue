@@ -1,10 +1,10 @@
 <template lang="">
     <div id="myinfo" class="myinfo">
 
-      <div>
+      <!-- <div>
         <img src="../../assets/bckimg.jpg" 
             style="width:100%; height:100%;"
-            class="background_img"></div>
+            class="background_img"></div> -->
 
      <div class="edit_window">
       <div class="brandname">USCREAM</div>      
@@ -80,9 +80,13 @@
         &nbsp;<router-link to="/" class="btn_cancle">수정취소</router-link>
     </div>
     </div>
+
+
         <!-- <h3>kakao map configuration</h3>
        지도가 보여질 영역 -->
 <!-- <div id="map" style="width:500px;height:400px;"></div> -->
+
+
 </template>
 
 <script>

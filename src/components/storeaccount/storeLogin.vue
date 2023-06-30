@@ -3,10 +3,10 @@
       <!-- <div class="text_login">LOGIN</div> -->
 
 
-      <div>
+      <!-- <div>
         <img src="../../assets/bckimg.jpg" 
             style="width:100%; height:100%;"
-            class="background_img"></div>
+            class="background_img"></div> -->
       
       <div id="login_window">
       <div class="brandname">USCREAM</div>
@@ -39,6 +39,14 @@
           <button class="btn_login" v-on:click="login">로그인하기</button>
           </div>
     </div>
+
+
+
+
+
+
+
+
   </template>
   
   <script>
@@ -102,7 +110,7 @@
   
   /* 버튼 색 바꾸기 */
   .btn_login{
-  background-color: #eb34a4;
+  background-color: #8eb443;
   border:0;
   color:white;
   font-size:20px;
@@ -121,12 +129,12 @@
   }
   
   .brandname{
-   color: #eb34a4;
+   color: #8eb443;
    font-size:30px;
    font-weight: bold;
   }
   .title_login{
-    background-color: #eb34a4;
+    background-color: #8eb443;
     color:white;
     margin:0;
     /* border-radius:  0 0; */
