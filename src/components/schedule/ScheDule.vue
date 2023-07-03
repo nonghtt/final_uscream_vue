@@ -6,34 +6,57 @@
       스케줄 등록
     </button>
 
-    <!-- 삭제 Modal -->
-    <div class="modal fade" id="addSchedule" tabindex="-1" aria-labelledby="exampleModalLabel"
-      aria-hidden="true">
-      <div class="modal-dialog">
+    <!-- Button trigger modal -->
+    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="testadd">
+      모달.. 새로운 컴포넌트로 도전중..아직.. 도전중...
+    </button>
+
+
+
+    <!-- 등록 Modal -->
+    <div class="modal fade" id="addSchedule" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+      <div class="modal-dialog modal-dialog-scrollable">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">하하</h5>
+            <h5 class="modal-title" id="exampleModalLabel">스케줄 등록</h5>
             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
           </div>
           <div class="modal-body">
-            <span class="name">하하</span>님을 삭제하시겠습니까? <br />
+            <div>
+              안녕?
+              <select v-model="selectedEmp" @change="empChange()">
+                <option :key=0 :value="none" disabled>
+                  --직원 선택--
+                </option>
+                <option v-for="(item, index) in empList" :key="index" :value="item.empnum">
+                  {{ item.empname }}
+                </option>
+              </select>
+            </div>
 
+            <!-- <div> 
+              <input v-for="(item, index) in empSelectedList" :key="index" :value="item.bsnum" >
+              {{ item.bsnum }}
+            </div> -->
           </div>
           <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">등록</button>
-            <button type="button" class="btn custom-btn" data-bs-dismiss="modal" >삭제</button>
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
+            <button type="button" class="btn custom-btn" data-bs-dismiss="modal">등록</button>
           </div>
         </div>
       </div>
     </div>
 
-    <div>
-      <button id="scheduleAdd" @click="add">스케줄 등록</button>
-    </div>
+    <!-- 캘린더 -->
     <div id="fullCalendar">
       <FullCalendar :options="calendarOptions" />
     </div>
   </div>
+
+
+  <!-- Modal -->
+  <ScheduleModal v-if="test" id="exampleModal" class="modal fade"/>
+  <!-- 모달 -->
 </template>
   
 <script>
@@ -43,12 +66,21 @@ import interactionPlugin from '@fullcalendar/interaction';
 //   , { Draggable }
 import timeGridPlugin from '@fullcalendar/timegrid';
 
+import ScheduleModal from '@/components/schedule/ScheduleModal.vue'
+
 export default {
   name: 'ScheDule',
+  //components: {ScheduleModal},
   data() {
     return {
-      storeid: '',
+      storeid: sessionStorage.getItem("loginId"),
       list: [],
+      empList: [],
+      empSelectedList: [],     // 스케줄 등록에서 선택한 직원의 기본 스케줄
+      storename: '',
+      selectedEmp: '',
+      //scheduleModal:false,
+      test: false,
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
         initialView: 'timeGridWeek',
@@ -62,7 +94,7 @@ export default {
         events: [],
         eventClick: this.workDayClick,  // 클릭시
         eventDrop: this.workDayEdit,    // 움직일시(?)
-        eventResize : this.workDayResize,
+        eventResize: this.workDayResize,
         timeZone: 'Asia/Seoul',
         height: 700,
         views: {
@@ -76,7 +108,8 @@ export default {
     };
   },
   components: {
-    FullCalendar
+    FullCalendar,
+    ScheduleModal
   },
   created: function () {
     this.storeid = sessionStorage.getItem('loginId');
@@ -87,6 +120,7 @@ export default {
         if (res.status == 200 && res.data.flag == true) {
           //console.log(res.data.list);
           self.list = res.data.list;
+          console.log("길이 문제 : " + self.list.length)
           //console.log(self.list[0].emp.empname);
           self.list.forEach(item => {
             //console.log(item.starttime);
@@ -99,8 +133,8 @@ export default {
               backgroundColor: item.emp.color,
               borderColor: item.emp.color
             };
-           // console.log("event");
-           // console.log(event);
+            // console.log("event");
+            // console.log(event);
             self.calendarOptions.events.push(event);
 
           });
@@ -113,6 +147,17 @@ export default {
   methods: {
     add() {
       console.log('스케줄 추가');
+      const self = this;
+      const storeid = self.storeid;
+      self.$axios.get(`http://localhost:8085/emp/storeid/${storeid}`)
+        .then(function (res) {
+          if (res.status == 200 & res.data.flag == true) {
+            self.empList = res.data.list
+          } else {
+            console.log("에러 :" + res.status);
+          }
+        })
+      self.selectedEmp = 'none';
     },
     workDayClick(info) {
       console.log("클릭 정보")
@@ -121,48 +166,38 @@ export default {
     workDayEdit(info) {
       console.log("num :" + info.event._def.publicId);
 
-     this.formatDate(info.event._instance.range.start, info.event._instance.range.end, info.event._def.publicId)
-     
+      this.formatDate(info.event._instance.range.start, info.event._instance.range.end, info.event._def.publicId)
+
 
 
     },
-    workDayResize(info){
+    workDayResize(info) {
       console.log(info.event);
+      this.formatDate(info.event._instance.range.start, info.event._instance.range.end, info.event._def.publicId)
     },
     // 시간 계산 함수 
-    formatDate(start, end, num){
-      // var object = {
-      //   startTime : '',
-      //   endTime : '',
-      //   date : '',
-      // };
-
+    formatDate(start, end, num) {
       let startDateObj = new Date(start)
-      startDateObj.setHours(startDateObj.getHours()-9);
+      startDateObj.setHours(startDateObj.getHours() - 9);
       let year = startDateObj.getFullYear();
       let month = String(startDateObj.getMonth() + 1).padStart(2, "0");
       let day = String(startDateObj.getDate()).padStart(2, "0");
-      let editDate = `${year}-${month}-${day}`; 
-      let time = String(startDateObj.getHours()).padStart(2,"0") +":"+ String(startDateObj.getMinutes()).padStart(2,"0")
+      let editDate = `${year}-${month}-${day}`;
+      let time = String(startDateObj.getHours()).padStart(2, "0") + ":" + String(startDateObj.getMinutes()).padStart(2, "0")
       let startTime = `${year}-${month}-${day}T${time}:00`;
 
       let endDateObj = new Date(end)
-      endDateObj.setHours(endDateObj.getHours()-9);
-      let etime = String(endDateObj.getHours()).padStart(2,"0") +":"+ String(endDateObj.getMinutes()).padStart(2,"0")
+      endDateObj.setHours(endDateObj.getHours() - 9);
+      let etime = String(endDateObj.getHours()).padStart(2, "0") + ":" + String(endDateObj.getMinutes()).padStart(2, "0")
       let endTime = `${year}-${month}-${day}T${etime}:00`;
       console.log(endTime)
 
-      // object.date = editDate;
-      // object.startTime = startTime;
-      // object.endTime = endTime;
-
-      // console.log(object.date)
-      console.log("formatDate : "+editDate+" / " + startTime + " / "+endTime + " / "+num )
+      console.log("formatDate : " + editDate + " / " + startTime + " / " + endTime + " / " + num)
       this.editSchedule(editDate, startTime, endTime, num);
-      // return object;
+
     },
     // 수정 하기 
-    editSchedule(editDate, startTime, endTime, num){
+    editSchedule(editDate, startTime, endTime, num) {
       console.log(editDate)
       console.log(startTime)
       console.log(endTime)
@@ -171,23 +206,47 @@ export default {
       let formData = new FormData();
       formData.append("snum", num);
       formData.append("sdate", editDate);
-      formData.append("starttime",startTime);
-      formData.append("endtime",endTime);
+      formData.append("starttime", startTime);
+      formData.append("endtime", endTime);
 
-      
+
       const self = this;
       self.$axios.put('http://localhost:8085/schedule', formData)
-      .then(function(res){
-        console.log(res.status)
-        console.log(res.data.dto)
-      })
-      
+        .then(function (res) {
+          console.log(res.status)
+          console.log(res.data.dto)
+        })
+
+    },
+    // 등록하기 전 직원 선택...............
+    empChange() {
+      const self = this;
+
+      let empnum = self.selectedEmp;
+      console.log(empnum)
+      self.$axios.get(`http://localhost:8085/basicschedule/emp/${empnum}`)
+        .then(function (res) {
+          console.log(res.status)
+          console.log(res.data)
+          if (res.status == 200 && res.data.flag == true) {
+            console.log("성공")
+            console.log(res.data)
+            self.empSelectedList = res.data.list;
+          } else {
+            console.log("에러 empChange() : " + res.status)
+          }
+        })
+
+    },
+    testadd() {
+      this.test = true;
     }
   }
 };
 </script>
   
 <style scoped>
+
 #sdBody {
   padding-top: 30px;
   padding-bottom: 30px;
@@ -213,17 +272,15 @@ export default {
 }
 
 .custom-btn {
-    background-color: #B3C755;
+  background-color: #B3C755;
 }
 
 .custom-btn:hover {
-    background-color: #99ab49;
+  background-color: #99ab49;
 }
-
-
 </style>
   
-
+<!--
 <style>
 /* full calendar css */
 
@@ -297,3 +354,4 @@ export default {
   background-color: #84943f;
 }
 </style>
+-->
