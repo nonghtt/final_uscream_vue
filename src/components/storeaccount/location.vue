@@ -31,6 +31,8 @@
           return;
         }
   
+
+        
         const encodedAddress = encodeURIComponent(this.address);
         const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=AIzaSyAEMcBVXcTsB5UmbNou29kkZkSPpq4mDJA`;
   
