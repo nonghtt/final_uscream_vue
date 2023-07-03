@@ -1,4 +1,10 @@
 <template>
+
+<div class="sidebar_container">
+
+<SideBar />
+</div>
+
     <div class="container">
     
         <div class="topbar">
@@ -42,8 +48,10 @@
     </template>
     
     <script>
+     import SideBar from '@/views/SideBar.vue'
     export default {
         name: "TempMsg",
+        components:{SideBar},
         data() {
             return {
               list : [],
@@ -59,8 +67,8 @@
     
             
                 self.list = res.data.msglist ;
-                self.countall=res.data.CountBySenderTemp;
-                self.count=res.data.CountBySenderTempRead;
+                self.countall=res.data.countByReadTempMsg;
+                self.count=res.data.countAllByTempMsg;
                     
                     
                 })
@@ -82,6 +90,18 @@
     
     <style scoped>
     
+
+    
+.sidebar_container{
+    display: inline-block;
+    width: 300px;
+  text-align: left;
+  border-right: 1px solid black;
+  background-color: whitesmoke;
+  height: 770px;
+}
+
+
     h3{
         font-size: large;
     }

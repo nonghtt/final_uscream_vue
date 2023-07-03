@@ -1,4 +1,8 @@
 <template>
+     <div class="sidebar_container">
+
+<SideBar />
+</div>
     <div class="container">
         <div class="topbar">
                 <p class="main">메일</p>
@@ -7,8 +11,8 @@
                 
             </div>
             <div class="middlebar">
-                <input type="button" value="답장">
-                <input type="button" value="휴지통">
+                <input type="button" value="답장" v-on:click="replymsg(dto.msgnum)">
+                <input type="button" value="휴지통" v-on:click="delmsg(dto.msgnum)">
             </div>
         <tabel>
             <tr><td></td><td><input type="text" v-model="dto.title" class="enter title" readonly></td></tr>
@@ -22,9 +26,10 @@
 </template>
     
     <script>
-    
+    import SideBar from '@/views/SideBar.vue'
     export default {
         name: "DetailMsg",
+        components:{SideBar},
         data() {
             return {
             num:this.$route.query.num,
@@ -50,7 +55,16 @@
 
     },
     methods:{
-      
+        delmsg(num){
+        const self= this
+        self.$axios.patch("http://localhost:8085/msg/del/check/"+num)
+        self.$router.push({name:'ReceiveMsg'})
+         },
+         replymsg(num){
+            const self = this;
+
+            self.$router.push({name:'ReplyMsg',query:{'num':num}})
+         }
     }
 }
     </script>
@@ -58,6 +72,17 @@
     
     
     <style scoped>
+
+
+.sidebar_container{
+    display: inline-block;
+    width: 300px;
+  text-align: left;
+  border-right: 1px solid black;
+  background-color: whitesmoke;
+  height: 770px;
+}
+
 
 
     .topbar{    

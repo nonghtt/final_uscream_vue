@@ -1,4 +1,8 @@
 <template>
+     <div class="sidebar_container">
+
+<SideBar />
+</div>
     <div class="container">
     
         <div class="topbar">
@@ -15,7 +19,7 @@
             <div class="middlebar">
                 <input type="button" value="메일 작성">
                 <input type="button" value="영구 삭제">
-             
+                <input type="button" value="비우기">
             </div>    
             <div class="searchbar">
                 <form>
@@ -42,8 +46,10 @@
     </template>
     
     <script>
+    import SideBar from '@/views/SideBar.vue'
     export default {
         name: "DelMsg",
+        components:{SideBar},
         data() {
             return {
               list : [],
@@ -54,13 +60,13 @@
         created: function () {
             const self = this;
             let id = sessionStorage.getItem("loginId");
-            self.$axios.get("http://localhost:8085/msg/del/"+id)
+            self.$axios.get("http://localhost:8085/msg/del/"+id+"/"+id)
                 .then(function (res) {
     
             
                 self.list = res.data.msglist ;
-                self.countall=res.data.CountByDel;
-                self.count=res.data.CountByDelRead;
+                self.count=res.data.countAllByDelAndReadMsg;
+                self.countall=res.data.countAllByDelMsg;
                     
                 
                 })
@@ -82,6 +88,17 @@
     
     <style scoped>
     
+
+    .sidebar_container{
+    display: inline-block;
+    width: 300px;
+  text-align: left;
+  border-right: 1px solid black;
+  background-color: whitesmoke;
+  height: 770px;
+}
+
+
     h3{
         font-size: large;
     }

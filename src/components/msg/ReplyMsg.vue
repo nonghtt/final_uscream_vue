@@ -16,9 +16,9 @@
             </div>
         <tabel>
              <form action="" method="post" enctype="multipart/form-data">
-            <tr><td>보내는 사람</td><td><input type="text" class="enter"  v-model="sender" readonly></td></tr>
-            <tr><td>받는 사람</td><td><input type="text" class="enter" v-model="receiver"></td></tr>
-            <tr><td>제목</td><td><input type="text" class="enter" v-model="title"></td></tr>
+            <tr><td>보내는 사람</td><td><input type="text" class="enter"  v-model="dto.sender.storeid" readonly></td></tr>
+            <tr><td>받는 사람</td><td><input type="text" class="enter" v-model="dto.receiver.storeid"></td></tr>
+            <tr><td>제목</td><td><input type="text" class="enter" v-model="dto.title"></td></tr>
             <tr><td>첨부</td><td><input type="file" name="file" ref="msgfile" @change="selectmsgfile" class="enter" multiple='true'></td></tr>
             <tr><td colspan="2"><textarea rows="20" cols="30" v-model="content"></textarea></td></tr>
 
@@ -32,41 +32,33 @@
     <script>
     import SideBar from '@/views/SideBar.vue'
     export default {
-        name: "AddMsg",
-        components: {SideBar},
+        name: "ReplyMsg",
+        components:{SideBar},
         data() {
             return {
-            countall: 0,
-            count:0,
-            sender:sessionStorage.getItem("loginId"),
-            id:'',
-            receiver:'',
-            title:'',
-            content:'',
-            file:''
+            num:this.$route.query.num,
+            id:sessionStorage.getItem("loginId"),
+            dto:[]
+        
             }
         },
         created: function () {
+           
+            const self = this
+            let num= self.num
+
+            self.$axios.get("http://localhost:8085/msg/reply/"+num)
+            .then(function (res) {
+               
+            self.dto = res.data.msgdto ;
+            self.dto.title = "[Re: "+self.dto.title+" ]";   
+                
+            })
+           
+
     },
     methods:{
-
-        selectmsgfile(){
-            for(let i=0;i<this.file.length;i++){
-                this.file = this.$refs.msgfile.files[0]
-            }
-        },
-        addmsg(){
-            let form = new FormData();
-            form.append('sender',this.sender);
-            form.append('receiver',this.receiver);
-            form.append('title',this.title);
-            form.append('content',this.content);
-            const self= this;
-            self.$axios.post("http://localhost:8085/msg",form, {headers: {"Content-Type": "multipart/form-data"}})
-            
-            this.$router.push({name:'SendMsg'});
-            
-    }
+     
     }
 }
     </script>
@@ -74,6 +66,7 @@
     
     
     <style scoped>
+
 
 .sidebar_container{
     display: inline-block;
@@ -83,6 +76,7 @@
   background-color: whitesmoke;
   height: 770px;
 }
+
 
 
     .topbar{    

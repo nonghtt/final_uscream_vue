@@ -1,6 +1,9 @@
 <template>
+    <div class="sidebar_container">
 
-<div class="container">
+        <SideBar />
+    </div>
+    <div class="container">
 
     <div class="topbar">
         <span>
@@ -14,15 +17,13 @@
 <div class="middlebar_container" style="border-bottom: 1px solid;">
 
         <div class="middlebar">
-            <input type="button" value="메일 작성">
-            <input type="button" value="휴지통으로">
+            <input type="button" value="메일 작성" v-on:click="addmsg()">
+            <input type="button" value="휴지통으로" v-on:click="delmsg(msg.num)">
          
         </div>    
         <div class="searchbar">
-            <form>
-                <input type="text" name="searchbar" placeholder="메일 검색" autocomplete="off">
-                <input type="submit" value="검색">
-            </form>
+                <input type="text" name="searchbar" id="searchbar" placeholder="보낸 사람으로 메일 검색" autocomplete="off">
+                <input type="button" value="검색" v-on:click="receivemsgsearch()">
         </div>
 </div>
     <table class="main">
@@ -47,30 +48,35 @@
 </template>
   
 <script>
+import SideBar from '@/views/SideBar.vue'
 
 export default {
     name: "ReceiveMsg",
+    components: {SideBar},
     data() {
         return {
           list : [],
           check:[],
           countall: 0,
           count:0,
+          id:sessionStorage.getItem("loginId"),
           markimg:require("../../assets/staron.png"),
           markimg2:require("../../assets/starnomal.png"),
-          readimg:require("../../assets/msgread.png"),
-          readimg2:require("../../assets/msgnoread.png"),
+          readimg:require("../../assets/msgnoread.png"),
+              readimg2:require("../../assets/msgread.png"),
            }
     },
     created: function () {
         const self = this;
-        let id = sessionStorage.getItem("loginId");
+        let id = this.id;
+        
         self.$axios.get("http://localhost:8085/msg/"+id)
             .then(function (res) {
             self.list = res.data.msglist ;
-            self.countall=res.data.CountByReceiver;
-            self.count=res.data.CountByReceiverAndRead;
-            })
+            self.count=res.data.countByReadReceiveMsg;
+            self.countall=res.data.countAllByReadReceiveMsg;
+            
+                   })
 },
 methods:{
     mark(num,mark){
@@ -96,14 +102,32 @@ methods:{
     },
     detail(num){
         const self= this
-        self.$axios.patch("http://localhost:8085/msg/read/check/"+num)
+        self.$axios.patch("http://localhost:8085/msg/read/detail/check/"+num)
         self.$router.push({name:'DetailMsg',query:{'num':num}})
 
 
-        }
-        }
-    
-    
+        },
+        addmsg(){
+        this.$router.push({name:'AddMsg'});
+         },
+         delmsg(num){
+        const self= this
+        self.$axios.patch("http://localhost:8085/msg/del/check/"+num)
+        self.$router.push({name:'ReceiveMsg'})
+         },
+       
+        receivemsgsearch(){ 
+            const self = this; 
+            let sender =  document.getElementById("searchbar");
+            let receiver = self.id
+            alert(sender +"/"+ receiver)
+            self.$axios.get("http://localhost:8085/msg/receivemsg/"+sender+"/"+receiver)
+            .then(function (res) {
+            self.list = res.data.msglist ;
+                alert("성공");
+             })
+            }
+}
     
 }
 </script>
@@ -111,6 +135,14 @@ methods:{
  
 <style scoped>
 
+.sidebar_container{
+    display: inline-block;
+    width: 300px;
+  text-align: left;
+  border-right: 1px solid black;
+  background-color: whitesmoke;
+  height: 770px;
+}
 
 
 h3{

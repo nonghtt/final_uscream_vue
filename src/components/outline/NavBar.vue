@@ -127,7 +127,8 @@ export default {
             sessionStorage.removeItem('accounttype')
             location.href = '/';
             alert('로그아웃이 완료되었습니다.')
-        }
+        },
+     
     }
 }
 </script>

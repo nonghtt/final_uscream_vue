@@ -33,6 +33,8 @@ import SendMsg from '@/components/msg/SendMsg.vue'
 import TempMsg from '@/components/msg/TempMsg.vue'
 import DelMsg from '@/components/msg/DelMsg.vue'
 import DetailMsg from '@/components/msg/DetailMsg.vue'
+import MarkMsg from '@/components/msg/MarkMsg.vue'
+import ReplyMsg from '@/components/msg/ReplyMsg.vue'
 import SideBar from '../views/SideBar.vue'
 
 import NoticeList from '@/components/notice/NoticeList.vue'
@@ -161,6 +163,16 @@ const routes = [
     path: '/DetailMsg',
     name: 'DetailMsg',
     component: DetailMsg
+  },
+  {
+    path: '/MarkMsg',
+    name: 'MarkMsg',
+    component: MarkMsg
+  },
+  {
+    path: '/ReplyMsg',
+    name: 'ReplyMsg',
+    component: ReplyMsg
   },
   {
     path: '/SideBar',

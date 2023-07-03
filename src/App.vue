@@ -2,9 +2,8 @@
  
   <NavBar />
   <div class="middlepage">
-    <div class="sidebar">
-      <SideBar />
-    </div>
+  
+
     <router-view />
   </div>
 
@@ -16,16 +15,14 @@
 
 <script>
 import NavBar from '@/components/outline/NavBar'
-import SideBar from '@/views/SideBar.vue'
 export default {
   name: 'App',
-  components: { NavBar, SideBar },
+  components: { NavBar},
 
   data() {
     return {
-
     }
-  }
+  },
 }
 </script>
 <style scoped>

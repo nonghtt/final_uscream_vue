@@ -6,7 +6,7 @@
             <div>읽지 않은 메일</div>
             <div>{{ read }}</div> 
         </div>
-        <div class="markmsg">
+        <div class="markmsg" v-on:click="markmsg()">
            <div>즐겨 찾기</div>  
            <div>{{ mark }}</div>
         </div>
@@ -16,8 +16,7 @@
     <ul v-on:click="addmsg"><img class="sidebar_icon" src="../assets/addmsg.svg">메세지 작성    </ul><Br/>
     <ul v-on:click="sendmsg"><img class="sidebar_icon" src="../assets/sendmsg.svg">보낸 메시지    </ul><Br/>
     <ul v-on:click="tempmsg"><img class="sidebar_icon" src="../assets/tempmsg.svg">임시 보관함    </ul><Br/>
-    <ul v-on:click="delmsg"><img class="sidebar_icon" src="../assets/delmsg.svg">휴지통         </ul><Br/>
-    
+    <ul v-on:click="delmsg"><img class="sidebar_icon" src="../assets/delmsg.svg">휴지통      </ul><Br/>
     
 
 </div>
@@ -40,10 +39,11 @@ export default {
     created: function () {
         const self = this;
         let id = sessionStorage.getItem("loginId");
+   
         self.$axios.get("http://localhost:8085/msg/sidebar/"+id)
             .then(function (res) {
-                self.read = res.data.CountAllRead;
-                self.mark = res.data.CountByMark;                        
+                self.read = res.data.countSideBarReadMsg;
+                self.mark = res.data.countSideBarMarkMsg;                        
             })
 },
 methods:{
@@ -61,8 +61,10 @@ methods:{
     },
     delmsg(){
         this.$router.push({name:'DelMsg'});
+    },
+    markmsg(){
+        this.$router.push({name:'MarkMsg'});
     }
-    
 }
 }
 

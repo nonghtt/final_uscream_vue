@@ -1,5 +1,6 @@
 <template>
- <div class="sidebar_container">
+
+<div class="sidebar_container">
 
 <SideBar />
 </div>
@@ -8,7 +9,7 @@
     
         <div class="topbar">
             <span>
-                <h4> 보낸 메일함  </h4>
+                <h4> 즐겨찾기  </h4>
             </span>
             <span>
                 <h4>  {{ count }}  / {{ countall }} </h4>
@@ -19,7 +20,7 @@
     
             <div class="middlebar">
                 <input type="button" value="메일 작성" v-on:click="addmsg()">
-                <input type="button" value="휴지통으로">
+                <input type="button" value="휴지통으로" v-on:click="delmsg(msg.num)">
              
             </div>    
             <div class="searchbar">
@@ -42,10 +43,9 @@
                         <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum,msg.readcheck)">
     
                     </td>
-                    <td>{{ msg.receiver.storeid }}</td>
+                    <td>{{ msg.sender.storeid }}</td>
                     <td v-on:click="detail(msg.msgnum)" >{{ msg.title }}</td>
                     <td>{{ msg.msgdate }}</td>
-                   
                 </tr>
         </table>
     </div>
@@ -54,7 +54,7 @@
     <script>
     import SideBar from '@/views/SideBar.vue'
     export default {
-        name: "SendMsg",
+        name: "MarkMsg",
         components: {SideBar},
         data() {
             return {
@@ -65,19 +65,17 @@
               markimg:require("../../assets/staron.png"),
               markimg2:require("../../assets/starnomal.png"),
               readimg:require("../../assets/msgnoread.png"),
-              readimg2:require("../../assets/msgread.png"),
+                  readimg2:require("../../assets/msgread.png"),
                }
         },
         created: function () {
             const self = this;
             let id = sessionStorage.getItem("loginId");
-            self.$axios.get("http://localhost:8085/msg/sender/"+id)
+            self.$axios.get("http://localhost:8085/msg/mark/"+id)
                 .then(function (res) {
-                    
-                    
                 self.list = res.data.msglist ;
-                self.count=res.data.countByReadSendMsg;
-                self.countall=res.data.countAllByReadSendMsg;
+                self.count=res.data.CountByMarkAndRead;
+                self.countall=res.data.CountByMark;
                 })
     },
     methods:{
@@ -110,8 +108,13 @@
     
             },
             addmsg(){
-        this.$router.push({name:'AddMsg'});
-     },
+            this.$router.push({name:'AddMsg'});
+             },
+             delmsg(num){
+            const self= this
+            self.$axios.patch("http://localhost:8085/msg/del/check/"+num)
+            self.$router.push({name:'ReceiveMsg'})
+             }
             }
         
         
@@ -122,7 +125,6 @@
      
     <style scoped>
     
-    
 .sidebar_container{
     display: inline-block;
     width: 300px;
@@ -132,6 +134,7 @@
   height: 770px;
 }
 
+    
     
     h3{
         font-size: large;
