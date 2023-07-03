@@ -21,6 +21,7 @@ import ScheDule from '@/components/schedule/ScheDule.vue'
 import EmpAdd from '@/components/emp/EmpAdd.vue'
 import EmpList from '@/components/emp/EmpList.vue'
 import WorkLogs from '@/components/worklogs/WorkLogs.vue'
+import ScheduleModal from '@/components/schedule/ScheduleModal.vue'
 
 import BranchSales from '@/components/sales/BranchSales.vue'
 
@@ -199,6 +200,11 @@ const routes = [
     name:'StoreInventory',
     component :StoreInventory
   },
+  {
+    path : '/schedulemodal',
+    name : 'ScheduleModal',
+    component : ScheduleModal
+  }
   
 ]
 
