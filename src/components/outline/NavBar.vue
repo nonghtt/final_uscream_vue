@@ -5,7 +5,7 @@
             <div class="justify-content-center">
                 <a class="navbar-brand " href="#">
                     <router-link class="logorouter" to="/">
-                        <img class="logo" src="../../assets/uscreamlogo.png">USCREAM
+                        <img class="logo" src="../../assets/uscreamlogo.png"><span class="logotitle">USCREAM</span>
                     </router-link>
                 </a>
             </div>
@@ -51,8 +51,10 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><router-link class="dropdown-item" to="/orderlist">발주현황</router-link></li>
-                            <li v-if="accounttype == 1"><router-link class="dropdown-item" active-class="active" to="/productlist" >상품리스트</router-link></li>
-                            <li v-if="accounttype == 2"><router-link class="dropdown-item" active-class="active" to="/inventory" >재고관리</router-link></li>
+                            <li v-if="accounttype == 1"><router-link class="dropdown-item" active-class="active"
+                                    to="/productlist">상품리스트</router-link></li>
+                            <li v-if="accounttype == 2"><router-link class="dropdown-item" active-class="active"
+                                    to="/inventory">재고관리</router-link></li>
                         </ul>
                     </li>
                     <li v-if="accounttype == 2" class="nav-item dropdown">
@@ -95,7 +97,7 @@
                     </span>
                 </router-link>
                 <router-link class="nav-link" to="/about" style="margin-left: 10px; margin-right: 10px;">
-                 <P v-on:click="logout"> LOGOUT </P>
+                    <P v-on:click="logout"> LOGOUT </P>
                 </router-link>
 
             </div>
@@ -111,37 +113,43 @@ export default {
             // 테스트용 데이터
             accounttype: null,
             loginId: null,
-            mail:null
+            mail: null
         }
     },
-    created: function(){
-        const self =this
-        if(sessionStorage.getItem("loginId")!=null){
+    created: function () {
+        const self = this
+        if (sessionStorage.getItem("loginId") != null) {
             self.loginId = sessionStorage.getItem("loginId");
             self.accounttype = sessionStorage.getItem("accounttype")
         }
     },
-    methods:{
-        logout(){
+    methods: {
+        logout() {
             sessionStorage.removeItem('loginId')
             sessionStorage.removeItem('accounttype')
             location.href = '/';
             alert('로그아웃이 완료되었습니다.')
         },
-     
+
     }
 }
 </script>
   
   <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
+
 * {
     font-size: 20px;
+    
 }
 
 .logo {
     width: 50px;
     height: 60px;
+    
+}
+.logotitle{
+    font-family: 'NotoSansKR-Bold';
 }
 
 h3 {
@@ -171,16 +179,17 @@ a {
     text-decoration: none;
 }
 
-.fa-house-chimney{
+.fa-house-chimney {
     font-size: 23px;
-}
-.fa-envelope{
-    font-size: 23px;
-    
 }
 
-a{
-    text-decoration : none;
+.fa-envelope {
+    font-size: 23px;
+
+}
+
+a {
+    text-decoration: none;
 }
 </style>
   
