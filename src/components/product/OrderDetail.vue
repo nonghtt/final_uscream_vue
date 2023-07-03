@@ -40,6 +40,7 @@
             @click="changeedit">수정</button>
         <button type="button" v-if="accounttype == 2 && clicked == 1" @click="edit">수정</button>
         {{ checkedproduct }}
+        {{ uncheckedproduct }}
 
     </div>
 </template>
@@ -56,6 +57,7 @@ export default {
             checked: [],
             amount: [],
             ordercost: [],
+            uncheckedproduct: [],
             checkedproduct: [],
             inventorylist: [],
             accounttype: sessionStorage.getItem("accounttype"),
@@ -63,19 +65,25 @@ export default {
         }
     },
     created: function () {
-        const self = this
-        self.$axios.get('http://localhost:8085/orders/detail/' + self.storeid + '/' + self.orderdate).
-            then(function (res) {
-                self.storeorder = res.data.Storeorder
-            })
+        const self = this;
+
+        self.$axios.get('http://localhost:8085/orders/detail/' + self.storeid + '/' + self.orderdate).then(function (res) {
+            self.storeorder = res.data.Storeorder;
+            self.checked = new Array(self.storeorder.length).fill(false); // checked 배열 초기화
+
+            // 체크된 상품과 체크되지 않은 상품을 구분하고 업데이트
+            self.checkedProduct();
+        });
+
         self.$axios.get('http://localhost:8085/inventorys').then(function (res2) {
-            self.inventorylist = res2.data.inventorylist
-        })
+            self.inventorylist = res2.data.inventorylist;
+        });
     },
     methods: {
         checkedProduct() {
-
             this.checkedproduct = [];
+            this.uncheckedproduct = [];
+
             for (let i = 0; i < this.checked.length; i++) {
                 if (this.checked[i]) {
                     this.checkedproduct.push({
@@ -84,17 +92,15 @@ export default {
                         product: this.storeorder[i].productnum.productnum,
                         amount: this.storeorder[i].amount,
                         ordercost: this.storeorder[i].ordercost,
-                    })
+                    });
                 } else {
-                    this.updateCheckedProduct(i);
-                }
-            }
-        },
-        updateCheckedProduct(index) {
-            if (!this.checked[index]) {
-                const foundIndex = this.checkedproduct.findIndex(item => item.product === this.storeorder[index].productnum.productnum);
-                if (foundIndex !== -1) {
-                    this.checkedproduct.splice(foundIndex, 1);
+                    this.uncheckedproduct.push({
+                        store: this.storeid,
+                        tempnum: this.storeorder[i].tempnum,
+                        product: this.storeorder[i].productnum.productnum,
+                        amount: this.storeorder[i].amount,
+                        ordercost: this.storeorder[i].ordercost,
+                    });
                 }
             }
         },
@@ -125,16 +131,15 @@ export default {
                 }
 
             }
+            for (let j = 0; j < self.uncheckedproduct.length; j++) {
+                let tempnum = self.uncheckedproduct[j].tempnum
+                let num = 2
+                self.$axios.patch('http://localhost:8085/orders/confirm/' + tempnum + '/' + num).then(function (res) {
+                    console.log(res.status)
+                })
+            }
         },
-        rejectorder(index) {
-            const self = this
-            let tempnum = self.storeorder[index].tempnum
-            alert(tempnum)
-            let num = 2
-            self.$axios.patch('http://localhost:8085/orders/confirm/' + tempnum + '/' + num).then(function (res) {
-                console.log(res.status)
-            })
-        }, updateAmount(order, index, value) {
+        updateAmount(order, index, value) {
             order.amount = value;
             this.calculateOrderCost(order, index);
         },
