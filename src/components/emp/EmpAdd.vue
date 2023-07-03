@@ -1,6 +1,6 @@
 <template>
     <div id="eaBody">
-        <button @click="testGrade">등급 추가 버튼 (한 번만 눌러야함..)</button>
+        <!-- <button @click="testGrade">등급 추가 버튼 (한 번만 눌러야함..)</button> -->
 
         <div id="divEmp">
             <h3>직원 등록</h3>
@@ -215,6 +215,7 @@ export default {
             //console.log("gradeChange() self.grade :" + self.grade);
         },
         // 이 함수는 지울 예정 (데이터 넣기 편하라고 넣어둔 함수)
+        /*
         testGrade() {
             let mul = [1, 1.2, 1.4, 1.6];
             for (let i = 0; i < 4; i++) {
@@ -232,6 +233,7 @@ export default {
                     })
             }
         },
+        */
         // 직원 등록 
         empAdd() {
             let empForm = new FormData();
