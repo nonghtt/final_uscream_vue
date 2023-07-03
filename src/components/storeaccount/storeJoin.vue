@@ -171,6 +171,8 @@ export default {
     //   }
     // },
 
+
+    
     methods :{
         join(){
         const self = this;

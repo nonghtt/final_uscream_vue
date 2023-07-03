@@ -15,6 +15,8 @@
         지점 정보 확인</div>        
 
 
+        
+
 <!-- 왼쪽 컨테이너 -->
 <div class="box1" id="div_outline">     
   <br/><br/>   
