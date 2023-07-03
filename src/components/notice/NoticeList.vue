@@ -1,32 +1,39 @@
 <template>
     <div class="container">
-        <div class="card"
-            style="box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); border: 1px solid #e0e0e0; width: 100%; margin: 0 auto;">
-            <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-weight: bold; font-size: 20px;">공지사항</span>
-                <button type="button" v-if="accounttype == '1'" class="col">
-                    <router-link class="writebtn" to="/NoticeWriter"
-                        style="background-color: #8eb443; border-color:#8eb443;">등록</router-link>
+        <div class="card">
+            <div class="card-header d-flex justify-content-between align-items-center">
+                <span class="font-weight-bold">공지사항</span>
+                <button v-if="accounttype === '1'" class="btn btn-primary btn-sm">
+                    <router-link v-if="accounttype === '1'" class="btn btn-primary btn-sm"
+                        :to="{ path: '/NoticeWriter' }">등록</router-link>
                 </button>
             </div>
 
             <div class="card-body">
                 <div class="row mb-3">
-                    <div class="col2">
+                    <div class="col">
                         <select class="form-select" v-model="schbox">
                             <option value="" disabled selected>검색조건</option>
-                            <option value="noticelist">전체목록</option>
                             <option value="noticenum">글번호</option>
                             <option value="category">분류</option>
                             <option value="title">제목</option>
                         </select>
                     </div>
-                    <div class="col3">
-                        <input v-model="schVal" type="text" class="schText" placeholder="검색어"
-                            @keypress.enter.prevent="getBoardList" />
+                    <div class="col" v-if="schbox === 'category'">
+                        <div class="input-group">
+                            <select class="form-select" v-model="categoryVal">
+                                <option value="1">칭찬</option>
+                                <option value="2">불만</option>
+                            </select>
+                            <button type="button" class="btn btn-primary" @click="getBoardList">검색</button>
+                        </div>
                     </div>
-                    <div class="col2">
-                        <button type="button" class="schbtn" @click="getBoardList">검색</button>
+                    <div class="col" v-else>
+                        <div class="input-group">
+                            <input v-model="schVal" type="text" class="form-control" placeholder="검색어"
+                                @keypress.enter.prevent="getBoardList" />
+                            <button type="button" class="btn btn-primary" @click="getBoardList">검색</button>
+                        </div>
                     </div>
                 </div>
                 <div class="row">
@@ -42,16 +49,29 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="item in noticelist" :key="item.noticenum" @click="detail(item)"
+                                <tr v-for="item in displayedList" :key="item.noticenum" @click="detail(item)"
                                     style="cursor: pointer;">
                                     <td class="text-center">{{ item.noticenum }}</td>
-                                    <td class="text-center">{{ categoryText(item.category) }}</td>
+                                    <td class="text-center">{{ getCategoryText(item.category) }}</td>
                                     <td class="text-center">{{ item.title }}</td>
                                     <td class="text-center">{{ formatDate(item.wdate) }}</td>
                                     <td class="text-center">{{ item.cnt }}</td>
                                 </tr>
                             </tbody>
                         </table>
+                    </div>
+                </div>
+                <div class="row mt-3">
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-primary" @click="prevPage" :disabled="currentPage === 1">이전</button>
+                            </div>
+                            <div class="col text-end">
+                                <button class="btn btn-primary" @click="nextPage"
+                                    :disabled="currentPage === totalPages">다음</button>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
@@ -71,6 +91,9 @@ export default {
             store: sessionStorage.getItem("loginId"),
             schbox: "", // 추가: 검색 조건 선택값을 저장하기 위한 변수
             schVal: "", // 추가: 검색어 입력값을 저장하기 위한 변수
+            categoryVal: "", // 추가: 칭찬/불만 선택값을 저장하기 위한 변수
+            currentPage: 1, // 추가: 현재 페이지 번호
+            itemsPerPage: 10, // 추가: 페이지 당 출력할 게시물 수
         };
     },
     created: function () {
@@ -80,32 +103,31 @@ export default {
             const self = this;
             self.$axios.get("http://localhost:8085/notices/" + parseInt(self.store)).then(function (res) {
                 self.noticelist = res.data.list;
-                console.log(res.data.list)
+                console.log(res.data.list);
             });
         }
     },
     computed: {
-        categoryText() {
-            return (item) => {
-                console.log("이건item"+item)
-                if (this.schbox === 'category') {
-                
-                    if (item.category === '1') {
-                        return '칭찬';
-                    } else if (item.category === '2') {
-                        return '불만';
-                    }
-                }
-                console.log(item.category)
-                return '';
-            };
-        }
+        totalPages() {
+            return Math.ceil(this.noticelist.length / this.itemsPerPage);
+        },
+        displayedList() {
+            const start = (this.currentPage - 1) * this.itemsPerPage;
+            const end = start + this.itemsPerPage;
+            return this.noticelist.slice(start, end);
+        },
     },
     methods: {
         detail(item) {
             this.$router.push({
-                name: "NoticeList",
-                query: { noticenum: item.noticenum, category: item.category, title: item.title, wdate: item.wdate, cnt: item.cnt },
+                name: "NoticeDetail",
+                query: {
+                    noticenum: item.noticenum,
+                    category: item.category,
+                    title: item.title,
+                    wdate: item.wdate,
+                    cnt: item.cnt,
+                },
             });
         },
         formatDate(dateString) {
@@ -122,7 +144,11 @@ export default {
                         url += `/schid/${this.schVal}`;
                         break;
                     case "category":
-                        url += `/schctg/${this.schVal}`;
+                        if (this.categoryVal !== "") {
+                            if (this.categoryVal === "1" || this.categoryVal === "2") {
+                                url += `/schctg/${this.categoryVal}`;
+                            }
+                        }
                         break;
                     case "title":
                         url += `/schtit/${this.schVal}`;
@@ -130,30 +156,39 @@ export default {
                     default:
                         break;
                 }
+            } else if (this.schbox === "category" && this.categoryVal !== "") {
+                url += `/schctg/${this.categoryVal}`;
             }
+
             console.log(url);
+
             const self = this;
             self.$axios.get(url).then(function (res) {
-                if (res.data.list && self.schbox && self.schVal) {
-                    self.noticelist = res.data.list;
-                    //self.noticelist = res.data.list.filter((item) => item[self.schbox].toLowerCase().includes(self.schVal.toLowerCase()));
-                } else if (res.data.list) {
+                if (res.data.list) {
                     self.noticelist = res.data.list;
                 } else if (res.data.notice) {
-                    self.noticelist = [res.data.notice];  // 단일 객체를 배열로 감싸서 할당
+                    self.noticelist = [res.data.notice];
                 }
             });
+        },
+        getCategoryText(category) {
+            if (category === 1) {
+                return "칭찬";
+            } else if (category === 2) {
+                return "불만";
+            }
+            return "";
+        },
+        prevPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+            }
+        },
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+            }
         },
     },
 };
 </script>
-
-<style scoped>
-.orderbtn {
-    text-decoration: none;
-    color: black;
-}
-
-* {
-    text-align: center;
-}</style>

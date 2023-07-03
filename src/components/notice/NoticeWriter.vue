@@ -1,4 +1,3 @@
-
 <template>
     <div class="container">
         <div class="card">
@@ -6,12 +5,12 @@
                 <span style="font-weight: bold; font-size: 20px;">공지사항</span>
             </div>
             <div class="schbox">
-            <label for="category">분류</label>
-            <select id="category" v-model="category">
-                <option value="1">칭찬</option>
-                <option value="2">불만</option>
-            </select>
-    </div>
+                <label for="category">분류</label>
+                <select id="category" v-model="category">
+                    <option value="1">칭찬</option>
+                    <option value="2">불만</option>
+                </select>
+            </div>
 
             <div>
                 <label for="title">제목</label>
@@ -27,24 +26,24 @@
 </template>
 
 <script>
-import Editor from "@toast-ui/editor";
-import "@toast-ui/editor/dist/toastui-editor.css";
+import Editor from '@toast-ui/editor';
+import '@toast-ui/editor/dist/toastui-editor.css';
 
 export default {
-    name: 'NoticeWriter',
+    name: "NoticeWriter",
     data() {
         return {
             editor: null,
             noticeContent: [], // 로컬 데이터로 사용할 변수 선언
-            category: '', // 선택된 분류를 담을 변수
-            title: '' // 입력된 제목을 담을 변수
+            category: "", // 선택된 분류를 담을 변수
+            title: "" // 입력된 제목을 담을 변수
         };
     },
     mounted() {
         this.editor = new Editor({
-            el: document.querySelector('#editor'),
+            el: document.querySelector("#editor"),
             height: "500px",
-            initialEditType: 'markdown'
+            initialEditType: "markdown"
         });
     },
     methods: {
@@ -55,17 +54,18 @@ export default {
             formData.append("content", content);
             formData.append("category", this.category);
             formData.append("title", this.title);
-            console.log(this.category)
-            console.log(this.title)
+            console.log(this.category);
+            console.log(this.title);
             this.$axios
-                .post('http://localhost:8085/notices', formData, {
+                .post("http://localhost:8085/notices", formData, {
                     headers: {
-                        'Content-Type': 'multipart/form-data'
+                        "Content-Type": "multipart/form-data"
                     }
                 })
                 .then(response => {
                     // 저장 성공 후의 처리
                     console.log(response.data);
+                    this.$router.push("/NoticeList"); // 저장 후 목록으로 이동
                 })
                 .catch(error => {
                     // 저장 실패 후의 처리
@@ -73,5 +73,5 @@ export default {
                 });
         }
     }
-}
+};
 </script>
