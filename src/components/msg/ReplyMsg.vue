@@ -14,16 +14,13 @@
                 <input type="button" value="작성하기" v-on:click="addmsg">
                 <input type="button" value="임시보관">
             </div>
-        <tabel>
-             <form action="" method="post" enctype="multipart/form-data">
+        <table>
             <tr><td>보내는 사람</td><td><input type="text" class="enter"  v-model="dto.sender.storeid" readonly></td></tr>
             <tr><td>받는 사람</td><td><input type="text" class="enter" v-model="dto.receiver.storeid"></td></tr>
             <tr><td>제목</td><td><input type="text" class="enter" v-model="dto.title"></td></tr>
             <tr><td>첨부</td><td><input type="file" name="file" ref="msgfile" @change="selectmsgfile" class="enter" multiple='true'></td></tr>
             <tr><td colspan="2"><textarea rows="20" cols="30" v-model="content"></textarea></td></tr>
-
-        </form>
-        </tabel>
+        </table>
 
 
     </div>
@@ -39,7 +36,10 @@
             num:this.$route.query.num,
             id:sessionStorage.getItem("loginId"),
             dto:[]
-        
+            // receiver:'',
+            // title:'',
+            // content:'',
+            // file:''
             }
         },
         created: function () {
@@ -58,9 +58,21 @@
 
     },
     methods:{
+        addmsg(){
+            const self= this;
+            let form = new FormData();
+            form.append('sender',self.dto.sender.storeid);
+            form.append('receiver',self.dto.receiver.storeid);
+            form.append('title',self.dto.title);
+            form.append('content',self.content);
+            self.$axios.post("http://localhost:8085/msg",form, {headers: {"Content-Type": "multipart/form-data"}})
+            
+            this.$router.push({name:'SendMsg'});
      
     }
 }
+    }
+
     </script>
     
     

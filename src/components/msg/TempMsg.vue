@@ -16,35 +16,39 @@
             </span>
             
         </div>
-    <div class="middlebar_container">
-    
-            <div class="middlebar">
-                <input type="button" value="메일 작성">
-                <input type="button" value="휴지통으로">
-             
-            </div>    
-            <div class="searchbar">
-                <form>
-                    <input type="text" name="searchbar" placeholder="메일 검색" autocomplete="off">
-                    <input type="submit" value="검색">
-                </form>
-            </div>
-    </div>
-        <table class="main">
-                <tr v-for="(msg, index) in list" :key="index">
-    
-                    <td class="check">
-                        <input  style='zoom:1.5;' type ="checkbox" class="checkbox_icon">
-                        <img class="lcon" src="../../assets/starnomal.png">
-                        <img class="lcon" src="../../assets/msgread.png">
-                    </td>
-                    <td>{{ msg.sender.storeid }}</td>
-                    <td>{{ msg.title }}</td>
-                    <td>{{ msg.msgdate }}</td>
-                </tr>
-    
-        </table>
-    </div>
+  
+    <div class="middlebar_container" style="border-bottom: 1px solid;">
+
+<div class="middlebar">
+    <input type="button" value="메일 작성" v-on:click="addmsg()">
+    <input type="button" value="휴지통으로" v-on:click="delmsg(msg.num)">
+ 
+</div>    
+<div class="searchbar">
+        <input type="text" name="searchbar" id="searchbar" placeholder="받는 사람으로 메일 검색" autocomplete="off">
+        <input type="button" value="검색" v-on:click="sendertempmsg()">
+</div>
+</div>
+
+    <table class="main">
+            <tr v-for="(msg, index) in list" :key="index">
+
+                <td class="check">
+                    <input type ="checkbox" class="checkbox_icon" v-model="check[index]">
+                    <img class="lcon" :src="markimg"  v-if="msg.mark==1" v-on:click="mark(msg.msgnum,msg.mark)">
+                    <img class="lcon" :src="markimg2"  v-else v-on:click="mark(msg.msgnum,msg.mark)">
+
+
+                    <img class="lcon" :src="readimg" v-if="msg.readcheck==1" v-on:click="read(msg.msgnum,msg.readcheck)">
+                    <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum,msg.readcheck)">
+
+                </td>
+                <td>{{ msg.receiver.storeid }}</td>
+                <td v-on:click="addtempmsg(msg.msgnum)" >{{ msg.title }}</td>
+                <td>{{ msg.msgdate }}</td>
+            </tr>
+    </table>
+</div>
     </template>
     
     <script>
@@ -54,9 +58,15 @@
         components:{SideBar},
         data() {
             return {
-              list : [],
-              countall: 0,
-              count:0
+                list : [],
+          check:[],
+          countall: 0,
+          count:0,
+          id:sessionStorage.getItem("loginId"),
+          markimg:require("../../assets/staron.png"),
+          markimg2:require("../../assets/starnomal.png"),
+          readimg:require("../../assets/msgnoread.png"),
+              readimg2:require("../../assets/msgread.png"),
                }
         },
         created: function () {
@@ -72,6 +82,55 @@
                     
                     
                 })
+    },
+    methods:{
+        mark(num,mark){
+        const self = this 
+        self.$axios.patch("http://localhost:8085/msg/mark/check/"+num)
+        
+        if(mark){
+                self.markimg=require("../../assets/staron.png")
+        }else {
+            self.markimg=require("../../assets/starnomal.png")
+        }
+        
+        window.location.reload();
+    },
+    read(num,read){
+        const self = this
+        self.$axios.patch("http://localhost:8085/msg/read/check/"+num)
+        if(read){
+                self.readimg=require("../../assets/msgread.png")
+            }
+
+        window.location.reload();
+    },
+    addtempmsg(num){
+        const self= this
+        self.$axios.get("http://localhost:8085/msg/read/detail/check/"+num)
+        self.$router.push({name:'AddTempMsg',query:{'num':num}})
+
+
+        },
+        addmsg(){
+        this.$router.push({name:'AddMsg'});
+         },
+         delmsg(num){
+        const self= this
+        self.$axios.patch("http://localhost:8085/msg/del/check/"+num)
+        self.$router.push({name:'ReceiveMsg'})
+         },
+         sendertempmsg(){ 
+            const self = this; 
+            let sender =  document.getElementById("searchbar").value;
+            let receiver = self.id
+            alert(sender+"/"+receiver);
+            self.$axios.get("http://localhost:8085/msg/sendertempmsg/"+sender+"/"+receiver)
+            .then(function (res) {      
+                alert("성공");
+            self.list = res.data.msglist ;
+             })
+            }
     }
     }
     </script>
@@ -90,8 +149,6 @@
     
     <style scoped>
     
-
-    
 .sidebar_container{
     display: inline-block;
     width: 300px;
@@ -102,75 +159,87 @@
 }
 
 
-    h3{
-        font-size: large;
-    }
-    .container{
-        margin: 5px 5px 5px 5px;
-    }
+h3{
+    font-size: large;
+}
+
+.container{
+    margin: 5px 5px 5px 5px;
+}
+
+.topbar{
+   text-align: center;
+    margin-top: 2%;
+    margin-bottom: 2%;
     
-    .topbar{
-       text-align: center;
-        margin-top: 2%;
-        margin-bottom: 2%;
-        
-    }
-    middlebar_container{
-        
-    }
-    .middlebar{
-        display:inline-block;
-    
-        margin-bottom: 10px;
-    }
-    .searchbar{
-        float:right;
-    
-        display: inline-block;
-    }
-    
-    .main{
-        width:100%;
-        text-align: center;
-    }
-    
-    td {
-        padding-top: 7px;
-        padding-bottom: 12px;
-      }
-    
-    td:nth-child(1) {
-      width: 20%; 
-    }
-    
-    td:nth-child(2) {
-      width: 15%; 
-      text-align: left;
-    }
-    
-    td:nth-child(3) {
-      width: 50%; 
-      text-align: left;
-    }
-    
-    td:nth-child(4) {
-      width: 15%; 
-    }
-    
-    .check{
-        display: flex;
-        align-items: center;
-        width:40px;
-    }
+}
+/* middlebar_container{
     
     
-    .lcon {
-        width: 20px;
-        height: 30px;
-        margin-left: 20px;
-        margin-right: 8px;
-    }
-    
-    
+} */
+.middlebar{
+    display:inline-block;
+    margin-bottom: 10px;
+}
+.searchbar{
+    float:right;
+
+    display: inline-block;
+}
+
+.main{
+    width:100%;
+    text-align: center;
+}
+
+table{
+    border-radius:6px;
+}
+
+tr{
+    border-bottom: 1px solid rgba(0,0,0,.1);
+}
+
+td {
+    padding-top: 7px;
+    padding-bottom: 12px;
+  }
+
+td:nth-child(1) {
+  width: 20%; 
+}
+
+td:nth-child(2) {
+  width: 15%; 
+  text-align: left;
+}
+
+td:nth-child(3) {
+  width: 50%; 
+  text-align: left;
+}
+
+td:nth-child(4) {
+  width: 15%; 
+}
+
+.check{
+    display: flex;
+    align-items: center;
+    width:40px;
+}
+
+
+.lcon {
+    width: 20px;
+    height: 30px;
+    margin-left: 20px;
+    margin-right: 8px;
+}
+
+.checkbox_icon{
+    zoom:1.5;
+}
+
     </style>
     

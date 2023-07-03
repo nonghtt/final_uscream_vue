@@ -12,17 +12,15 @@
             </div>
             <div class="middlebar">
                 <input type="button" value="작성하기" v-on:click="addmsg">
-                <input type="button" value="임시보관">
+                <input type="button" value="임시보관" v-on:click="tempmsg">
             </div>
         <tabel>
-             <form action="" method="post" enctype="multipart/form-data">
             <tr><td>보내는 사람</td><td><input type="text" class="enter"  v-model="sender" readonly></td></tr>
             <tr><td>받는 사람</td><td><input type="text" class="enter" v-model="receiver"></td></tr>
             <tr><td>제목</td><td><input type="text" class="enter" v-model="title"></td></tr>
             <tr><td>첨부</td><td><input type="file" name="file" ref="msgfile" @change="selectmsgfile" class="enter" multiple='true'></td></tr>
             <tr><td colspan="2"><textarea rows="20" cols="30" v-model="content"></textarea></td></tr>
 
-        </form>
         </tabel>
 
 
@@ -64,6 +62,19 @@
             const self= this;
             self.$axios.post("http://localhost:8085/msg",form, {headers: {"Content-Type": "multipart/form-data"}})
             
+            this.$router.push({name:'SendMsg'});
+            
+    },
+    tempmsg(){
+
+            let form = new FormData();
+            form.append('sender',this.sender);
+            form.append('receiver',this.receiver);
+            form.append('title',this.title);
+            form.append('content',this.content);
+            const self= this;
+            self.$axios.post("http://localhost:8085/msg/temp",form, {headers: {"Content-Type": "multipart/form-data"}})
+            alert("성공");
             this.$router.push({name:'SendMsg'});
             
     }
