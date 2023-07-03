@@ -38,8 +38,8 @@ import ReplyMsg from '@/components/msg/ReplyMsg.vue'
 import SideBar from '../views/SideBar.vue'
 
 import NoticeList from '@/components/notice/NoticeList.vue'
-
-
+import NoticeWriter from '@/components/notice/NoticeWriter.vue';
+import NoticeDetail from '@/components/notice/NoticeDetail.vue';
 
 
 
@@ -183,6 +183,16 @@ const routes = [
     path: '/NoticeList',
     name: 'NoticeList',
     component: NoticeList
+  },
+  {
+    path: '/NoticeWriter',
+    name: 'NoticeWriter',
+    component: NoticeWriter
+  },
+  {
+    path: '/NoticeDetail',
+    name: 'NoticeDetail',
+    component: NoticeDetail
   },
   {
     path:'/inventory',
