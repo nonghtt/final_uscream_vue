@@ -40,10 +40,16 @@ export default {
         };
     },
     mounted() {
+        const query = this.$route.query;
+        this.category = query.category || "";
+        this.title = query.title || "";
+        this.content = query.content || "";
+
         this.editor = new Editor({
             el: document.querySelector("#editor"),
             height: "500px",
-            initialEditType: "markdown"
+            initialEditType: "markdown",
+            initialValue: this.content
         });
     },
     methods: {
