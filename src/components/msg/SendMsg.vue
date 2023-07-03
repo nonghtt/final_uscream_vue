@@ -23,10 +23,8 @@
              
             </div>    
             <div class="searchbar">
-                <form>
-                    <input type="text" name="searchbar" placeholder="메일 검색" autocomplete="off">
-                    <input type="submit" value="검색">
-                </form>
+                    <input type="text" name="searchbar" id="searchbar" placeholder="받은 사람으로 검색" autocomplete="off">
+                    <input type="submit" value="검색" v-on:click="sendermsgsearch()">
             </div>
     </div>
         <table class="main">
@@ -112,6 +110,17 @@
             addmsg(){
         this.$router.push({name:'AddMsg'});
      },
+    sendermsgsearch(){ 
+            const self = this; 
+            let sender =  sessionStorage.getItem("loginId")
+            let receiver = document.getElementById("searchbar").value
+            alert("성공");
+            self.$axios.get("http://localhost:8085/msg/sendermsg/"+sender+"/"+receiver)
+            .then(function (res) {      
+            self.list = res.data.msglist ;
+             })
+            }
+
             }
         
         

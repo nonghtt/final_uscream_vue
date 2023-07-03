@@ -37,7 +37,7 @@
                         <img class="lcon" src="../../assets/msgread.png">
                     </td>
                     <td>{{ msg.sender.storeid }}</td>
-                    <td>{{ msg.title }}</td>
+                    <td  v-on:click="detail(msg.msgnum)">{{ msg.title }}</td>
                     <td>{{ msg.msgdate }}</td>
                 </tr>
     
@@ -70,6 +70,15 @@
                     
                 
                 })
+    },
+    methods:{
+        detail(num){
+        const self= this
+        self.$axios.patch("http://localhost:8085/msg/read/detail/check/"+num)
+        self.$router.push({name:'DetailMsg',query:{'num':num}})
+
+
+        }
     }
     }
     </script>

@@ -14,7 +14,20 @@
         </span>
         
     </div>
-<div class="middlebar_container" style="border-bottom: 1px solid;">
+    <div class="middlebar_container" style="border-bottom: 1px solid;">
+
+        <div class="middlebar">
+            <input type="button" value="메일 작성" v-on:click="addmsg()">
+            <input type="button" value="휴지통으로" v-on:click="delmsg(msg.num)">
+         
+        </div>    
+        <div class="searchbar">
+                <input type="text" name="searchbar" id="searchbar" placeholder="보낸 사람으로 메일 검색" autocomplete="off">
+                <input type="button" value="검색" v-on:click="receivemsgsearch()">
+        </div>
+</div>
+
+ <div class="middlebar_container" style="border-bottom: 1px solid;">
 
         <div class="middlebar">
             <input type="button" value="메일 작성" v-on:click="addmsg()">
@@ -118,13 +131,11 @@ methods:{
        
         receivemsgsearch(){ 
             const self = this; 
-            let sender =  document.getElementById("searchbar");
+            let sender =  document.getElementById("searchbar").value;
             let receiver = self.id
-            alert(sender +"/"+ receiver)
             self.$axios.get("http://localhost:8085/msg/receivemsg/"+sender+"/"+receiver)
-            .then(function (res) {
+            .then(function (res) {      
             self.list = res.data.msglist ;
-                alert("성공");
              })
             }
 }

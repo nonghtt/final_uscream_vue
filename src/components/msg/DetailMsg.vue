@@ -57,14 +57,25 @@
     methods:{
         delmsg(num){
         const self= this
-        self.$axios.patch("http://localhost:8085/msg/del/check/"+num)
+
+
+
+
+        if(self.dto.delcheck == false){
+            self.$axios.patch("http://localhost:8085/msg/del/check/"+num)
+        }else{
+
+            
+            self.$axios.delete("http://localhost:8085/msg/del/"+num)
+        }
+
         self.$router.push({name:'ReceiveMsg'})
          },
-         replymsg(num){
+        replymsg(num){
             const self = this;
 
             self.$router.push({name:'ReplyMsg',query:{'num':num}})
-         }
+        }
     }
 }
     </script>
