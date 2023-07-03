@@ -71,7 +71,8 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link active" to="/branchsales">
+                        <!-- <router-link class="nav-link active" to="/branchsales"> -->
+                        <router-link class="nav-link active" to="/headsales">
                             매출관리
                         </router-link>
                     </li>
