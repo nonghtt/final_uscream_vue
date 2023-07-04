@@ -41,7 +41,7 @@
         </div>
 
         <div id="divSchedule">
-            <h3>기본 스케줄 등록 (미완)</h3>
+            <h3>기본 스케줄 등록</h3>
             <div class="mb-3">
                 <label for="labelStartDate" class="form-label title">시작 날짜</label>
                 <input type="date" class="form-control" v-model="startdate">
