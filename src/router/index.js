@@ -44,7 +44,6 @@ import NoticeDetail from '@/components/notice/NoticeDetail.vue';
 
 
 
-
 const routes = [
  
   {
@@ -204,8 +203,7 @@ const routes = [
     path : '/schedulemodal',
     name : 'ScheduleModal',
     component : ScheduleModal
-  }
-  
+  }  
 ]
 
 const router = createRouter({

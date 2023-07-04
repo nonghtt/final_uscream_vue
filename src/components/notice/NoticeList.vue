@@ -101,9 +101,12 @@ export default {
             this.getBoardList(); // 추가: 페이지가 생성될 때 공지사항 리스트를 가져옴
         } else if (this.accounttype == 2) {
             const self = this;
-            self.$axios.get("http://localhost:8085/notices/" + parseInt(self.store)).then(function (res) {
-                self.noticelist = res.data.list;
-                console.log(res.data.list);
+            self.$axios.get("http://localhost:8085/notices").then(function (res) {
+                if (res.data.list) {
+                    self.noticelist = res.data.list;
+                } else if (res.data.notice) {
+                    self.noticelist = [res.data.notice];
+                }
             });
         }
     },
