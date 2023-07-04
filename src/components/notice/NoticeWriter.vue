@@ -16,11 +16,15 @@
                 <label for="title">제목</label>
                 <input type="text" id="title" v-model="title">
             </div>
-            <div id="editor"></div>
-            <button type="button" class="btn btn-primary mr-2" style="background-color: #8eb443; border-color:#8eb443;">
-                <router-link class="listbtn" to="/NoticeList">목록</router-link>
+            <div ref="editor"></div>
+            <button type="button" class="btn btn-primary mr-2" style="background-color: #8eb443; border-color:#8eb443;"
+                @click="goToNoticeList">
+                목록
             </button>
-            <router-link class="savebtn" to="/NoticeList" @click="saveNotice">저장</router-link>
+            <button type="button" class="btn btn-primary savebtn" style="background-color: #8eb443; border-color:#8eb443;"
+                @click="saveNotice">
+                저장
+            </button>
         </div>
     </div>
 </template>
@@ -34,34 +38,38 @@ export default {
     data() {
         return {
             editor: null,
-            noticeContent: [], // 로컬 데이터로 사용할 변수 선언
             category: "", // 선택된 분류를 담을 변수
-            title: "" // 입력된 제목을 담을 변수
+            title: "", // 입력된 제목을 담을 변수
+            noticeContent: "" // 입력된 공지사항 내용을 담을 변수
         };
     },
     mounted() {
         const query = this.$route.query;
         this.category = query.category || "";
         this.title = query.title || "";
-        this.content = query.content || "";
 
         this.editor = new Editor({
-            el: document.querySelector("#editor"),
+            el: this.$refs.editor,
             height: "500px",
             initialEditType: "markdown",
-            initialValue: this.content
+            previewStyle: "vertical", // 세로 모드로 WYSIWYG 미리보기 설정
+            events: {
+                change: this.handleEditorChange
+            }
         });
     },
     methods: {
+        handleEditorChange() {
+            // 에디터 내용이 변경되었을 때 호출되는 메소드
+            // 작성한 내용을 변수에 저장
+            this.noticeContent = this.editor.getMarkdown();
+        },
         saveNotice() {
             const formData = new FormData();
-            const content = this.editor.getMarkdown(); // 공지사항 내용을 가져옴
-
-            formData.append("content", content);
+            formData.append("content", this.noticeContent);
             formData.append("category", this.category);
             formData.append("title", this.title);
-            console.log(this.category);
-            console.log(this.title);
+
             this.$axios
                 .post("http://localhost:8085/notices", formData, {
                     headers: {
@@ -69,14 +77,21 @@ export default {
                     }
                 })
                 .then(response => {
-                    // 저장 성공 후의 처리
                     console.log(response.data);
-                    this.$router.push("/NoticeList"); // 저장 후 목록으로 이동
+                    // 저장 후 목록으로 이동하면서 새로고침되어 데이터가 갱신됨
+                    this.$router.push("/NoticeList").catch(error => {
+                        console.error(error);
+                    });
                 })
                 .catch(error => {
-                    // 저장 실패 후의 처리
                     console.error(error);
                 });
+        },
+        goToNoticeList() {
+            // 목록 버튼 클릭 시 바로 이동
+            this.$router.push("/NoticeList").catch(error => {
+                console.error(error);
+            });
         }
     }
 };

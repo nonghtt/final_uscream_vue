@@ -6,7 +6,7 @@
                     <label for="title" class="form-label"
                         style="font-size: 16px; font-weight: bold; color: gray;">제목</label>
                     <div class="underline-input">
-                        <input type="text" id="title" class="form-control" readonly :value="title">
+                        <input type="text" id="title" class="form-control" v-model="title" :readonly="!canEdit">
                         <div class="underline"></div>
                     </div>
                 </div>
@@ -14,7 +14,7 @@
                     <label for="category" class="form-label"
                         style="font-size: 16px; font-weight: bold; color: gray;">분류</label>
                     <div class="underline-input">
-                        <input type="text" id="category" class="form-control" readonly :value="categoryText">
+                        <input type="text" id="category" class="form-control" v-model="categoryText" :readonly="!canEdit">
                         <div class="underline"></div>
                     </div>
                 </div>
@@ -22,51 +22,41 @@
                     <label for="content" class="form-label"
                         style="font-size: 16px; font-weight: bold; color: gray;">내용</label>
                     <div class="underline-input">
-                        <div ref="editor" class="editor-container"></div>
+                        <textarea id="content" class="form-control" v-model="content" :readonly="!canEdit"></textarea>
                     </div>
                 </div>
                 <hr>
                 <div class="d-flex justify-content-end">
-                    <button @click="moveToEditPage" class="btn btn-warning btn-sm mr-1">수정</button>
-                    <button @click="deleteBoard" class="btn btn-danger btn-sm">삭제</button>
-                    <button @click="movePage('/NoticeList')" class="btn btn-secondary btn-sm">뒤로 가기</button>
+                    <button v-if="canEdit" @click="saveChanges" class="btn btn-warning btn-sm mr-1" :disabled="!canEdit">{{
+                        editButtonText }}</button>
+                    <button v-if="canEdit" @click="deleteBoard" class="btn btn-danger btn-sm">삭제</button>
+                    <button v-if="accounttype === '2'" @click="movePage('/NoticeList')"
+                        class="btn btn-secondary btn-sm">목록</button>
+                    <button v-if="accounttype === '1'" @click="movePage('/NoticeEdit')"
+                        class="btn btn-secondary btn-sm">수정</button>
                 </div>
-            </div>
         </div>
     </div>
-</template>
+</div></template>
+
+
+
 
 <script>
 import axios from 'axios';
 
-const getBoardDetailAPI = (noticenum) =>
-    axios
-        .get(`http://localhost:8085/notices/schid/${noticenum}`)
-        .then((response) => response.data)
-        .catch(() => {
-            throw new Error('게시글을 불러오는데 실패했습니다.');
-        });
-
-const deleteBoardAPI = (noticenum) =>
-    axios
-        .delete(`http://localhost:8085/notices/del/${noticenum}`)
-        .then((response) => {
-            if (response.data.flag) {
-                return response.data;
-            } else {
-                throw new Error('게시글 삭제에 실패했습니다.');
-            }
-        })
-        .catch((error) => {
-            throw new Error(`게시글 삭제에 실패했습니다. 오류: ${error.message}`);
-        });
-
 export default {
+    name: "NoticeDetail",
     data() {
         return {
+            noticenum: 0,
             title: '',
             category: 0,
             content: '',
+            canEdit: true,
+            accounttype: sessionStorage.getItem("accounttype"),
+            editButtonText: '완료',
+
         };
     },
     computed: {
@@ -75,34 +65,33 @@ export default {
         },
     },
     mounted() {
-        const query = this.$route.query;
-        this.noticenum = query.noticenum || '';
-        this.title = query.title || '';
-        this.category = query.category || 0;
-        this.content = query.content || '';
-
-        // 수정 버튼을 눌렀을 때 기존 값을 가져오도록 fetchBoardDetail 메서드 호출
         this.fetchBoardDetail();
+
+        if(this.accounttype === '2'){
+            this.canEdit = false;
+        }
     },
     methods: {
         fetchBoardDetail() {
             const noticenum = this.$route.query.noticenum;
-            getBoardDetailAPI(noticenum)
-                .then((response) => {
-                    this.title = response.notice.title;
-                    this.category = response.notice.category;
-                    this.content = response.notice.content;
-                    console.log(response);
+            axios
+                .get(`http://localhost:8085/notices/schid/${noticenum}`)
+                .then(response => {
+                    this.noticenum = response.data.notice.noticenum;
+                    this.title = response.data.notice.title;
+                    this.category = response.data.notice.category;
+                    this.content = response.data.notice.content;
                 })
-                .catch(() => {
-                    // 오류 처리
+                .catch(error => {
+                    console.error(error);
                 });
         },
         deleteBoard() {
-            const noticenum = this.$route.query.noticenum;
-            deleteBoardAPI(noticenum)
-                .then((response) => {
-                    if (response.flag) {
+            const noticenum = this.noticenum;
+            axios
+                .delete(`http://localhost:8085/notices/del/${noticenum}`)
+                .then(response => {
+                    if (response.data.flag) {
                         this.$store.commit('SET_SNACKBAR', {
                             show: true,
                             msg: '삭제 완료',
@@ -111,21 +100,32 @@ export default {
                         this.movePage('/NoticeList');
                     }
                 })
-                .catch(() => {
-                    // 오류 처리
+                .catch(error => {
+                    console.error(`게시글 삭제에 실패했습니다. 오류: ${error.message}`);
                 });
         },
         movePage(url) {
             this.$router.push(url);
         },
-        moveToEditPage() {
-            const queryParams = {
-                noticenum: this.noticenum,
-                title: this.title,
-                category: this.category,
-                content: this.content,
-            };
-            this.$router.push({ path: '/NoticeWriter', query: queryParams });
+        saveChanges() {
+            const noticenum = this.noticenum;
+            const formData = new FormData();
+            formData.append('content', this.content);
+            formData.append('category', this.category);
+            formData.append('title', this.title);
+
+            axios
+                .put(`http://localhost:8085/notices/edit/${noticenum}`, formData)
+                .then(response => {
+                    console.log(response.data);
+                    // 저장 후 목록으로 이동하면서 새로고침되어 데이터가 갱신됨
+                    this.$router.push('/NoticeList').catch(error => {
+                        console.error(error);
+                    });
+                })
+                .catch(error => {
+                    console.error(error);
+                });
         },
     },
 };
@@ -153,7 +153,6 @@ export default {
     background-color: #000;
 }
 
-.editor-container {
+textarea.form-control {
     height: 300px;
-}
-</style>
+}</style>
