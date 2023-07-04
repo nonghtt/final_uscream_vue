@@ -1,301 +1,166 @@
-<!-- <script>
-import { defineComponent } from 'vue'
-import FullCalendar from '@fullcalendar/vue3'
-import dayGridPlugin from '@fullcalendar/daygrid'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
-// import { INITIAL_EVENTS, createEventId } from './event-utils'
+<template>
+  <div id="title"> 매출 조회 </div>
+  <div id="dailySales" style="width:700px; height:500px"></div>
+  <div>일간 지점 매출 TOP3</div><div id="rankingchart" style="width: 600px; height: 400px"></div>
+</template>
 
-export default defineComponent({
+<script>
+import * as echarts from 'echarts/core';
+import { TooltipComponent, GridComponent } from 'echarts/components';
+import { BarChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
+
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import bootstrap5Plugin from '@fullcalendar/bootstrap5';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import { Calendar } from '@fullcalendar/core';
+
+
+
+export default {
+  name: 'CalendarTest',
   components: {
-    FullCalendar,
   },
   data() {
     return {
+      list: [],
+      list2: [],
       calendarOptions: {
-        plugins: [
-          dayGridPlugin,
-          timeGridPlugin,
-          interactionPlugin // needed for dateClick
-        ],
-        headerToolbar: {
-          left: 'title', 
-        //   center: 'title',
-        //   right: 'dayGridMonth,timeGridWeek,timeGridDay'
-          right: 'prev,next today'
-        },
-        initialView: 'dayGridMonth',
-        // initialEvents: INITIAL_EVENTS, // alternatively, use the `events` setting to fetch from a feed
-        editable: true,
-        selectable: true,
-        selectMirror: true,
-        dayMaxEvents: true,
-        weekends: true,
-        select: this.handleDateSelect,
-        eventClick: this.handleEventClick,
-        eventsSet: this.handleEvents
-        /* you can update a remote database when these fire:
-        eventAdd:
-        eventChange:
-        eventRemove:
-        */
-      },
-      currentEvents: [],
+        plugins: [dayGridPlugin, interactionPlugin],
+        initialView: 'dayGridMonth'
+      }
     }
+
+  },
+  mounted() {
+    this.addDailySales();
+    this.getDailyRank3();
   },
   methods: {
-    handleWeekendsToggle() {
-      this.calendarOptions.weekends = !this.calendarOptions.weekends // update a property
-    },
-    handleDateSelect(selectInfo) {
-      let title = prompt('Please enter a new title for your event')
-      let calendarApi = selectInfo.view.calendar
 
-      calendarApi.unselect() // clear date selection
+    addDailySales() {
+      const self = this;
 
-      if (title) {
-        calendarApi.addEvent({
-        //   id: createEventId(),
-          title,
-          start: selectInfo.startStr,
-          end: selectInfo.endStr,
-          allDay: selectInfo.allDay
-        })
-      }
-    },
-    handleEventClick(clickInfo) {
-      if (confirm(`Are you sure you want to delete the event '${clickInfo.event.title}'`)) {
-        clickInfo.event.remove()
-      }
-    },
-    handleEvents(events) {
-      this.currentEvents = events
-    },
-  }
-})
+      self.$axios
+      .get('http://localhost:8085/selling/dailysales')
+      .then(response => {
+        self.list = response.data;
 
-</script>
+        console.log(self.list);
 
-<template>
-  <div class='demo-app'>
-    <div class='demo-app-sidebar'>
-      <div class='demo-app-sidebar-section'>
-        <h2>Instructions</h2>
-        <ul>
-          <li>Select dates and you will be prompted to create a new event</li>
-          <li>Drag, drop, and resize events</li>
-          <li>Click an event to delete it</li>
-        </ul>
-      </div>
-      <div class='demo-app-sidebar-section'>
-        <label>
-          <input
-            type='checkbox'
-            :checked='calendarOptions.weekends'
-            @change='handleWeekendsToggle'
-          />
-          toggle weekends
-        </label>
-      </div>
-      <div class='demo-app-sidebar-section'>
-        <h2>All Events ({{ currentEvents.length }})</h2>
-        <ul>
-          <li v-for='event in currentEvents' :key='event.id'>
-            <b>{{ event.startStr }}</b>
-            <i>{{ event.title }}</i>
-          </li>
-        </ul>
-      </div>
-    </div>
-    <div class='demo-app-main'>
-      <FullCalendar
-        class='demo-app-calendar'
-        :options='calendarOptions'
-      >
-        <template v-slot:eventContent='arg'>
-          <b>{{ arg.timeText }}</b>
-          <i>{{ arg.event.title }}</i>
-        </template>
-      </FullCalendar>
-    </div>
-  </div>
-</template>
+        if(self.list && self.list.length > 0) {
+          const events = self.list.map(item => ({
+            title: item. TOTALPRICE.toLocaleString(),
+            start: item.SELLINGDATE
+          }));
 
-<style lang='css'>
-
-h2 {
-  margin: 0;
-  font-size: 16px;
-}
-
-ul {
-  margin: 0;
-  padding: 0 0 0 1.5em;
-}
-
-li {
-  margin: 1.5em 0;
-  padding: 0;
-}
-
-b { /* used for event dates/times */
-  margin-right: 3px;
-}
-
-.demo-app {
-  display: flex;
-  min-height: 100%;
-  font-family: Arial, Helvetica Neue, Helvetica, sans-serif;
-  font-size: 14px;
-}
-
-.demo-app-sidebar {
-  width: 300px;
-  line-height: 1.5;
-  background: #eaf9ff;
-  border-right: 1px solid #d3e2e8;
-}
-
-.demo-app-sidebar-section {
-  padding: 2em;
-}
-
-.demo-app-main {
-  flex-grow: 1;
-  padding: 3em;
-}
-
-.fc { /* the calendar root */
-  max-width: 1100px;
-  margin: 0 auto;
-}
-
-</style> -->
-
-
-
-
-<!-- <template>
-    <div>
-      <div id="calendar" :style="{ width: '800px' }"></div>
-    </div>
-  </template>
-  
-  <script>
-  import { Calendar } from '@fullcalendar/core';
-  import interactionPlugin from '@fullcalendar/interaction';
-  import dayGridPlugin from '@fullcalendar/daygrid';
-  import timeGridPlugin from '@fullcalendar/timegrid';
-  import bootstrap5Plugin from '@fullcalendar/bootstrap5';
-  import 'bootstrap/dist/css/bootstrap.css';
-  import 'bootstrap-icons/font/bootstrap-icons.css';
-
-  
-  export default {
-    name: 'CalendarTest',
-    mounted() {
-      const calendarEl = document.getElementById('calendar');
-      const calendar = new Calendar(calendarEl, {
-        plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, bootstrap5Plugin],
-        themeSystem: 'bootstrap5',
-        headerToolbar: {
-          left: 'title',
-          right: 'today prev,next',
-        //   center: 'title',
-        //   right: 'dayGridMonth',
-        },
-        // initialDate: '2018-01-12',
-        navLinks: true,
-        // editable: true,
-        // dayMaxEvents: true,
-        events: [
-          {
-            // title: 'All Day Event',
-            // start: '2018-01-01',
-          },
-          // 다른 이벤트들...
-        ],
-      });
-  
-      calendar.render();
-    },
-  };
-  </script>
-  
-  <style> -->
- 
-
-  <template>
-    <div>
-      <div id="calendar" :style="{ width: '800px' }"></div>
-    </div>
-  </template>
-  
-  <script>
-  import { Calendar } from '@fullcalendar/core';
-  import interactionPlugin from '@fullcalendar/interaction';
-  import dayGridPlugin from '@fullcalendar/daygrid';
-  import timeGridPlugin from '@fullcalendar/timegrid';
-  import bootstrap5Plugin from '@fullcalendar/bootstrap5';
-  import 'bootstrap/dist/css/bootstrap.css';
-  import 'bootstrap-icons/font/bootstrap-icons.css';
-  
-  export default {
-    name: 'CalendarTest',
-    mounted() {
-      const calendarEl = document.getElementById('calendar');
-      const calendar = new Calendar(calendarEl, {
-        plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, bootstrap5Plugin],
-        themeSystem: 'bootstrap5',
-        headerToolbar: {
-          left: 'title',
-          right: 'today prev,next',
-        },
-        navLinks: true,
-        events: this.generateEvents(),
-      });
-  
-      calendar.render();
-    },
-    methods: {
-      generateEvents() {
-        // 배열 리스트 데이터 예시
-        const list = [
-          {
-            "sellingnum": 1,
-            "sellproductprice": 3000,
-            "sellingdate": "2023-05-31T15:00:00.000+00:00"
-          },
-          {
-            "sellingnum": 2,
-            "sellproductprice": 3000,
-            "sellingdate": "2023-05-31T15:00:00.000+00:00"
-          },
-          {
-            "sellingnum": 3,
-            "sellproductprice": 3000,
-            "sellingdate": "2023-06-01T15:00:00.000+00:00"
-          },
-          // 추가 데이터...
-        ];
-  
-        const events = [];
-  
-        for (let i = 0; i < list.length; i++) {
-          const item = list[i];
-  
-          events.push({
-            title: `${item.sellproductprice}`,
-            start: item.sellingdate,
+          const calendarE1 = document.getElementById('dailySales');
+          const calendar = new Calendar(calendarE1, {
+            plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, bootstrap5Plugin],
+            themeSystem: 'bootstrap5',
+            headerToolbar: {
+              left: 'title',
+              right: 'today prev,next',
+            },
+            navLinks: true,
+            events: events,
           });
+          calendar.render();
         }
-  
-        return events;
-      },
+      })
+      .catch(error => {
+        console.error(error);
+      });
     },
-  };
-  </script>
-  
-  <style>
-  </style>
+
+    getDailyRank3() {
+      const day = new Date(); // 페이지 로딩 시 어제 날짜 추출
+      day.setDate(day.getDate() - 1);
+      day.setHours(0, 0, 0, 0);
+      const self = this;
+
+      self.$axios
+        .get(`http://localhost:8085/selling/dailyrank3`)
+        .then(response => {
+          self.list2 = response.data.list;
+
+          for (let i = 0; i < 3; i++) {   // 차트에 참조값으로 띄울 TOP3 지점 매출 초기화
+            self['rank' + (i + 1) + 'StoreSales'] = 0;
+          }
+
+          if (self.list2 && self.list2.length > 0) {  //  데이터가 있을 경우만 진행
+            for (let i = 0; i < 3; i++) {
+              const rank = i + 1;
+              const item = self.list2.find(obj => {   // DB 날짜와 페이지에서 추출한 날짜, 랭킹 서로 비교하여 일치하는 것 추출
+                const itemDate = new Date(obj.SELLINGDATE).toString();
+                const dayDate = day.toString();
+                return itemDate === dayDate && obj.RANK === rank;
+              });
+
+              if (item) {
+                const rank = item.RANK;
+                const rankStore = item.STORENAME;
+                self['rank' + rank + 'Store'] = rankStore;
+                const rankSales = item.TOTALPRICE;
+                self['rank' + rank + 'Sales'] = rankSales;
+
+                console.log(self['rank' + rank + 'Store'], self['rank' + rank + 'Sales']);
+
+                echarts.use([TooltipComponent, GridComponent, BarChart, CanvasRenderer]);
+                const myChart = echarts.init(document.getElementById('rankingchart'));
+
+                const option = {
+                  tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                      type: 'shadow'
+                    }
+                  },
+                  grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                  },
+                  xAxis: [
+                    {
+                      type: 'category',
+                      data: [self['rank1Store'], self['rank2Store'], self['rank3Store']],
+                      axisTick: {
+                        alignWithLabel: true
+                      }
+                    }
+                  ],
+                  yAxis: [
+                    {
+                      type: 'value'
+                    }
+                  ],
+                  series: [
+                    {
+                      name: 'Direct',
+                      type: 'bar',
+                      barWidth: '30%',
+                      data: [self['rank1Sales'], self['rank2Sales'], self['rank3Sales']]
+                    }
+                  ]
+                };
+
+                option && myChart.setOption(option);
+              } else {
+                self['rankStore' + rank] = 0;
+              }
+            }
+          }
+        })
+        .catch(error => {
+                    console.error(error);
+                });
+          }
+        }
+}
+</script>
 
