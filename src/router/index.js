@@ -22,6 +22,7 @@ import EmpAdd from '@/components/emp/EmpAdd.vue'
 import EmpList from '@/components/emp/EmpList.vue'
 import WorkLogs from '@/components/worklogs/WorkLogs.vue'
 import ScheduleModal from '@/components/schedule/ScheduleModal.vue'
+import ScheduleAddModal from '@/components/schedule/ScheduleModal.vue'
 
 import BranchSales from '@/components/sales/BranchSales.vue'
 
@@ -36,6 +37,7 @@ import DelMsg from '@/components/msg/DelMsg.vue'
 import DetailMsg from '@/components/msg/DetailMsg.vue'
 import MarkMsg from '@/components/msg/MarkMsg.vue'
 import ReplyMsg from '@/components/msg/ReplyMsg.vue'
+import AddTempMsg from '@/components/msg/AddTempMsg.vue'
 import SideBar from '../views/SideBar.vue'
 
 import NoticeList from '@/components/notice/NoticeList.vue'
@@ -175,6 +177,11 @@ const routes = [
     component: ReplyMsg
   },
   {
+    path: '/AddTempMsg',
+    name: 'AddTempMsg',
+    component: AddTempMsg
+  },
+  {
     path: '/SideBar',
     name: 'SideBar',
     component: SideBar
@@ -203,7 +210,14 @@ const routes = [
     path : '/schedulemodal',
     name : 'ScheduleModal',
     component : ScheduleModal
-  }  
+  },
+  {
+    path : '/scheduleaddmodal',
+    name : 'ScheduleAddModal',
+    component : ScheduleAddModal
+  }
+  
+
 ]
 
 const router = createRouter({

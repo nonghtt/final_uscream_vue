@@ -3,15 +3,12 @@
 
     <!-- Button trigger modal -->
     <button type="button" class="btn custom-btn" data-bs-toggle="modal" data-bs-target="#addSchedule" @click="add">
-      스케줄 등록
+      스케줄 등록(안씀 곧 지울예정)
     </button>
 
-    <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal" @click="testadd">
-      모달.. 새로운 컴포넌트로 도전중..아직.. 도전중...
-    </button>
-
-
+    <ScheduleModal />
+    <ScheduleAddModal />
+   
 
     <!-- 등록 Modal -->
     <div class="modal fade" id="addSchedule" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -55,8 +52,23 @@
 
 
   <!-- Modal -->
-  <ScheduleModal v-if="test" id="exampleModal" class="modal fade"/>
-  <!-- 모달 -->
+  <div class="modal fade" id="scModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+      <div class="modal-content">
+        <div class="modal-header">
+          <h1 class="modal-title fs-5" id="exampleModalLabel">{{empname}}</h1>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+        <div class="modal-body">
+          <div>{{sdate}}</div>
+          <div>{{ starttime }} - {{ endtime }} </div>
+        </div>
+        <div class="modal-footer">
+          <button type="button" class="btn btncolor" data-bs-dismiss="modal">삭제</button>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
   
 <script>
@@ -67,10 +79,12 @@ import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 
 import ScheduleModal from '@/components/schedule/ScheduleModal.vue'
+import ScheduleAddModal from '@/components/schedule/ScheduleAddModal.vue'
+
+import {Modal} from 'bootstrap';
 
 export default {
   name: 'ScheDule',
-  //components: {ScheduleModal},
   data() {
     return {
       storeid: sessionStorage.getItem("loginId"),
@@ -80,7 +94,13 @@ export default {
       storename: '',
       selectedEmp: '',
       //scheduleModal:false,
-      test: false,
+      //test: false,
+      // 일정 클릭했을 때의 정보
+      snum : 0,
+      empname : '',
+      sdate : '',
+      starttime : '',
+      endtime : '', 
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin, timeGridPlugin],
         initialView: 'timeGridWeek',
@@ -109,7 +129,8 @@ export default {
   },
   components: {
     FullCalendar,
-    ScheduleModal
+    ScheduleModal,
+    ScheduleAddModal
   },
   created: function () {
     this.storeid = sessionStorage.getItem('loginId');
@@ -160,8 +181,50 @@ export default {
       self.selectedEmp = 'none';
     },
     workDayClick(info) {
+      const self = this;
       console.log("클릭 정보")
       console.log(info.event)
+      const modal = document.getElementById('scModal');
+      console.log(modal)
+      //modal.setAttribute("aria-hidden", "false");
+     
+      console.log(info.event._def.defId)
+      console.log(info.event._def.title)
+      console.log(info.event._instance.range.start)
+      console.log(info.event._instance.range.end)
+      
+      let day = info.event._instance.range.start
+      
+      let startTime = JSON.stringify(info.event._instance.range.start).slice(12, 17)
+      startTime = startTime.replace('^0','').replace(':g','시 ').replace('$','분');
+      
+     
+      //startTime[startTime.length] = '분';
+      
+      let endTime = JSON.stringify(info.event._instance.range.end).slice(12, 17)
+      endTime = endTime.replace(':','시 ');
+      endTime += '분'
+      //endTime[startTime.length] = '분';
+      console.log(typeof(startTime))
+
+
+
+      const date = new Date(day);
+      const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+      self.sdate = `${date.toLocaleDateString('ko-KR', options)}`;
+      self.starttime = startTime
+      self.endtime = endTime
+
+      self.snum = info.event._def.defId
+      self.empname = info.event._def.title
+      //self.sdate = info.event._instance.range.start
+     // self.starttime = info.event._instance.range.start
+     // self.endtime = info.event._instance.range.end
+
+      let myModal = new Modal(modal)
+      myModal.show();
+
+  
     },
     workDayEdit(info) {
       console.log("num :" + info.event._def.publicId);
@@ -238,15 +301,15 @@ export default {
         })
 
     },
-    testadd() {
-      this.test = true;
-    }
+    // testadd() {
+    //   this.test = true;
+    //   console.log(this.test)
+    // }
   }
 };
 </script>
   
 <style scoped>
-
 #sdBody {
   padding-top: 30px;
   padding-bottom: 30px;
@@ -278,9 +341,19 @@ export default {
 .custom-btn:hover {
   background-color: #99ab49;
 }
+
+.btncolor:hover{
+  background-color: #FFC67B;
+  color:#595959
+}
+.btncolor{
+    color:#595959;
+    background-color: #bee96d;
+    font-weight: bolder ;
+}
 </style>
   
-<!--
+
 <style>
 /* full calendar css */
 
@@ -354,4 +427,3 @@ export default {
   background-color: #84943f;
 }
 </style>
--->

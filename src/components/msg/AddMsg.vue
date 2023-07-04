@@ -7,8 +7,7 @@
         <div class="topbar">
                 <p class="main">메일 작성</p>
                 <p>임시보관 메일</p>
-                <p style="margin-left:0px ;">{{8}}</p>
-                
+                <p style="margin-left:0px;">{{countall}}</p>
             </div>
             <div class="middlebar">
                 <input type="button" value="작성하기" v-on:click="addmsg">
@@ -18,12 +17,9 @@
             <tr><td>보내는 사람</td><td><input type="text" class="enter"  v-model="sender" readonly></td></tr>
             <tr><td>받는 사람</td><td><input type="text" class="enter" v-model="receiver"></td></tr>
             <tr><td>제목</td><td><input type="text" class="enter" v-model="title"></td></tr>
-            <tr><td>첨부</td><td><input type="file" name="file" ref="msgfile" @change="selectmsgfile" class="enter" multiple='true'></td></tr>
+            <tr><td>첨부</td><td><input type="file" id="file" class="enter" multiple='true' @change="fileUpload" ref="fileref"></td></tr>
             <tr><td colspan="2"><textarea rows="20" cols="30" v-model="content"></textarea></td></tr>
-
         </tabel>
-
-
     </div>
 </template>
     
@@ -45,13 +41,16 @@
             }
         },
         created: function () {
-    },
+            const self = this;
+            let id = sessionStorage.getItem("loginId");
+            self.$axios.get("http://localhost:8085/msg/temp/"+id)
+                .then(function (res) {
+                self.countall=res.data.countAllByTempMsg;
+    })
+},
     methods:{
-
-        selectmsgfile(){
-            for(let i=0;i<this.file.length;i++){
-                this.file = this.$refs.msgfile.files[0]
-            }
+        fileUpload(){
+         this.file= this.$refs.fileref.files[0];
         },
         addmsg(){
             let form = new FormData();
@@ -59,22 +58,40 @@
             form.append('receiver',this.receiver);
             form.append('title',this.title);
             form.append('content',this.content);
+            form.append('mfile',this.file);
             const self= this;
+            
+            self.$axios.get("http://localhost:8085/msg/search/"+self.receiver)
+            .then(function(res){
+                let dto = res.data.dto
+                
+                if(dto ==null){
+                    alert("없는 계정입니다.");
+                    return;
+                }
+            })
+
+
+
             self.$axios.post("http://localhost:8085/msg",form, {headers: {"Content-Type": "multipart/form-data"}})
-            
-            this.$router.push({name:'SendMsg'});
-            
+
+
+
+
+                this.$router.push({name:'SendMsg'});
+         
+
+
     },
     tempmsg(){
-
-            let form = new FormData();
+        let form = new FormData();
             form.append('sender',this.sender);
             form.append('receiver',this.receiver);
             form.append('title',this.title);
             form.append('content',this.content);
+            form.append('mfile',this.file);
             const self= this;
             self.$axios.post("http://localhost:8085/msg/temp",form, {headers: {"Content-Type": "multipart/form-data"}})
-            alert("성공");
             this.$router.push({name:'SendMsg'});
             
     }

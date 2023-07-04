@@ -17,9 +17,9 @@
     <div class="middlebar_container">
     
             <div class="middlebar">
-                <input type="button" value="메일 작성">
-                <input type="button" value="영구 삭제">
-                <input type="button" value="비우기">
+                <input type="button" value="메일 작성" v-on:click="addmsg()">
+                <input type="button" value="휴지통으로" v-on:click="delmsg(msg.num)">
+                <input type="button" value="비우기" v-on:click="delallmsg()">
             </div>    
             <div class="searchbar">
                 <form>
@@ -62,13 +62,10 @@
             let id = sessionStorage.getItem("loginId");
             self.$axios.get("http://localhost:8085/msg/del/"+id+"/"+id)
                 .then(function (res) {
-    
-            
                 self.list = res.data.msglist ;
                 self.count=res.data.countAllByDelAndReadMsg;
                 self.countall=res.data.countAllByDelMsg;
                     
-                
                 })
     },
     methods:{
@@ -76,6 +73,40 @@
         const self= this
         self.$axios.patch("http://localhost:8085/msg/read/detail/check/"+num)
         self.$router.push({name:'DetailMsg',query:{'num':num}})
+
+        },
+        addmsg(){
+        this.$router.push({name:'AddMsg'});
+        },
+        delallmsg(){
+            const self= this;
+            let id = sessionStorage.getItem("loginId");
+
+            let result = confirm("정말로 삭제하시겠습니까?");
+            if(result){
+            
+            self.$axios.delete("http://localhost:8085/msg/del/all/"+id)
+            .then(function (res) {
+            self.number = res.data.number ;
+            self.flag=res.data.flag;
+               
+            if(self.number == 0){
+                alert("삭제할 메일이 없습니다.");
+            }else{
+                alert(self.number+"개의 메일 삭제");
+            }
+            
+            
+             })
+
+            }else{
+                alert("취소");
+            }
+
+
+            self.$router.push({name:'DelMsg'});
+         
+
 
 
         }

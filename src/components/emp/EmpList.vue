@@ -5,7 +5,10 @@
             <div class="col" v-for="emp in list" :key="emp.empnum" :id="emp.empnum">
                 <div class="card text-center" style="width: 18rem;" :id="'emp' + emp.empnum">
                     <div class="card-body">
-                        <h5 class="card-title">{{ emp.empname }}</h5>
+                        <h5 class="card-title">
+                            {{ emp.empname }}
+                            <span class="color-circle" :style="{ backgroundColor: emp.color }"></span>
+                        </h5>
                         <p class="card-text">
                             입사 날짜 {{ emp.joindate }} <br />
                             시급 {{ emp.grade.salary.toLocaleString() }}원
@@ -253,5 +256,15 @@ h3 {
 }
 .editInputTitle{
     margin-bottom : 5px;
+}
+
+.color-circle {
+  display: inline-block;
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  margin-left: 3px;
+  vertical-align: middle;
+  margin-bottom:3px;
 }
 </style>

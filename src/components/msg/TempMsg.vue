@@ -25,7 +25,7 @@
  
 </div>    
 <div class="searchbar">
-        <input type="text" name="searchbar" id="searchbar" placeholder="받는 사람으로 메일 검색" autocomplete="off">
+        <input type="text" name="searchbar" id="searchbar" placeholder="받을 사람으로 메일 검색" autocomplete="off">
         <input type="button" value="검색" v-on:click="sendertempmsg()">
 </div>
 </div>
@@ -77,8 +77,8 @@
     
             
                 self.list = res.data.msglist ;
-                self.countall=res.data.countByReadTempMsg;
-                self.count=res.data.countAllByTempMsg;
+                self.count=res.data.countByReadTempMsg;
+                self.countall=res.data.countAllByTempMsg;
                     
                     
                 })
@@ -107,9 +107,7 @@
     },
     addtempmsg(num){
         const self= this
-        self.$axios.get("http://localhost:8085/msg/read/detail/check/"+num)
         self.$router.push({name:'AddTempMsg',query:{'num':num}})
-
 
         },
         addmsg(){
@@ -122,12 +120,11 @@
          },
          sendertempmsg(){ 
             const self = this; 
-            let sender =  document.getElementById("searchbar").value;
-            let receiver = self.id
+            let receiver =  document.getElementById("searchbar").value;
+            let sender = self.id;
             alert(sender+"/"+receiver);
             self.$axios.get("http://localhost:8085/msg/sendertempmsg/"+sender+"/"+receiver)
             .then(function (res) {      
-                alert("성공");
             self.list = res.data.msglist ;
              })
             }
