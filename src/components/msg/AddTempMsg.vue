@@ -11,13 +11,14 @@
            </div>
            <div class="middlebar">
                <input type="button" value="작성하기" v-on:click="addmsg">
+               <input type="button" value="휴지통으로" v-on:click="delmsg(num)">
            </div>
        <tabel>
-           <tr><td>보내는 사람</td><td><input type="text" class="enter"  v-model="sender" readonly></td></tr>
-           <tr><td>받는 사람</td><td><input type="text" class="enter" v-model="receiver"></td></tr>
-           <tr><td>제목</td><td><input type="text" class="enter" v-model="title"></td></tr>
-           <tr><td>첨부</td><td><input type="file" name="file" ref="msgfile" @change="selectmsgfile" class="enter" multiple='true'></td></tr>
-           <tr><td colspan="2"><textarea rows="20" cols="30" v-model="content"></textarea></td></tr>
+           <tr><td>보내는 사람</td><td><input type="text" class="enter"  v-model="dto.sender.storeid" readonly></td></tr>
+           <tr><td>받는 사람</td><td><input type="text" class="enter" v-model="dto.receiver.storeid"></td></tr>
+           <tr><td>제목</td><td><input type="text" class="enter" v-model="dto.title"></td></tr>
+           <tr><td>첨부</td><td><input type="file" id="file" class="enter" multiple='true' @change="fileUpload" ref="fileref"></td></tr>
+           <tr><td colspan="2"><textarea rows="20" cols="30" v-model="dto.content"></textarea></td></tr>
 
        </tabel>
 
@@ -28,54 +29,51 @@
    <script>
    import SideBar from '@/views/SideBar.vue'
    export default {
-       name: "AddMsg",
+       name: "AddTempMsg",
        components: {SideBar},
        data() {
            return {
-           countall: 0,
-           count:0,
-           sender:sessionStorage.getItem("loginId"),
-           id:'',
+           num:this.$route.query.num,
            receiver:'',
            title:'',
            content:'',
-           file:''
+           file:'',
+           dto:''
            }
        },
        created: function () {
+        const self = this;
+        let num = self.num
+        self.$axios.get("http://localhost:8085/msg/detail/"+num)
+        .then(function (res) {
+                self.dto = res.data.msgdto ;
+                })
    },
    methods:{
-
-       selectmsgfile(){
-           for(let i=0;i<this.file.length;i++){
-               this.file = this.$refs.msgfile.files[0]
-           }
-       },
        addmsg(){
-           let form = new FormData();
-           form.append('sender',this.sender);
-           form.append('receiver',this.receiver);
-           form.append('title',this.title);
-           form.append('content',this.content);
            const self= this;
+           let num = self.num;
+           let form = new FormData();
+           form.append('sender',self.dto.sender.storeid);
+            form.append('receiver',self.dto.receiver.storeid);
+            form.append('title',self.dto.title);
+            form.append('content',self.dto.content);
            self.$axios.post("http://localhost:8085/msg",form, {headers: {"Content-Type": "multipart/form-data"}})
-           
-           this.$router.push({name:'SendMsg'});
-           
+           self.$axios.delete("http://localhost:8085/msg/del/"+num)
+           self.$router.push({name:'TempMsg'});
    },
-   tempmsg(){
-
-           let form = new FormData();
-           form.append('sender',this.sender);
-           form.append('receiver',this.receiver);
-           form.append('title',this.title);
-           form.append('content',this.content);
-           const self= this;
-           self.$axios.post("http://localhost:8085/msg/temp",form, {headers: {"Content-Type": "multipart/form-data"}})
-           alert("성공");
-           this.$router.push({name:'SendMsg'});
-           
-   }
+   
+   delmsg(num){
+        const self= this
+        
+        if(self.dto.delcheck == false){
+            self.$axios.patch("http://localhost:8085/msg/del/check/"+num)
+        }else{
+            self.$axios.delete("http://localhost:8085/msg/del/"+num)
+        }
+        self.$router.push({name:'ReceiveMsg'})
+         }
+   
    }
 }
    </script>

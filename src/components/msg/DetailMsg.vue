@@ -19,6 +19,10 @@
             <tr><td>보낸 사람</td><td><input type="text" class="enter" v-model="dto.sender.storeid" readonly></td></tr>
             <tr><td>받는 사람</td><td><input type="text" class="enter" v-model="dto.receiver.storeid" readonly></td></tr>
             <tr><td class="bottom">{{ dto.msgdate }}</td></tr>
+
+            <tr><td colspan="2" v-on:click="down(dto.msgfile)">{{ dto.msgfile }}</td></tr>
+            
+            
             <tr><td colspan="2"><textarea rows="20" cols="30" v-model="dto.content"></textarea></td></tr>
         </tabel>
 
@@ -37,6 +41,7 @@
             count:0,
             id:sessionStorage.getItem("loginId"),
             dto:[]
+            
             }
         },
         created: function () {
@@ -58,9 +63,6 @@
         delmsg(num){
         const self= this
 
-
-
-
         if(self.dto.delcheck == false){
             self.$axios.patch("http://localhost:8085/msg/del/check/"+num)
         }else{
@@ -75,7 +77,34 @@
             const self = this;
 
             self.$router.push({name:'ReplyMsg',query:{'num':num}})
-        }
+        },
+        //gpt 작품 ㅜㅜ 
+        down(name) {          
+        const fname = this.dto.msgfile;
+        const url = `http://localhost:8085/msg/down/${fname}`;
+
+        this.$axios({
+         method: 'GET',
+         url: url,
+         responseType: 'blob',                      // axios를 사용해서 다운로드를 하려면 responseType을 꼭 blob로 설정해야 함.
+  })
+    .then(response => {
+      const blob = new Blob([response.data]);
+      const link = document.createElement('a');     // 다운로드를 하기 위해서 <a>태그 요소를 생성한다. 
+      link.href = window.URL.createObjectURL(blob); // 서버의 응답이 있는 blob 객체를 url로 변환해서 link변수에 추가한다. (<a>)
+                                                    // 위의 과정을 통해 <a href="http://localhost:8085/msg/down/${fname}">이 생성된다.
+
+      link.setAttribute('download', name);          // name을 다운로드 속성에 넣는다. (다운로드 될 파일의 이름을 설정)
+        
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      window.URL.revokeObjectURL(link.href);
+    })
+    .catch(error => {
+      console.error('파일 다운로드 실패:', error);
+    });
+}
     }
 }
     </script>
