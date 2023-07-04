@@ -1,6 +1,7 @@
 <template>
     <div class="container">
         <h3 style="margin-left:10px">상품 리스트</h3>
+        <button type="button" class="btn btncolor" >Success</button>
         <div v-for="product in productlist" :key="product.productnum" class="card mb-3"
             style="float:left; width:30%; height:140px;">
             <div class="row g-0">
@@ -56,6 +57,7 @@
                 </div>
             </div>
         </div>
+        
 </template>
 
 <script>
@@ -96,7 +98,10 @@ export default {
                     'contnet-type' :'multipart/form-data'
                 }
             }).then(function(res){
-                console.log(res)
+                /* let num = res.data.product.productnum
+                let cnt = 0
+                self.$axios.post('http://localhost:8085/inventorys') */
+            console.log(res.data)
             })
         }
     }
@@ -114,6 +119,15 @@ export default {
 img{
     width:128.93px;
     height:128.93px
+}
+.btncolor:hover{
+  background-color: #FFC67B;
+  color:#595959
+}
+.btncolor{
+    color:#595959;
+    background-color: #bee96d;
+    font-weight: bolder ;
 }
 </style>
 
