@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h3>신청 내용</h3>
+        <h3 style="margin: 20px 0 20px 0;">신청 내용</h3>
         <table class="table table-light table-striped table-bordered">
             <tr class="table-primary">
                 <th>선택</th>
@@ -30,17 +30,14 @@
                 <td v-if="order.confirm == 1">승인</td>
                 <td v-if="order.confirm == 0">승인대기</td>
                 <td v-if="order.confirm == 2">반려</td>
-                <td><button type="button" v-if="accounttype == 1 && order.confirm == 0" @click="rejectorder(index)"
-                        class="rejectbtn">반려</button></td>
             </tr>
 
         </table>
-        <button type="button" v-if="accounttype == 1 && storeorder[0].confirm == 0" v-on:click="confirmorder">발주 승인</button>
-        <button type="button" v-if="accounttype == 2 && storeorder[0].confirm == 0 && clicked == 0"
+        <button type="button" class="btn btncolor" v-if="accounttype == 1 && storeorder[0].confirm == 0" v-on:click="confirmorder">발주 승인</button>
+        <button type="button" class="btn btncolor" v-if="accounttype == 2 && storeorder[0].confirm == 0 && clicked == 0"
             @click="changeedit">수정</button>
-        <button type="button" v-if="accounttype == 2 && clicked == 1" @click="edit">수정</button>
-        {{ checkedproduct }}
-        {{ uncheckedproduct }}
+        <button type="button" class="btn btncolor" v-if="accounttype == 2 && clicked == 1" @click="edit">수정</button>
+        
 
     </div>
 </template>
@@ -108,14 +105,12 @@ export default {
             this.ordercost[index] = product.cost * amount;
         },
         confirmorder() {
-            alert("click")
             const self = this
             for (let i = 0; i < self.checkedproduct.length; i++) {
                 let storeid = self.storeid
                 let tempnum = self.checkedproduct[i].tempnum
                 let productnum = self.checkedproduct[i].product
                 let amount = self.checkedproduct[i].amount
-                alert(tempnum)
                 let num = 1
                 self.$axios.patch('http://localhost:8085/orders/confirm/' + tempnum + '/' + num).then(function (res) {
                     console.log(res.status)
@@ -149,7 +144,6 @@ export default {
             this.checkedProduct();
         },
         changeedit() {
-            alert("clicked")
             var inputs = document.querySelectorAll('input[type="number"]');
             for (var i = 0; i < inputs.length; i++) {
                 inputs[i].readOnly = false;
@@ -199,5 +193,16 @@ td {
     border: 1px solid gray;
     padding-top: 3px;
     padding-bottom: 3px;
+}
+.btncolor:hover{
+  background-color: #FFC67B;
+  color:#595959
+}
+.btncolor{
+    margin: 20px 0 20px 0;
+    width: 100px;
+    color:#595959;
+    background-color: #bee96d;
+    font-weight: bolder ;
 }
 </style>
