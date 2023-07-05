@@ -51,9 +51,9 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><router-link class="dropdown-item" to="/orderlist">발주현황</router-link></li>
-                            <li v-if="accounttype == 1"><router-link class="dropdown-item" active-class="active"
+                            <li v-if="accounttype == 1"><router-link class="dropdown-item" 
                                     to="/productlist">상품리스트</router-link></li>
-                            <li v-if="accounttype == 2"><router-link class="dropdown-item" active-class="active"
+                            <li v-if="accounttype == 2"><router-link class="dropdown-item" 
                                     to="/inventory">재고관리</router-link></li>
                         </ul>
                     </li>
@@ -141,7 +141,7 @@ export default {
 
 * {
     font-size: 20px;
-    
+    color:black
 }
 
 .logo {
@@ -167,9 +167,7 @@ li {
     margin: 0 10px;
 }
 
-a {
-    color: black
-}
+
 
 .mailicon {
     margin-left: 10px;

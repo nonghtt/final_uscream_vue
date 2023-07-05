@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h3>발주 신청</h3>
+        <h3 style="margin-top: 20px;">발주 신청</h3>
         <table class="table table-light table-striped table-bordered">
             <tr class="table-primary">
                 <th>선택</th>
@@ -24,7 +24,7 @@
             </tr>
 
         </table>
-        <button type="button" class="btn btn-info" v-on:click="add">발주</button>
+        <button type="button" class="btn btn-info btncolor" v-on:click="add">발주</button>
         
     </div>
 </template>
@@ -119,5 +119,16 @@ td {
     width: 60px;
     height: 30px;
     border: 1px solid gray
+}
+.btncolor:hover{
+  background-color: #FFC67B;
+  color:#595959
+}
+.btncolor{
+    margin: 20px 0 20px 0;
+    width: 100px;
+    color:#595959;
+    background-color: #bee96d;
+    font-weight: bolder ;
 }
 </style>
