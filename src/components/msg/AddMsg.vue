@@ -37,7 +37,8 @@
             receiver:'',
             title:'',
             content:'',
-            file:''
+            file:'',
+            array:[]
             }
         },
         created: function () {
@@ -52,33 +53,31 @@
         fileUpload(){
          this.file= this.$refs.fileref.files[0];
         },
+        
         addmsg(){
-            let form = new FormData();
-            form.append('sender',this.sender);
-            form.append('receiver',this.receiver);
-            form.append('title',this.title);
-            form.append('content',this.content);
-            form.append('mfile',this.file);
-            const self= this;
-            
-            self.$axios.get("http://localhost:8085/msg/search/"+self.receiver)
-            .then(function(res){
-                let dto = res.data.dto
+
+            const str_receiver = this.receiver.replace(/\s/g,'');
+            this.array = str_receiver.split(",")        
+
+            for(let i=0;i<this.array.length;i++){
                 
-                if(dto ==null){
-                    alert("없는 계정입니다.");
-                    return;
+                let form = new FormData();
+                form.append('sender',this.sender);
+                form.append('receiver',this.array[i]);
+                form.append('title',this.title);
+                form.append('content',this.content);
+                if(this.file){
+                    form.append('mfile',this.file);
                 }
-            })
+                const self= this;
+                self.$axios.post("http://localhost:8085/msg",form, {headers: {"Content-Type": "multipart/form-data"}})
+            }    
 
 
 
-            self.$axios.post("http://localhost:8085/msg",form, {headers: {"Content-Type": "multipart/form-data"}})
 
 
-
-
-                this.$router.push({name:'SendMsg'});
+            this.$router.push({name:'SendMsg'});
          
 
 
@@ -89,7 +88,9 @@
             form.append('receiver',this.receiver);
             form.append('title',this.title);
             form.append('content',this.content);
-            form.append('mfile',this.file);
+            if(this.file){
+                form.append('mfile',this.file);
+            }
             const self= this;
             self.$axios.post("http://localhost:8085/msg/temp",form, {headers: {"Content-Type": "multipart/form-data"}})
             this.$router.push({name:'SendMsg'});
