@@ -15,10 +15,10 @@ export default {
     },
     methods: {
         getContent() {
-            return this.$refs.toastEditor.invoke('getMarkdown')
+            return this.$refs.toastEditor.invoke('getHTML')
         },
         setContent(content) {
-            this.$refs.toastEditor.invoke('setMarkdown', content)
+            this.$refs.toastEditor.invoke('setHTML', content)
         },
     },
 }
