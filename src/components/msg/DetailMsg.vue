@@ -11,18 +11,16 @@
                 
             </div>
             <div class="middlebar">
-                <input type="button" value="답장" v-on:click="replymsg(dto.msgnum)">
+                
+                <input v-if="re==null" type="button" value="답장" v-on:click="replymsg(dto.msgnum)">
                 <input type="button" value="휴지통" v-on:click="delmsg(dto.msgnum)">
             </div>
         <tabel>
             <tr><td></td><td><input type="text" v-model="dto.title" class="enter title" readonly></td></tr>
             <tr><td>보낸 사람</td><td><input type="text" class="enter" v-model="dto.sender.storeid" readonly></td></tr>
             <tr><td>받는 사람</td><td><input type="text" class="enter" v-model="dto.receiver.storeid" readonly></td></tr>
+            <tr v-if="dto.msgfile"><td>첨부 파일</td><td v-on:click="down(dto.msgfile)" class="enter">{{dto.msgfile}}</td></tr>
             <tr><td class="bottom">{{ dto.msgdate }}</td></tr>
-
-            <tr><td colspan="2" v-on:click="down(dto.msgfile)">{{ dto.msgfile }}</td></tr>
-            
-            
             <tr><td colspan="2"><textarea rows="20" cols="30" v-model="dto.content"></textarea></td></tr>
         </tabel>
 
@@ -37,6 +35,7 @@
         data() {
             return {
             num:this.$route.query.num,
+            re:this.$route.query.re,
             countall: 0,
             count:0,
             id:sessionStorage.getItem("loginId"),
@@ -91,15 +90,15 @@
     .then(response => {
       const blob = new Blob([response.data]);
       const link = document.createElement('a');     // 다운로드를 하기 위해서 <a>태그 요소를 생성한다. 
-      link.href = window.URL.createObjectURL(blob); // 서버의 응답이 있는 blob 객체를 url로 변환해서 link변수에 추가한다. (<a>)
+      link.href = window.URL.createObjectURL(blob); // 서버의 응답 데이터가 있는 상수 blob을 url로 변환해서 link변수의 href에 추가한다. (<a>)
                                                     // 위의 과정을 통해 <a href="http://localhost:8085/msg/down/${fname}">이 생성된다.
 
       link.setAttribute('download', name);          // name을 다운로드 속성에 넣는다. (다운로드 될 파일의 이름을 설정)
         
-      document.body.appendChild(link);
-      link.click();
-      document.body.removeChild(link);
-      window.URL.revokeObjectURL(link.href);
+      document.body.appendChild(link);              // 바디에 a태그가 들어간 요소를 추가
+      link.click();                                 // 클릭이 되고 이 과정에서 다운로드가 실행됨
+      document.body.removeChild(link);              
+      window.URL.revokeObjectURL(link.href);        // 위 두 과정은 메모리 누수를 막기 위해 삭제 로직을 진행시킴.
     })
     .catch(error => {
       console.error('파일 다운로드 실패:', error);

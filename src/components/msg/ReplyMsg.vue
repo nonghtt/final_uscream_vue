@@ -5,9 +5,8 @@
 </div>
     <div class="container">
         <div class="topbar">
-                <p class="main">메일 작성</p>
-                <p>임시보관 메일</p>
-                <p style="margin-left:0px ;">{{8}}</p>
+                <p class="main">답장 작성</p>
+          
                 
             </div>
             <div class="middlebar">
@@ -52,7 +51,7 @@
                
             self.dto = res.data.msgdto ;
             self.dto.title = "[Re: "+self.dto.title+" ]";   
-                
+            
             })
            
 
@@ -65,6 +64,8 @@
             form.append('receiver',self.dto.receiver.storeid);
             form.append('title',self.dto.title);
             form.append('content',self.content);
+            form.append('reply',self.dto.msgnum);
+           
             self.$axios.post("http://localhost:8085/msg",form, {headers: {"Content-Type": "multipart/form-data"}})
             
             this.$router.push({name:'SendMsg'});
