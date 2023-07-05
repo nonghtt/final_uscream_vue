@@ -122,8 +122,15 @@ export default {
     },
     methods: {
         detail(item) {
+            let name = '';
+            if (this.accounttype == 1) {
+                name = 'HeadDetail';
+            } else if (this.accounttype == 2) {
+                name = 'StoreDetail';
+            }
+
             this.$router.push({
-                name: "NoticeDetail",
+                name,
                 query: {
                     noticenum: item.noticenum,
                     category: item.category,

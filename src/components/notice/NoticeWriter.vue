@@ -54,14 +54,12 @@ export default {
             initialEditType: "markdown",
             previewStyle: "vertical", // 세로 모드로 WYSIWYG 미리보기 설정
             events: {
-                change: this.handleEditorChange
+                change: this.handleEditroChange
             }
         });
     },
     methods: {
-        handleEditorChange() {
-            // 에디터 내용이 변경되었을 때 호출되는 메소드
-            // 작성한 내용을 변수에 저장
+        handleEditroChange() {
             this.noticeContent = this.editor.getMarkdown();
         },
         saveNotice() {

@@ -6,15 +6,17 @@
                     <label for="title" class="form-label"
                         style="font-size: 16px; font-weight: bold; color: gray;">제목</label>
                     <div class="underline-input">
-                        <input type="text" id="title" class="form-control" v-model="title" :readonly="!canEdit">
+                        <input type="text" id="title" class="form-control" v-model="title">
                         <div class="underline"></div>
                     </div>
                 </div>
                 <div class="mb-5">
-                    <label for="category" class="form-label"
-                        style="font-size: 16px; font-weight: bold; color: gray;">분류</label>
+                    <label for="category" class="form-label" style="font-size: 16px; font-weight: bold; color: gray;">분류</label>
                     <div class="underline-input">
-                        <input type="text" id="category" class="form-control" v-model="categoryText" :readonly="!canEdit">
+                        <select id="category" class="form-control" v-model="category">
+                        <option value="1">칭찬</option>
+                        <option value="2">불만</option>
+                        </select>
                         <div class="underline"></div>
                     </div>
                 </div>
@@ -22,31 +24,27 @@
                     <label for="content" class="form-label"
                         style="font-size: 16px; font-weight: bold; color: gray;">내용</label>
                     <div class="underline-input">
-                        <textarea id="content" class="form-control" v-model="content" :readonly="!canEdit"></textarea>
+                        <div ref="editor" class="editor-container"></div>
                     </div>
                 </div>
                 <hr>
                 <div class="d-flex justify-content-end">
-                    <button v-if="canEdit" @click="saveChanges" class="btn btn-warning btn-sm mr-1" :disabled="!canEdit">{{
-                        editButtonText }}</button>
-                    <button v-if="canEdit" @click="deleteBoard" class="btn btn-danger btn-sm">삭제</button>
-                    <button v-if="accounttype === '2'" @click="movePage('/NoticeList')"
-                        class="btn btn-secondary btn-sm">목록</button>
-                    <button v-if="accounttype === '1'" @click="movePage('/NoticeEdit')"
-                        class="btn btn-secondary btn-sm">수정</button>
+                    <button @click="saveChanges" class="btn btn-warning btn-sm mr-1">{{ editButtonText }}</button>
+                    <button @click="deleteBoard" class="btn btn-danger btn-sm">삭제</button>
+                    <button @click="movePage('/NoticeList')" class="btn btn-secondary btn-sm">목록</button>
                 </div>
+            </div>
         </div>
     </div>
-</div></template>
-
-
-
+</template>
 
 <script>
 import axios from 'axios';
+import Editor from '@toast-ui/editor';
+import '@toast-ui/editor/dist/toastui-editor.css';
 
 export default {
-    name: "NoticeDetail",
+    name: "HeadDetail",
     data() {
         return {
             noticenum: 0,
@@ -54,9 +52,8 @@ export default {
             category: 0,
             content: '',
             canEdit: true,
-            accounttype: sessionStorage.getItem("accounttype"),
             editButtonText: '완료',
-
+            editor: null,
         };
     },
     computed: {
@@ -66,10 +63,6 @@ export default {
     },
     mounted() {
         this.fetchBoardDetail();
-
-        if(this.accounttype === '2'){
-            this.canEdit = false;
-        }
     },
     methods: {
         fetchBoardDetail() {
@@ -81,10 +74,18 @@ export default {
                     this.title = response.data.notice.title;
                     this.category = response.data.notice.category;
                     this.content = response.data.notice.content;
+                    this.createEditor();
                 })
                 .catch(error => {
                     console.error(error);
                 });
+        },
+        createEditor() {
+            this.editor = new Editor({
+                el: this.$refs.editor,
+                initialValue: this.content,
+                viewer: !this.canEdit, // Set viewer option based on edit mode
+            });
         },
         deleteBoard() {
             const noticenum = this.noticenum;
@@ -153,6 +154,7 @@ export default {
     background-color: #000;
 }
 
-textarea.form-control {
+.editor-container {
     height: 300px;
-}</style>
+}
+</style>

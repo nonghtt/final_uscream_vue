@@ -43,7 +43,8 @@ import SideBar from '../views/SideBar.vue'
 
 import NoticeList from '@/components/notice/NoticeList.vue'
 import NoticeWriter from '@/components/notice/NoticeWriter.vue';
-import NoticeDetail from '@/components/notice/NoticeDetail.vue';
+import HeadDetail from '@/components/notice/HeadDetail.vue';
+import StoreDetail from '@/components/notice/StoreDetail.vue';
 
 
 
@@ -205,9 +206,14 @@ const routes = [
     component: NoticeWriter
   },
   {
-    path: '/NoticeDetail',
-    name: 'NoticeDetail',
-    component: NoticeDetail
+    path: '/HeadDetail',
+    name: 'HeadDetail',
+    component: HeadDetail
+  },
+  {
+    path: '/StoreDetail',
+    name: 'StoreDetail',
+    component: StoreDetail
   },
   {
     path:'/inventory',
