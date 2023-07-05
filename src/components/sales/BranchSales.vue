@@ -112,7 +112,12 @@ export default {
       myChart2: null,
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin],
-        initialView: 'dayGridMonth'
+        initialView: 'dayGridMonth',
+        views: {
+          dayGridMonth: {
+            titleFormat: 'YYYY[년] M[월]'
+          },
+        },
       }
 
     };
@@ -183,7 +188,7 @@ export default {
         .get(`http://localhost:8085/selling/dailysales/${storeId}/${year}/${month}`)
         .then(response => {
           const data = response.data;
-          self.list = response.data.list;
+          self.list = response.data;
 
           console.log(data);
           console.log(self.list);
@@ -217,7 +222,7 @@ export default {
         .get(`http://localhost:8085/selling/monthlysales/${storeId}/${year}/${month}`)
         .then(response => {
           const data = response.data;
-          self.list2 = response.data.list;
+          self.list2 = response.data;
 
           console.log(data);
           console.log(self.list2);
@@ -244,7 +249,7 @@ export default {
         .get(`http://localhost:8085/selling/dailysales/${storeId}`)
         .then(response => {
           const data = response.data;
-          self.list3 = response.data.list;
+          self.list3 = response.data;
 
           console.log(data);
           console.log(self.list3);
@@ -290,7 +295,7 @@ export default {
           .get(`http://localhost:8085/netsales/${storeId}/${year}/${month}`)
           .then(response => {
             const data = response.data;
-            self.list4 = response.data.list;
+            self.list4 = response.data;
 
             console.log(data);
             console.log(self.list4);
@@ -385,7 +390,7 @@ export default {
           .get(`http://localhost:8085/netsales/${storeId}/${year}`)
           .then(response => {
             const data = response.data;
-            self.list5 = response.data.list;
+            self.list5 = response.data;
 
             console.log(data);
             console.log(self.list4);
