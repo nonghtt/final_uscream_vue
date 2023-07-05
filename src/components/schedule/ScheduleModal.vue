@@ -1,13 +1,13 @@
 <template>
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSchedule2" @click="SdClick">
-        스케줄 등록 (하는중..)
+    <button type="button" class="btn btncolor" data-bs-toggle="modal" data-bs-target="#addSchedule2" @click="SdClick">
+        스케줄 등록
     </button>
 
     <!-- Modal -->
     <div class="modal fade" id="addSchedule2" tabindex="-1" aria-labelledby="addSchedule2Label" aria-hidden="true" @click="handleModalClose">
         <!-- <div> -->
-        <div class="modal-dialog  modal-dialog-scrollable">
+        <div class="modal-dialog  modal-dialog-scrollable  modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addSchedule2Label">스케줄 등록</h5>
@@ -55,8 +55,7 @@
                     <div><button class="btn delete-btn" @click="delBasicSchedule">삭제하기</button></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="close">닫기</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="realAdd">추가</button>
+                    <button type="button" class="btn btncolor" data-bs-dismiss="modal" @click="realAdd">추가</button>
                 </div>
             </div>
         </div>
@@ -133,20 +132,6 @@ export default {
                             console.log("에러 empChange() basicschedule: " + res.status)
                         }
                     })
-                /* 이거 왜 넣었지..?
-                self.$axios.get(`http://localhost:8085/schedule/emp/${empnum}`)
-                .then(function(res){
-                    console.log(res.status)
-                    if (res.status == 200 && res.data.flag == true) {
-                        
-                        console.log(res.data)
-                        self.empBasicSchedule = res.data.list;
-                        console.log(self.empBasicSchedule);
-                    } else {
-                        console.log("에러 empChange() schedule: " + res.status)
-                    }
-                })
-                */
 
             } else {
                 console.log("empChange() empnum = null 입니다..");
@@ -319,5 +304,17 @@ export default {
     align-items: center;
     justify-content: center;
     margin-top:10px;
+}
+
+.btncolor:hover{
+  background-color: #FFC67B;
+  color:#595959;
+}
+.btncolor{
+    color:#595959;
+    background-color: #bee96d;
+    font-weight: bolder ;
+    margin-top:5px;
+    margin-bottom:5px;
 }
 </style>
