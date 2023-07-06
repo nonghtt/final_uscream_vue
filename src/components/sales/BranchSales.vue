@@ -9,6 +9,7 @@
         <!-- 일별 매출 표시 캘린더 -->
         <div id="dailySales" style="width:700px"></div>
         <div style="display: flex; flex-direction: column; justify-content: space-between;">
+
           <!-- 순매출 분석 차트 -->
           <div id="netsalesAnalysis" style="border: 1px solid lightgray; width:400px; height:300px; padding:1%">
             <div style="display:flex; justify-content:space-between; align-items: center">
@@ -359,6 +360,7 @@ export default {
   margin-top: auto;
 }
 </style>
+
 <style>
 .fc-daygrid-event-dot {
   display: none;
@@ -370,4 +372,8 @@ export default {
   color: red;
   text-align: center;
 }
+
 </style>
+
+
+

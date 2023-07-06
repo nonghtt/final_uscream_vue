@@ -38,20 +38,23 @@
 <div v-if="iddescription" class="iddescript_window">(ex) 지역코드 + 숫자 KG001</div>
 
               <div class="div_pwd">
-                <input class="input_pwd" type="password" v-model="password" required>
+                <input class="input_pwd" type="password" v-model="password" required
+                         @input="validationpassword">
                 <label class="label_pwd">비밀번호</label>  
-                         <p v-if="passwordError">{{ passwordError }}</p>
-              </div>
+                         <p v-if="passwordErrorText">{{ passwordErrorText }}</p>
+              </div>{{password}}
+
            <div class="image-container">   
               <i class="fa-solid fa-circle-question" 
                       @mouseenter="showDescription = true"
-                      @mouseleave="showDescription = false"></i><button @click="validatePassword">확인</button>
+                      @mouseleave="showDescription = false"></i>
+                      <!-- <button @click="validatePassword">유효성검사</button> -->
                     <!-- 비밀번호 정규식 설명창 -->
                       <div v-if="showDescription" class="validation">
                         최소 8 자, 하나 이상의 대문자, 하나의 소문자 및 하나의 숫자 정규식</div>
           </div>
-                        
-              <span class="span_pwd"></span>
+
+              <!-- <span class="span_pwd"></span> -->
               
 
             <div class="div_pwd_confirm">
@@ -61,6 +64,7 @@
             </div>
             <button v-on:click="pwdcheck">중복확인</button><br/>
             {{pwdmsg}}
+
 
             <div class="div_managername">
                 <input class="input_managername" type="text" v-model="managername" required><br/>
@@ -74,12 +78,10 @@
             <input class="select" name="type" type="radio" id="radio" v-model="accounttype" value="1" checked><label for="radio"><div id="text_float">본사</div></label>
                   <input class="select" name="type" type="radio" id="radio2" v-model="accounttype" value="2" ><label for="radio2"><div class="text_branch">지점</div></label><br/> 
             
-            <!-- <div class="div_accounttype">
-                  <input class="select" name="type" type="radio" id="radio" v-model="accounttype" value="1" checked><label for="radio">본사</label>
-                  <input class="select" name="type" type="radio" id="radio2" v-model="accounttype" value="2" ><label for="radio2">지점</label><br/> 
-                  <label class="label_accounttype">타입</label>
-                  <span class="span_accounttype"></span>
-            </div> -->
+
+
+
+
 
   </div>
           
@@ -93,12 +95,12 @@
             style="margin-top:60px;">
     지점장 사진
     <div>
-  
+      <span>파일 선택</span>
     <img :src="previewImageUrl" class="profile" 
     v-if="previewImageUrl" style="width:200px; height:200px;" /><br/>
     <label class="custom-file-upload">
       <input type="file" @change="previewImage" alt="../assets/1.png"/>
-      <span>파일 선택</span>
+    
     </label>
   </div>
   </div>
@@ -155,7 +157,10 @@ export default {
             password: '',
            passwordError: '',
            iddescription:'',
-           showDescription: false
+           showDescription: false,
+           pwd_confirm:'',
+           text_pwd_validation:'',
+           passwordErrorText:''
           }
         },
         created:function(){
@@ -218,12 +223,12 @@ export default {
     })
     },
         idcheck(){
+          alert('1')
             const self = this;
-      self.$axios.get('http://localhost:8085/store/'+self.storeid).then(function(res){
+      self.$axios.get('http://localhost:8085/store/storeid/'+self.storeid).then(function(res){
         if(res.status==200){
-          alert(res.data.dto.storeid)
+          alert(2)
           if(res.data.dto==null){
-          alert(res.data.dto.storeid)
             self.idmsg='사용가능한 아이디'
           }else{
             self.idmsg='중복된 아이디'
@@ -235,15 +240,14 @@ export default {
       }); 
    },
         pwdcheck(){
-          const self = this;
-          if(self.pwd == self.pwd_confirm){
+          if(this.password == this.pwd_confirm){
             alert("사용가능한 비밀번호입니다.")
-            self.pwdmsg = '비밀번호 확인완료';
+            this.pwdmsg = '비밀번호 확인완료';
           }else{
             alert("비밀번호가 일치하지 않습니다.")
-            self.pwdmsg = '비밀번호가 일치하지 않습니다.';
+            this.pwdmsg = '비밀번호가 일치하지 않습니다.';
             // self.pwd = ''
-            self.pwd_confirm=''
+            this.pwd_confirm=''
           }
      },
       clean_input_id(){
@@ -260,35 +264,34 @@ export default {
     }
        
         
-        // ,
-        // final_check(){
-        //   const self = this;
-        //   if(
-        //   this.storeid === null   ||
-        //   this.pwd === null          ||
-        //   this.pwd_confirm === null  ||
-        //   this.managername === null  ||
-        //   this.accounttype === null  ||
-        //   this.storeid ===null
-        //   ){
-        //     alert('입력하지 않은 값이 있습니다.')
-        //   }
-        // }
+       
 
     ,
+    validationpassword(){
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;      
+      if (this.password != passwordRegex){
+        this.passwordErrorText = "최소 8 자, 하나 이상의 대문자, 하나의 소문자 및 하나의 숫자 정규식";
+      }else{
+        this.passwordErrorText = "";
+      }
+            
+
+
+    },
     initialImage(){ 
       // 이미지를 미리 채워넣을 URL
-      const initialImageUrl = "https://image.idus.com/image/files/3c589c029d9447d797d85b583c5fe822_720.jpg";
+      const initialImageUrl = "https://d2u3dcdbebyaiu.cloudfront.net/uploads/atch_img/309/59932b0eb046f9fa3e063b8875032edd_crop.jpeg";
       this.previewImageUrl = initialImageUrl;
     },
     validatePassword() {
       const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
       if (passwordRegex.test(this.password)) {
-        this.passwordError = '사용가능한 비밀번호입니다.'; // 비밀번호가 유효하면 에러 메시지를 지웁니다.
+        this.passwordvalidation = '사용가능한 비밀번호입니다.'; // 비밀번호가 유효하면 에러 메시지를 지웁니다.
         // 여기에 비밀번호가 유효한 경우 수행할 작업을 추가할 수 있습니다.
-
+          
+        this.text_pwd_validation = '사용가능한 비밀번호입니다.'
       } else {
-        this.passwordError = '비밀번호 형식이 유효하지 않습니다.';
+        this.passwordvalidation = '비밀번호 형식이 유효하지 않습니다.';
       }
     },
     }
@@ -365,7 +368,7 @@ export default {
     ,
     watch: {
       'password':function(){
-        this.checkpassword
+
       }
     }
 }

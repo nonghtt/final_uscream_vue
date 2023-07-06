@@ -6,15 +6,7 @@
                     <label for="title" class="form-label"
                         style="font-size: 16px; font-weight: bold; color: gray;">제목</label>
                     <div class="underline-input">
-                        <input type="text" id="title" class="form-control" v-model="title" :readonly="!canEdit">
-                        <div class="underline"></div>
-                    </div>
-                </div>
-                <div class="mb-5">
-                    <label for="category" class="form-label"
-                        style="font-size: 16px; font-weight: bold; color: gray;">분류</label>
-                    <div class="underline-input">
-                        <input type="text" id="category" class="form-control" v-model="categoryText" :readonly="!canEdit">
+                        <input type="text" id="title" class="form-control" v-model="title">
                         <div class="underline"></div>
                     </div>
                 </div>
@@ -29,7 +21,7 @@
                 <div class="d-flex justify-content-end">
                     <button @click="saveChanges" class="btn btn-warning btn-sm mr-1">{{ editButtonText }}</button>
                     <button @click="deleteBoard" class="btn btn-danger btn-sm">삭제</button>
-                    <button @click="movePage('/NoticeList')" class="btn btn-secondary btn-sm">뒤로 가기</button>
+                    <button @click="movePage('/NoticeList')" class="btn btn-secondary btn-sm">목록</button>
                 </div>
             </div>
         </div>
@@ -42,12 +34,11 @@ import Editor from '@toast-ui/editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
 export default {
-    name: "NoticeDetail",
+    name: "HeadNotice",
     data() {
         return {
             noticenum: 0,
             title: '',
-            category: 0,
             content: '',
             canEdit: true,
             editButtonText: '완료',
@@ -70,7 +61,6 @@ export default {
                 .then(response => {
                     this.noticenum = response.data.notice.noticenum;
                     this.title = response.data.notice.title;
-                    this.category = response.data.notice.category;
                     this.content = response.data.notice.content;
                     this.createEditor();
                 })
@@ -83,13 +73,7 @@ export default {
                 el: this.$refs.editor,
                 initialValue: this.content,
                 viewer: !this.canEdit, // Set viewer option based on edit mode
-                events: {
-                    change: this.handleEditorChange,
-                },
             });
-        },
-        handleEditorChange() {
-            this.content = this.editor.getMarkdown(); // Update the content with the latest editor value
         },
         deleteBoard() {
             const noticenum = this.noticenum;
@@ -116,7 +100,6 @@ export default {
             const noticenum = this.noticenum;
             const formData = new FormData();
             formData.append('content', this.content);
-            formData.append('category', this.category);
             formData.append('title', this.title);
 
             axios

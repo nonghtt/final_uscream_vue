@@ -1,13 +1,13 @@
 <template>
     <!-- Button trigger modal -->
-    <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#addSchedule2" @click="SdClick">
-        스케줄 등록 (하는중..)
+    <button type="button" class="btn btncolor" data-bs-toggle="modal" data-bs-target="#addSchedule2" @click="SdClick">
+        스케줄 등록
     </button>
 
     <!-- Modal -->
     <div class="modal fade" id="addSchedule2" tabindex="-1" aria-labelledby="addSchedule2Label" aria-hidden="true" @click="handleModalClose">
         <!-- <div> -->
-        <div class="modal-dialog  modal-dialog-scrollable">
+        <div class="modal-dialog  modal-dialog-scrollable  modal-dialog-centered">
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="addSchedule2Label">스케줄 등록</h5>
@@ -18,7 +18,7 @@
 
                         직원
                         <select v-model="selectedEmp" @change="empChange()"  class="form-select">
-                            <option :key=0 :value="none" disabled>
+                            <option :key=0 :value=0 disabled>
                                 --직원 선택--
                             </option>
                             <option v-for="(item, index) in empList" :key="index" :value="item.empnum">
@@ -55,8 +55,7 @@
                     <div><button class="btn delete-btn" @click="delBasicSchedule">삭제하기</button></div>
                 </div>
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal" @click="close">닫기</button>
-                    <button type="button" class="btn btn-primary" data-bs-dismiss="modal" @click="realAdd">추가</button>
+                    <button type="button" class="btn btncolor" data-bs-dismiss="modal" @click="realAdd">추가</button>
                 </div>
             </div>
         </div>
@@ -68,15 +67,15 @@ export default {
     name: 'ScheduleModal',
     data() {
         return {
-            empList: [],
+            empList: [],     // 한 스토어의 전체 직원 불러오기 
             storeid: sessionStorage.getItem("loginId"),
-            selectedEmp: '',
+            selectedEmp: 0,
             empSelectedList: [],
             bsEmp: false,
             schedule: [],
             empEmpty: true,
             selectedMonth: 0,  // 처음 : 현재 달, 이전 이후 버튼 누르면 달이 바뀜
-            selectedYear: 0,
+            selectedYear: 0,    // 현재 년도 (버튼 눌렀을 때 값 변하면 넣어주기)
 
         }
     },
@@ -87,6 +86,7 @@ export default {
     },
     methods: {
         // 모달 클릭시 직원 list 출력 
+        // 근데 이거 여기에 있는 것보다 created에 있는게 맞는듯?
         SdClick() {
             const self = this;
             const storeid = self.storeid;
@@ -133,20 +133,6 @@ export default {
                             console.log("에러 empChange() basicschedule: " + res.status)
                         }
                     })
-                /* 이거 왜 넣었지..?
-                self.$axios.get(`http://localhost:8085/schedule/emp/${empnum}`)
-                .then(function(res){
-                    console.log(res.status)
-                    if (res.status == 200 && res.data.flag == true) {
-                        
-                        console.log(res.data)
-                        self.empBasicSchedule = res.data.list;
-                        console.log(self.empBasicSchedule);
-                    } else {
-                        console.log("에러 empChange() schedule: " + res.status)
-                    }
-                })
-                */
 
             } else {
                 console.log("empChange() empnum = null 입니다..");
@@ -155,7 +141,7 @@ export default {
         // 닫기 버튼을 눌렀을 때 
         close() {
             this.bsEmp = false;
-            console.log(this.bsEmp)
+            //console.log(this.bsEmp)
             this.empEmpty = true;
         },
         // 외부창을 누르면서 닫았을 때 
@@ -165,6 +151,7 @@ export default {
                 this.empEmpty = true;
             }
         },
+        // 추가하기
         realAdd() {
             const self = this
             let arr = self.schedule
@@ -176,6 +163,7 @@ export default {
                         console.log("schedule 등록");
                         console.log(res.status)
                         console.log(res.data)
+                        self.$emit('button-clicked', "10cm 버튼 클릭");
                     })
 
                 self.$axios.put(`http://localhost:8085/basicschedule/${arr[i]}`)
@@ -188,6 +176,7 @@ export default {
                     })
             }
         },
+        // 기본 스케줄 삭제 -> 캘린더 변경 X
         delBasicSchedule() {
             const self = this
             let arr = self.schedule;
@@ -319,5 +308,17 @@ export default {
     align-items: center;
     justify-content: center;
     margin-top:10px;
+}
+
+.btncolor:hover{
+  background-color: #FFC67B;
+  color:#595959;
+}
+.btncolor{
+    color:#595959;
+    background-color: #bee96d;
+    font-weight: bolder ;
+    margin-top:5px;
+    margin-bottom:5px;
 }
 </style>

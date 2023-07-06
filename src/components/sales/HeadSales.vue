@@ -1,51 +1,36 @@
 <template>
-  <div class="box">
-  <div id="searchform">
-    <div id="select">
-      <span>
-        <select v-model="selected" style="margin-right:10px;">
-        <option v-for="option in options" :key="option" :value="option">{{ option }}</option>
-        </select>
-      </span>
-      <span>
-        <input v-model="searchKeyword" placeholder="검색하실 지점명을 입력하세요" style="margin-right:10px; width:600px">
-      </span>  
-      <span>
-        <button @click="search">검색</button>
-      </span>
+  <div id="title">매출 조회</div>
+  <div>
+    <div>
+      월별 전체 매출
+      <select v-model="selectYear">
+        <option v-for="year in years" :key="year" :value="year">{{ year }}년</option>
+      </select>
+      <button @click="getMonthlySales">조회</button>
     </div>
-    <br/>
-    <div id="storeMonthlychart" style="width: 800px; height: 600px"></div>
+    <div id="monthlychart"></div>
   </div>
-  </div>
-</template> 
-
+</template>
 <script>
-import 'bootstrap/dist/css/bootstrap.css';
-
-
-import 'bootstrap-icons/font/bootstrap-icons.css';
 import * as echarts from 'echarts/core';
-import { TitleComponent, ToolboxComponent, TooltipComponent, GridComponent, LegendComponent } from 'echarts/components';
+import { TitleComponent, TooltipComponent, GridComponent, LegendComponent } from 'echarts/components';
 import { LineChart } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 export default {
-  name: 'HeadSalesDetail',
+  name: 'HeadSales',
   components: {},
   data() {
     return {
-      selected: '',
-      options: ['본사', '지점'],
-      searchKeyword: '',
-      list: [],
-      list2: []
+      years: [2020, 2021, 2022, 2023],
+      selectYear: null,
+      list3: [],
+      myChart: null
     };
   },
   created() {
-    echarts.use ([
+    echarts.use([
       TitleComponent,
-      ToolboxComponent,
       TooltipComponent,
       GridComponent,
       LegendComponent,
@@ -54,138 +39,37 @@ export default {
       UniversalTransition
     ]);
   },
+  mounted() {
+    const currentDate = new Date();
+    this.selectYear = currentDate.getFullYear();
+  },
   methods: {
-    search() {
-      if (this.selected === '본사') {
-        this.searchHead();
-      } else if (this.selected === '지점') {
-        this.searchBranch();
-      }
-    },
-    searchHead() {
-      const self = this;
-      self.$axios
-        .get('http://localhost:8085/selling/monthlysales')
-        .then(response => {
-          self.list = response.data.list;
-          console.log(self.list);
-          if (self.list && self.list.length > 0) {
-            for (let i = 0; i < 12; i++) {
-              const month = i + 1;
-              const item = self.list.find(obj => obj.MONTH === month);
-              
-              if (item) {
-                const year = item.YEAR;
-                const storeMonthlySales = item.TOTALPRICE;
-                self['storeMonthlySales' + year + month] = storeMonthlySales;
-              }
-            }
-            const myChart = echarts.init(document.getElementById('storeMonthlychart'));
-            const option = {
-              title: {
-                text: '연도별 매출 추이'
-              },
-              tooltip: {
-                trigger: 'axis'
-              },
-              legend: {
-                data: [2020, 2021, 2022, 2023]
-              },
-              grid: {
-                left: '3%',
-                right: '4%',
-                bottom: '3%',
-                containLabel: true
-              },
-              xAxis: {
-                type: 'category',
-                boundaryGap: false,
-                data: [
-                  '1월', '2월', '3월', '4월', '5월', '6월',
-                  '7월', '8월', '9월', '10월', '11월', '12월'
-                ]
-              },
-              yAxis: {
-                  type: 'value',
-                  axisLabel: {
-                    formatter: '{value} 원'}
-              },
-              series: [
-                {
-                  name: 2020,
-                  type: 'line',
-                  data: [
-                    self['storeMonthlySales20201'], self['storeMonthlySales20202'], self['storeMonthlySales20203'], self['storeMonthlySales20204'],
-                    self['storeMonthlySales20205'], self['storeMonthlySales20206'], self['storeMonthlySales20207'], self['storeMonthlySales20208'],
-                    self['storeMonthlySales20209'], self['storeMonthlySales202010'], self['storeMonthlySales202011'], self['storeMonthlySales202012']
-                  ]
-                },
-                {
-                  name: 2021,
-                  type: 'line',
-                  data: [
-                    self['storeMonthlySales20211'], self['storeMonthlySales20212'], self['storeMonthlySales20213'], self['storeMonthlySales20214'],
-                    self['storeMonthlySales20215'], self['storeMonthlySales20216'], self['storeMonthlySales20217'], self['storeMonthlySales20218'],
-                    self['storeMonthlySales20219'], self['storeMonthlySales202110'], self['storeMonthlySales202111'], self['storeMonthlySales202112']
-                  ]
-                },
-                {
-                  name: 2022,
-                  type: 'line',
-                  data: [
-                    self['storeMonthlySales20221'], self['storeMonthlySales20222'], self['storeMonthlySales20223'], self['storeMonthlySales20224'],
-                    self['storeMonthlySales20225'], self['storeMonthlySales20226'], self['storeMonthlySales20227'], self['storeMonthlySales20228'],
-                    self['storeMonthlySales20229'], self['storeMonthlySales202210'], self['storeMonthlySales202211'], self['storeMonthlySales202212']
-                  ]
-                },
-                {
-                  name: 2023,
-                  type: 'line',
-                  data: [
-                    self['storeMonthlySales20231'], self['storeMonthlySales20232'], self['storeMonthlySales20233'], self['storeMonthlySales20234'],
-                    self['storeMonthlySales20235'], self['storeMonthlySales20236'], self['storeMonthlySales20237'], self['storeMonthlySales20238'],
-                    self['storeMonthlySales20239'], self['storeMonthlySales202310'], self['storeMonthlySales202311'], self['storeMonthlySales202312']
-                  ]
-                }
-              ]
-            };
-            myChart.setOption(option);
-          } 
-        })
-        .catch(error => {
-          console.error(error);
-        });
-      },
-      searchBranch() {
-      const self = this;
-      const keyword = self.searchKeyword;
-      if (keyword) {
-        console.log(keyword);
-        self.$axios
-          .get(`http://localhost:8085/selling/monthlysales/${keyword}`)
+    getMonthlySales() {
+      const year = this.selectYear;
+      console.log(year);
+      if (year) {
+        this.$axios
+          .get(`http://localhost:8085/selling/monthlysales2/${year}`)
           .then(response => {
-            self.list2 = response.data.list;
-            console.log(self.list2);
-            if (self.list2 && self.list2.length > 0) {
-              for (let i = 0; i < 12; i++) {
-                const month = i + 1;
-                const item = self.list2.find(obj => obj.MONTH === month);
-                if (item) {
-                  const year = item.YEAR;
-                  const storeMonthlySales = item.TOTALPRICE;
-                  self['storeMonthlySales' + year + month] = storeMonthlySales;
-                }
-              }
-              const myChart = echarts.init(document.getElementById('storeMonthlychart'));
+            this.list3 = response.data.list;
+            console.log(this.list3);
+            const monthlyTotalSales = Array(12).fill(0);
+            if (this.list3 && this.list3.length > 0) {
+              this.list3.forEach(item => {
+                const month = item.MONTH;
+                const monthlySales = item.TOTALPRICE;
+                monthlyTotalSales[month - 1] = monthlySales;
+              });
+              const myChart = echarts.init(document.getElementById('monthlychart'));
               const option = {
                 title: {
-                  text: '연도별 매출 추이'
+                  text: '월별 매출'
                 },
                 tooltip: {
                   trigger: 'axis'
                 },
                 legend: {
-                  data: [2020, 2021, 2022, 2023]
+                  data: ['월별 매출']
                 },
                 grid: {
                   left: '3%',
@@ -197,72 +81,314 @@ export default {
                   type: 'category',
                   boundaryGap: false,
                   data: [
-                    '1월', '2월', '3월', '4월', '5월', '6월',
-                    '7월', '8월', '9월', '10월', '11월', '12월'
-                  ]
+                    '1월','2월','3월','4월','5월','6월','7월','8월','9월','10월',
+                    '11월', '12월']
                 },
                 yAxis: {
-                  type: 'value',
-                  axisLabel: {
-                    formatter: '{value} 원'}
+                  type: 'value'
                 },
                 series: [
                   {
-                    name: 2020,
+                    name: '월별 매출',
                     type: 'line',
                     data: [
-                      self['storeMonthlySales20201'], self['storeMonthlySales20202'], self['storeMonthlySales20203'], self['storeMonthlySales20204'],
-                      self['storeMonthlySales20205'], self['storeMonthlySales20206'], self['storeMonthlySales20207'], self['storeMonthlySales20208'],
-                      self['storeMonthlySales20209'], self['storeMonthlySales202010'], self['storeMonthlySales202011'], self['storeMonthlySales202012']
-                    ]
-                  },
-                  {
-                    name: 2021,
-                    type: 'line',
-                    data: [
-                      self['storeMonthlySales20211'], self['storeMonthlySales20212'], self['storeMonthlySales20213'], self['storeMonthlySales20214'],
-                      self['storeMonthlySales20215'], self['storeMonthlySales20216'], self['storeMonthlySales20217'], self['storeMonthlySales20218'],
-                      self['storeMonthlySales20219'], self['storeMonthlySales202110'], self['storeMonthlySales202111'], self['storeMonthlySales202112']
-                    ]
-                  },
-                  {
-                    name: 2022,
-                    type: 'line',
-                    data: [
-                      self['storeMonthlySales20221'], self['storeMonthlySales20222'], self['storeMonthlySales20223'], self['storeMonthlySales20224'],
-                      self['storeMonthlySales20225'], self['storeMonthlySales20226'], self['storeMonthlySales20227'], self['storeMonthlySales20228'],
-                      self['storeMonthlySales20229'], self['storeMonthlySales202210'], self['storeMonthlySales202211'], self['storeMonthlySales202212']
-                    ]
-                  },
-                  {
-                    name: 2023,
-                    type: 'line',
-                    data: [
-                      self['storeMonthlySales20231'], self['storeMonthlySales20232'], self['storeMonthlySales20233'], self['storeMonthlySales20234'],
-                      self['storeMonthlySales20235'], self['storeMonthlySales20236'], self['storeMonthlySales20237'], self['storeMonthlySales20238'],
-                      self['storeMonthlySales20239'], self['storeMonthlySales202310'], self['storeMonthlySales202311'], self['storeMonthlySales202312']
+                      parseInt(self['monthlyTotalSales1']),
+                      parseInt(self['monthlyTotalSales2']),
+                      parseInt(self['monthlyTotalSales3']),
+                      parseInt(self['monthlyTotalSales4']),
+                      parseInt(self['monthlyTotalSales5']),
+                      parseInt(self['monthlyTotalSales6']),
+                      parseInt(self['monthlyTotalSales7']),
+                      parseInt(self['monthlyTotalSales8']),
+                      parseInt(self['monthlyTotalSales9']),
+                      parseInt(self['monthlyTotalSales10']),
+                      parseInt(self['monthlyTotalSales11']),
+                      parseInt(self['monthlyTotalSales12'])
                     ]
                   }
                 ]
               };
+              
               myChart.setOption(option);
-            } else {
-              alert ("\n검색하신 키워드가 존재하지 않습니다. \n키워드는 전체 이름(ex.오리역점)으로 검색해주세요.");
+             }
+           })
+           .catch(error => {
+             console.error(error);
+           });
+        }
+      }
+    }
+  };
+</script> -->
+
+<template>
+  <div id="branchSalesTitle"> 
+    <br/>
+    <h3>매출 조회</h3><span>  <router-link to="/headsalesDetail">상세 검색</router-link></span>
+  </div>
+  <div id="dailySales" style="width:700px; height:500px"></div>
+  <div>
+    <div>일간 지점 매출 TOP3</div>
+    <div id="rankingchart" style="width: 600px; height: 400px"></div>
+    <div>월별 전체 매출<select v-model="selectYear">
+        <option v-for="year in years" :key="year" :value="year">{{ year }}년</option>
+      </select>
+      <button @click="getMonthlySales">조회</button>
+    </div>
+    <div id="monthlychart"></div>
+  </div>
+</template>
+  
+<script>
+import * as echarts from 'echarts/core';
+import { TooltipComponent, GridComponent, TitleComponent } from 'echarts/components';
+import { BarChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
+import { LineChart } from 'echarts/charts';
+import { UniversalTransition } from 'echarts/features';
+import dayGridPlugin from '@fullcalendar/daygrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import bootstrap5Plugin from '@fullcalendar/bootstrap5';
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+import { Calendar } from '@fullcalendar/core';
+export default {
+  name: 'HeadSales',
+  components: {
+  },
+  data() {
+    return {
+      years: [2020, 2021, 2022, 2023],
+      selectYear: null,
+      list: [],
+      list2: [],
+      list3: [],
+      myChart: null,
+      myChart2: null,
+      calendarOptions: {
+        plugins: [dayGridPlugin, interactionPlugin],
+        initialView: 'dayGridMonth',
+        dayGridMonth: {
+            titleFormat: 'YYYY[년] M[월]'
+        },
+      }
+    }
+  },
+  created() {
+    echarts.use([
+      TooltipComponent,
+      GridComponent,
+      BarChart,
+      LineChart,
+      CanvasRenderer,
+      UniversalTransition,
+      TitleComponent
+    ]);
+  },
+  mounted() {
+  const currentDate = new Date();
+  this.selectYear = currentDate.getFullYear();
+  this.addDailySales();
+  this.myChart = echarts.init(document.getElementById('rankingchart'));
+  this.myChart2 = echarts.init(document.getElementById('monthlychart'));
+  this.getDailyRank3();
+  this.getMonthlySales();
+  },
+  methods: {
+    addDailySales() {
+      const self = this;
+      self.$axios
+        .get('http://localhost:8085/selling/dailysales')
+        .then(response => {
+          self.list = response.data;
+          console.log(self.list);
+          if (self.list && self.list.length > 0) {
+            const events = self.list.map(item => ({
+              title: item.TOTALPRICE.toLocaleString(),
+              start: item.SELLINGDATE
+            }));
+            const calendarE1 = document.getElementById('dailySales');
+            const calendar = new Calendar(calendarE1, {
+              plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, bootstrap5Plugin],
+              themeSystem: 'bootstrap5',
+              headerToolbar: {
+                left: 'title',
+                right: 'today prev,next',
+              },
+              navLinks: true,
+              events: events,
+            });
+            calendar.render();
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+    getDailyRank3() {
+      const day = new Date(); // 페이지 로딩 시 어제 날짜 추출
+      day.setDate(day.getDate() - 1);
+      day.setHours(0, 0, 0, 0);
+      const self = this;
+      self.$axios
+        .get(`http://localhost:8085/selling/dailyrank3`)
+        .then(response => {
+          self.list2 = response.data.list;
+          for (let i = 0; i < 3; i++) {   // 차트에 참조값으로 띄울 TOP3 지점 매출 초기화
+            self['rank' + (i + 1) + 'StoreSales'] = 0;
+          }
+          if (self.list2 && self.list2.length > 0) {  //  데이터가 있을 경우만 진행
+            for (let i = 0; i < 3; i++) {
+              const rank = i + 1;
+              const item = self.list2.find(obj => {   // DB 날짜와 페이지에서 추출한 날짜, 랭킹 서로 비교하여 일치하는 것 추출
+                const itemDate = new Date(obj.SELLINGDATE).toString();
+                const dayDate = day.toString();
+                return itemDate === dayDate && obj.RANK === rank;
+              });
+              if (item) {
+                const rank = item.RANK;
+                const rankStore = item.STORENAME;
+                self['rank' + rank + 'Store'] = rankStore;
+                const rankSales = item.TOTALPRICE;
+                self['rank' + rank + 'Sales'] = rankSales;
+                console.log(self['rank' + rank + 'Store'], self['rank' + rank + 'Sales']);
+                const option = {
+                  tooltip: {
+                    trigger: 'axis',
+                    axisPointer: {
+                      type: 'shadow'
+                    }
+                  },
+                  grid: {
+                    left: '3%',
+                    right: '4%',
+                    bottom: '3%',
+                    containLabel: true
+                  },
+                  xAxis: [
+                    {
+                      type: 'category',
+                      data: [self['rank1Store'], self['rank2Store'], self['rank3Store']],
+                      axisTick: {
+                        alignWithLabel: true
+                      }
+                    }
+                  ],
+                  yAxis: [
+                    {
+                      type: 'value'
+                    }
+                  ],
+                  series: [
+                    {
+                      name: '총 매출',
+                      type: 'bar',
+                      barWidth: '30%',
+                      data: [self['rank1Sales'], self['rank2Sales'], self['rank3Sales']]
+                    }
+                  ]
+                };
+                self.myChart.setOption(option);
+              }
+            }
+          }
+        })
+        .catch(error => {
+          console.error(error);
+        });
+    },
+    getMonthlySales() {
+      const year = this.selectYear;
+      console.log(year);
+      if (year) {
+        const self = this;
+        self.$axios
+          .get(`http://localhost:8085/selling/monthlysales2/${year}`)
+          .then(response => {
+            self.list3 = response.data.list;
+            console.log(self.list3);
+            for (let i = 0; i < 12; i++) {
+              self['monthlyTotalSales' + (i + 1)] = 0;
+              console.log(self['monthlyTotalSales' + (i + 1)]);
+            }
+            if (self.list3 && self.list3.length > 0) {
+              for (let i = 0; i < 12; i++) {
+                const month = i + 1;
+                const item = self.list3.find(obj => obj.MONTH === month);
+                if (item) {
+                  const monthlySales = item.TOTALPRICE;
+                  self['monthlyTotalSales' + month] = monthlySales;
+                  console.log(self['monthlyTotalSales' + month]);
+                }
+              }
+              const option = {
+                title: {
+                  text: '월별 전체 매출'
+                },
+                tooltip: {
+                  trigger: 'axis',
+                  axisPointer: {
+                    crossStyle: {
+                      color: '#999'
+                    }
+                  }
+                },
+                xAxis: [
+                  {
+                    type: 'category',
+                    data: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                    axisPointer: {
+                      type: 'shadow'
+                    }
+                  }
+                ],
+                yAxis: [
+                  {
+                    type: 'value',
+                    name: '',
+                    min: 0,
+                    max: 50000,
+                    interval: 10000,
+                    axisLabel: {
+                      formatter: '{value} 원'
+                    }
+                  }
+                ],
+                series: [
+                  {
+                    name: '',
+                    type: 'line',
+                    tooltip: {
+                      valueFormatter: function (value) {
+                        return value + ' 원';
+                      }
+                    },
+                    data: [
+                      parseInt(self['monthlyTotalSales1']),
+                      parseInt(self['monthlyTotalSales2']),
+                      parseInt(self['monthlyTotalSales3']),
+                      parseInt(self['monthlyTotalSales4']),
+                      parseInt(self['monthlyTotalSales5']),
+                      parseInt(self['monthlyTotalSales6']),
+                      parseInt(self['monthlyTotalSales7']),
+                      parseInt(self['monthlyTotalSales8']),
+                      parseInt(self['monthlyTotalSales9']),
+                      parseInt(self['monthlyTotalSales10']),
+                      parseInt(self['monthlyTotalSales11']),
+                      parseInt(self['monthlyTotalSales12']),
+                    ]
+                  }
+                ]
+              }
+              self.myChart2.setOption(option);
             }
           })
           .catch(error => {
             console.error(error);
           });
-        }
       }
     }
-  };
-</script>
-<style scoped>
-.box {
-  display: flex;
-  justify-content: center;
-  align-items: center;
+  }
 }
-  
-</style>
+</script>

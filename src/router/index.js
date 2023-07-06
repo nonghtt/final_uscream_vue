@@ -24,9 +24,8 @@ import WorkLogs from '@/components/worklogs/WorkLogs.vue'
 import ScheduleModal from '@/components/schedule/ScheduleModal.vue'
 import ScheduleAddModal from '@/components/schedule/ScheduleModal.vue'
 
-import BranchSales from '@/components/sales/BranchSales.vue'
-import HeadSalesDetail from '@/components/sales/HeadSalesDetail.vue'
 import HeadSales from '@/components/sales/HeadSales.vue'
+import HeadSalesDetail from '@/components/sales/HeadSalesDetail.vue'
 
 import OrderDetail from '@/components/product/OrderDetail.vue'
 
@@ -43,9 +42,13 @@ import SideBar from '../views/SideBar.vue'
 
 import NoticeList from '@/components/notice/NoticeList.vue'
 import NoticeWriter from '@/components/notice/NoticeWriter.vue';
-import NoticeDetail from '@/components/notice/NoticeDetail.vue';
+import HeadNotice from '@/components/notice/HeadNotice.vue';
+import StoreNotice from '@/components/notice/StoreNotice.vue';
 
-
+import VocList from '@/components/voc/VocList.vue';
+import VocWriter from '@/components/voc/VocWriter.vue';
+import HeadVoc from '@/components/voc/HeadVoc.vue';
+import StoreVoc from '@/components/voc/StoreVoc.vue';
 
 const routes = [
  
@@ -128,7 +131,6 @@ const routes = [
   {
     path: '/headsales',
     name: 'headsales',
-    component: HeadSales
   },
   {
     path: '/branchsales',
@@ -138,7 +140,12 @@ const routes = [
   {
     path: '/headsalesDetail',
     name: 'headsalesDetail',
-    component: HeadSalesDetail
+    component: HeadSalesDetail,
+  },
+  {
+    path: '/branchsales',
+    name: 'branchsales',
+    component: BranchSales,
   },
   {
     path: '/OrderDetail',
@@ -207,9 +214,34 @@ const routes = [
     component: NoticeWriter
   },
   {
-    path: '/NoticeDetail',
-    name: 'NoticeDetail',
-    component: NoticeDetail
+    path: '/HeadNotice',
+    name: 'HeadNotice',
+    component: HeadNotice
+  },
+  {
+    path: '/StoreNotice',
+    name: 'StoreNotice',
+    component: StoreNotice
+  },
+  {
+    path: '/VocList',
+    name: 'VocList',
+    component: VocList
+  },
+  {
+    path: '/VocWriter',
+    name: 'VocWriter',
+    component: VocWriter
+  },
+  {
+    path: '/HeadVoc',
+    name: 'HeadVoc',
+    component: HeadVoc
+  },
+  {
+    path: '/StoreVoc',
+    name: 'StoreVoc',
+    component: StoreVoc
   },
   {
     path:'/inventory',

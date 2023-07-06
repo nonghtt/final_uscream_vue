@@ -1,8 +1,11 @@
 <template>
     <div class="container ">
-        <h3>발주 현황</h3>
-        <button type="button" v-if="accounttype == 2" class="col1"><router-link class="orderbtn"
-                to="/productorder">발주신청</router-link></button>
+        <div class="row justify-content-end" style="margin: 10px 0 10px 0;" >
+            <div class="col-4"></div>
+            <div class="col-4 justify-content-start"><h3 style="margin-top: 10px ;">발주 현황</h3></div>
+            <div class="col-4 justify-content-end" style="align-items: center; display: flex;"><button type="button" v-if="accounttype == 2" class="col1 btn btncolor"><router-link class="orderbtn"
+                    to="/productorder">발주신청</router-link></button></div>
+        </div>
         <table class="table table-light table-striped table-bordered">
             <tr>
                 <th>발주번호</th>
@@ -20,17 +23,17 @@
                         {{ order.STORE }}의 {{ order.ORDERDATE }} 발주내역</div>
                 </td>
                 <td>{{ order.TOTALCOST }}원</td>
-                <td v-if="order.ORDERCOST!=0">{{ order.ORDERCOST }}원</td>
-                <td v-else-if="order.ORDERCOST ==0 && order.STATUS== '처리완료'">0원</td>
+                <td v-if="order.ORDERCOST != 0">{{ order.ORDERCOST }}원</td>
+                <td v-else-if="order.ORDERCOST == 0 && order.STATUS == '처리완료'">0원</td>
                 <td v-else>처리중</td>
-                
-                
+
+
 
                 <td>{{ order.ORDERDATE }}</td>
                 <td v-if="order.CONFIRMDATE == null">처리중</td>
                 <td v-if="order.CONFIRMDATE != null">{{ order.CONFIRMDATE }}</td>
                 <td>{{ order.STATUS }}</td>
-               <!--  <td v-if="order.CHECKCONFIRM == 0">승인 대기중</td>
+                <!--  <td v-if="order.CHECKCONFIRM == 0">승인 대기중</td>
                 <td v-if="order.CHECKCONFIRM != 0">승인 완료</td> -->
 
             </tr>
@@ -58,15 +61,15 @@ export default {
                 self.orderlist = res.data.orderlist;
 
             });
-        }else if(this.accounttype ==2){ 
+        } else if (this.accounttype == 2) {
             const self = this;
-            self.$axios.get("http://localhost:8085/orders/orderlist/"+self.store).then(function (res) {
+            self.$axios.get("http://localhost:8085/orders/orderlist/" + self.store).then(function (res) {
                 self.orderlist = res.data.orderlist;
                 console.log(self.orderlist)
 
-        })
-    }
-},
+            })
+        }
+    },
     methods: {
         detail(storeid, orderdate) {
 
@@ -86,5 +89,16 @@ export default {
 
 * {
     text-align: center;
+}
+.btncolor:hover{
+  background-color: #FFC67B;
+  color:#595959
+}
+.btncolor{
+    
+    height: 38px;
+    color:#595959;
+    background-color: #bee96d;
+    font-weight: bolder ;
 }
 </style>

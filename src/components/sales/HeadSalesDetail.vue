@@ -19,15 +19,16 @@
   </div>
   </div>
 </template> 
-
 <script>
 import 'bootstrap/dist/css/bootstrap.css';  
+
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import * as echarts from 'echarts/core';
 import { TitleComponent, ToolboxComponent, TooltipComponent, GridComponent, LegendComponent } from 'echarts/components';
 import { LineChart } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
+
 export default {
   name: 'HeadSalesDetail',
   components: {},
@@ -62,6 +63,7 @@ export default {
     },
     searchHead() {
       const self = this;
+
       self.$axios
         .get('http://localhost:8085/selling/monthlysales')
         .then(response => {
@@ -79,6 +81,7 @@ export default {
               }
             }
             const myChart = echarts.init(document.getElementById('storeMonthlychart'));
+
             const option = {
               title: {
                 text: '연도별 매출 추이'
@@ -157,6 +160,7 @@ export default {
       searchBranch() {
       const self = this;
       const keyword = self.searchKeyword;
+
       if (keyword) {
         console.log(keyword);
         self.$axios
@@ -164,6 +168,7 @@ export default {
           .then(response => {
             self.list2 = response.data.list;
             console.log(self.list2);
+
             if (self.list2 && self.list2.length > 0) {
               for (let i = 0; i < 12; i++) {
                 const month = i + 1;
@@ -256,11 +261,16 @@ export default {
     }
   };
 </script>
+
 <style scoped>
+
 .box {
   display: flex;
   justify-content: center;
   align-items: center;
 }
   
+
 </style>
+
+
