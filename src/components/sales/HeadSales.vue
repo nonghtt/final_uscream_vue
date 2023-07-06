@@ -1,17 +1,155 @@
+<!-- <template>
+  <div id="title">매출 조회</div>
+  <div>
+    <div>
+      월별 전체 매출
+      <select v-model="selectYear">
+        <option v-for="year in years" :key="year" :value="year">{{ year }}년</option>
+      </select>
+      <button @click="getMonthlySales">조회</button>
+    </div>
+    <div id="monthlychart"></div>
+  </div>
+</template>
+
+<script>
+import * as echarts from 'echarts/core';
+import { TitleComponent, TooltipComponent, GridComponent, LegendComponent } from 'echarts/components';
+import { LineChart } from 'echarts/charts';
+import { UniversalTransition } from 'echarts/features';
+import { CanvasRenderer } from 'echarts/renderers';
+
+export default {
+  name: 'HeadSales',
+  components: {},
+  data() {
+    return {
+      years: [2020, 2021, 2022, 2023],
+      selectYear: null,
+      list3: [],
+      myChart: null
+    };
+  },
+  created() {
+    echarts.use([
+      TitleComponent,
+      TooltipComponent,
+      GridComponent,
+      LegendComponent,
+      LineChart,
+      CanvasRenderer,
+      UniversalTransition
+    ]);
+  },
+  mounted() {
+    const currentDate = new Date();
+    this.selectYear = currentDate.getFullYear();
+  },
+  methods: {
+    getMonthlySales() {
+      const year = this.selectYear;
+      console.log(year);
+
+      if (year) {
+        this.$axios
+          .get(`http://localhost:8085/selling/monthlysales2/${year}`)
+          .then(response => {
+            this.list3 = response.data.list;
+            console.log(this.list3);
+
+            const monthlyTotalSales = Array(12).fill(0);
+
+            if (this.list3 && this.list3.length > 0) {
+              this.list3.forEach(item => {
+                const month = item.MONTH;
+                const monthlySales = item.TOTALPRICE;
+                monthlyTotalSales[month - 1] = monthlySales;
+              });
+
+              const myChart = echarts.init(document.getElementById('monthlychart'));
+
+              const option = {
+                title: {
+                  text: '월별 매출'
+                },
+                tooltip: {
+                  trigger: 'axis'
+                },
+                legend: {
+                  data: ['월별 매출']
+                },
+                grid: {
+                  left: '3%',
+                  right: '4%',
+                  bottom: '3%',
+                  containLabel: true
+                },
+                xAxis: {
+                  type: 'category',
+                  boundaryGap: false,
+                  data: [
+                    '1월','2월','3월','4월','5월','6월','7월','8월','9월','10월',
+                    '11월', '12월']
+                },
+                yAxis: {
+                  type: 'value'
+                },
+                series: [
+                  {
+                    name: '월별 매출',
+                    type: 'line',
+                    data: [
+                      parseInt(self['monthlyTotalSales1']),
+                      parseInt(self['monthlyTotalSales2']),
+                      parseInt(self['monthlyTotalSales3']),
+                      parseInt(self['monthlyTotalSales4']),
+                      parseInt(self['monthlyTotalSales5']),
+                      parseInt(self['monthlyTotalSales6']),
+                      parseInt(self['monthlyTotalSales7']),
+                      parseInt(self['monthlyTotalSales8']),
+                      parseInt(self['monthlyTotalSales9']),
+                      parseInt(self['monthlyTotalSales10']),
+                      parseInt(self['monthlyTotalSales11']),
+                      parseInt(self['monthlyTotalSales12'])
+                    ]
+                  }
+                ]
+              };
+              
+              myChart.setOption(option);
+             }
+           })
+           .catch(error => {
+             console.error(error);
+           });
+        }
+      }
+    }
+  };
+</script> -->
+
 <template>
-  <div id="title"> 매출 조회 </div>
+  <div id="branchSalesTitle"> 
+    <br/>
+    <h3>매출 조회</h3><span>  <router-link to="/headsalesDetail">상세 검색</router-link></span>
+  </div>
+
   <div id="dailySales" style="width:700px; height:500px"></div>
-  <div>일간 지점 매출 TOP3</div>
-  <div id="rankingchart" style="width: 600px; height: 400px"></div>
-  <div>월별 전체 매출<select v-moder="selectYear">
-  <option v-for="year in years" :key="year" :value="year">{{ year }}년</option></select>
-  <button @click="getMonthlySales">조회</button></div>
-  <div id="monthlychart"></div>
+  <div>
+    <div>일간 지점 매출 TOP3</div>
+    <div id="rankingchart" style="width: 600px; height: 400px"></div>
+    <div>월별 전체 매출<select v-model="selectYear">
+        <option v-for="year in years" :key="year" :value="year">{{ year }}년</option>
+      </select>
+      <button @click="getMonthlySales">조회</button>
+    </div>
+    <div id="monthlychart"></div>
+  </div>
 </template>
   
 <script>
 import * as echarts from 'echarts/core';
-import { TooltipComponent, GridComponent } from 'echarts/components';
+import { TooltipComponent, GridComponent, TitleComponent } from 'echarts/components';
 import { BarChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
 import { LineChart } from 'echarts/charts';
@@ -32,7 +170,7 @@ export default {
   },
   data() {
     return {
-      years : [2020, 2021, 2022, 2023],
+      years: [2020, 2021, 2022, 2023],
       selectYear: null,
       list: [],
       list2: [],
@@ -41,29 +179,35 @@ export default {
       myChart2: null,
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin],
-        initialView: 'dayGridMonth'
+        initialView: 'dayGridMonth',
+        dayGridMonth: {
+            titleFormat: 'YYYY[년] M[월]'
+        },
       }
     }
-
   },
-  create() {
+  created() {
     echarts.use([
-      TooltipComponent, 
-      GridComponent, 
-      BarChart, 
-      LineChart, 
-      CanvasRenderer, 
-      UniversalTransition
+      TooltipComponent,
+      GridComponent,
+      BarChart,
+      LineChart,
+      CanvasRenderer,
+      UniversalTransition,
+      TitleComponent
     ]);
-  }
-  ,
+  },
   mounted() {
-    const currentDate = new Date();
-    this.selectYear = currentDate.getFullYear();
-    this.addDailySales();
+  const currentDate = new Date();
+  this.selectYear = currentDate.getFullYear();
 
-    this.getDailyRank3();
-    this.getMonthlySales();
+  this.addDailySales();
+
+  this.myChart = echarts.init(document.getElementById('rankingchart'));
+  this.myChart2 = echarts.init(document.getElementById('monthlychart'));
+
+  this.getDailyRank3();
+  this.getMonthlySales();
   },
   methods: {
     addDailySales() {
@@ -72,7 +216,7 @@ export default {
       self.$axios
         .get('http://localhost:8085/selling/dailysales')
         .then(response => {
-          self.list = response.data;  
+          self.list = response.data;
 
           console.log(self.list);
 
@@ -133,9 +277,6 @@ export default {
 
                 console.log(self['rank' + rank + 'Store'], self['rank' + rank + 'Sales']);
 
-                // echarts.use([TooltipComponent, GridComponent, BarChart, CanvasRenderer]);
-                const myChart = echarts.init(document.getElementById('rankingchart'));
-
                 const option = {
                   tooltip: {
                     trigger: 'axis',
@@ -172,11 +313,8 @@ export default {
                     }
                   ]
                 };
+                self.myChart.setOption(option);
 
-                option && myChart.setOption(option);
-                
-              } else {
-                self['rankStore' + rank] = 0;
               }
             }
           }
@@ -194,7 +332,7 @@ export default {
         const self = this;
 
         self.$axios
-          .get(`http://localhost:8085/selling/monthlysales/${year}`)
+          .get(`http://localhost:8085/selling/monthlysales2/${year}`)
           .then(response => {
             self.list3 = response.data.list;
 
@@ -202,6 +340,9 @@ export default {
 
             for (let i = 0; i < 12; i++) {
               self['monthlyTotalSales' + (i + 1)] = 0;
+
+              console.log(self['monthlyTotalSales' + (i + 1)]);
+
             }
 
             if (self.list3 && self.list3.length > 0) {
@@ -213,79 +354,77 @@ export default {
                   self['monthlyTotalSales' + month] = monthlySales;
 
                   console.log(self['monthlyTotalSales' + month]);
-
-                  // echarts.use([TooltipComponent, GridComponent, LineChart, CanvasRenderer, UniversalTransition]);
-                  const myChart2 = echarts.init(document.getElementById('monthlychart'));
-
-                  const option = {
-                    tooltip: {
-                      trigger: 'axis',
-                      axisPointer: {
-                        crossStyle: {
-                          color: '#999'
-                        }
-                      }
-                    },
-
-                    xAxis: [
-                      {
-                        type: 'category',
-                        data: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
-                        axisPointer: {
-                          type: 'shadow'
-                        }
-                      }
-                    ],
-                    yAxis: [
-                      {
-                        type: 'value',
-                        name: '',
-                        min: 0,
-                        max: 50000,
-                        interval: 10000,
-                        axisLabel: {
-                          formatter: '{value} 원'
-                        }
-                      }
-                    ],
-                    series: [
-                      {
-                        name: '',
-                        type: 'line',
-                        tooltip: {
-                          valueFormatter: function (value) {
-                            return value + ' 원';
-                          }
-                        },
-                        data: [
-                          parseInt(self['monthlyTotalSales1']),
-                          parseInt(self['monthlyTotalSales2']),
-                          parseInt(self['monthlyTotalSales3']),
-                          parseInt(self['monthlyTotalSales4']),
-                          parseInt(self['monthlyTotalSales5']),
-                          parseInt(self['monthlyTotalSales6']),
-                          parseInt(self['monthlyTotalSales7']),
-                          parseInt(self['monthlyTotalSales8']),
-                          parseInt(self['monthlyTotalSales9']),
-                          parseInt(self['monthlyTotalSales10']),
-                          parseInt(self['monthlyTotalSales11']),
-                          parseInt(self['monthlyTotalSales12']),
-                        ]
-                      }
-                    ]
-                  };
-                 option && myChart2.setOption(option);
-                } else {
-                  self['monthlyTotalSales' + month] = 0;
                 }
               }
+
+              const option = {
+                title: {
+                  text: '월별 전체 매출'
+                },
+                tooltip: {
+                  trigger: 'axis',
+                  axisPointer: {
+                    crossStyle: {
+                      color: '#999'
+                    }
+                  }
+                },
+
+                xAxis: [
+                  {
+                    type: 'category',
+                    data: ['1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'],
+                    axisPointer: {
+                      type: 'shadow'
+                    }
+                  }
+                ],
+                yAxis: [
+                  {
+                    type: 'value',
+                    name: '',
+                    min: 0,
+                    max: 50000,
+                    interval: 10000,
+                    axisLabel: {
+                      formatter: '{value} 원'
+                    }
+                  }
+                ],
+                series: [
+                  {
+                    name: '',
+                    type: 'line',
+                    tooltip: {
+                      valueFormatter: function (value) {
+                        return value + ' 원';
+                      }
+                    },
+                    data: [
+                      parseInt(self['monthlyTotalSales1']),
+                      parseInt(self['monthlyTotalSales2']),
+                      parseInt(self['monthlyTotalSales3']),
+                      parseInt(self['monthlyTotalSales4']),
+                      parseInt(self['monthlyTotalSales5']),
+                      parseInt(self['monthlyTotalSales6']),
+                      parseInt(self['monthlyTotalSales7']),
+                      parseInt(self['monthlyTotalSales8']),
+                      parseInt(self['monthlyTotalSales9']),
+                      parseInt(self['monthlyTotalSales10']),
+                      parseInt(self['monthlyTotalSales11']),
+                      parseInt(self['monthlyTotalSales12']),
+                    ]
+                  }
+                ]
+              }
+              self.myChart2.setOption(option);
             }
           })
           .catch(error => {
             console.error(error);
           });
       }
-    },
+    }
   }
 }
-</script>
+</script>  
