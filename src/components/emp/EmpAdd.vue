@@ -18,7 +18,7 @@
             <div class="mb-3">
                 <label for="empGrade" class="form-label title">등급</label>
                 <select v-model="selectedGrade" @change="gradeChange()" class="form-select">
-                    <option disabled :key=0 :value="none">
+                    <option disabled :key=0 :value=0>
                         --등급 선택--
                     </option>
                     <option v-for="(item, index) in gradeList" :key="index" :value="item.gnum">
@@ -161,7 +161,7 @@ export default {
             grade: '',
             color: '',              // emp dto 
             gradeList: [],          // 등급 리스트 보여주기
-            selectedGrade: '',      // 등급 선택 
+            selectedGrade: 0,      // 등급 선택 
             week: [],               // 요일 선택 
             startdate: null,        // 언제부터 언제까지 반복할건지 
             enddate: null,

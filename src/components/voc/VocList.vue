@@ -2,10 +2,10 @@
     <div class="container">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
-                <span class="font-weight-bold">공지사항</span>
+                <span class="font-weight-bold">고객의소리</span>
                 <button v-if="accounttype === '1'" class="btn btn-primary btn-sm">
                     <router-link v-if="accounttype === '1'" class="btn btn-primary btn-sm"
-                        :to="{ path: '/NoticeWriter' }">등록</router-link>
+                        :to="{ path: '/VocWriter' }">등록</router-link>
                 </button>
             </div>
 
@@ -14,11 +14,19 @@
                     <div class="col">
                         <select class="form-select" v-model="schbox">
                             <option value="" disabled selected>검색조건</option>
-                            <option value="noticenum">글번호</option>
-                            <option value="title">제목</option>
+                            <option value="category">분류</option>
                         </select>
                     </div>
-                    <div class="col">
+                    <div class="col" v-if="schbox === 'category'">
+                        <div class="input-group">
+                            <select class="form-select" v-model="categoryVal">
+                                <option value="1">칭찬</option>
+                                <option value="2">불만</option>
+                            </select>
+                            <button type="button" class="btn btn-primary" @click="getBoardList">검색</button>
+                        </div>
+                    </div>
+                    <div class="col" v-else>
                         <div class="input-group">
                             <input v-model="schVal" type="text" class="form-control" placeholder="검색어"
                                 @keypress.enter.prevent="getBoardList" />
@@ -32,18 +40,18 @@
                             <thead>
                                 <tr>
                                     <th style="text-align: center;">글번호</th>
+                                    <th style="text-align: center;">분류</th>
                                     <th style="text-align: center;">제목</th>
                                     <th style="text-align: center;">작성일</th>
-                                    <th style="text-align: center;">조회수</th>
                                 </tr>
                             </thead>
                             <tbody>
-                                <tr v-for="item in displayedList" :key="item.noticenum" @click="detail(item)"
+                                <tr v-for="item in displayedList" :key="item.vocnum" @click="detail(item)"
                                     style="cursor: pointer;">
-                                    <td class="text-center">{{ item.noticenum }}</td>
+                                    <td class="text-center">{{ item.vocnum }}</td>
+                                    <td class="text-center">{{ getCategoryText(item.category) }}</td>
                                     <td class="text-center">{{ item.title }}</td>
                                     <td class="text-center">{{ formatDate(item.wdate) }}</td>
-                                    <td class="text-center">{{ item.cnt }}</td>
                                 </tr>
                             </tbody>
                         </table>
@@ -69,10 +77,10 @@
 
 <script>
 export default {
-    name: "NoticeList",
+    name: "VocList",
     data() {
         return {
-            noticelist: [],
+            voclist: [],
             dto: null,
             title: [],
             accounttype: sessionStorage.getItem("accounttype"),
@@ -89,42 +97,42 @@ export default {
             this.getBoardList(); // 추가: 페이지가 생성될 때 공지사항 리스트를 가져옴
         } else if (this.accounttype == 2) {
             const self = this;
-            self.$axios.get("http://localhost:8085/notices").then(function (res) {
+            self.$axios.get("http://localhost:8085/vocs").then(function (res) {
                 if (res.data.list) {
-                    self.noticelist = res.data.list;
-                } else if (res.data.notice) {
-                    self.noticelist = [res.data.notice];
+                    self.voclist = res.data.list;
+                } else if (res.data.voc) {
+                    self.voclist = [res.data.voc];
                 }
             });
         }
     },
     computed: {
         totalPages() {
-            return Math.ceil(this.noticelist.length / this.itemsPerPage);
+            return Math.ceil(this.voclist.length / this.itemsPerPage);
         },
         displayedList() {
             const start = (this.currentPage - 1) * this.itemsPerPage;
             const end = start + this.itemsPerPage;
-            return this.noticelist.slice(start, end);
+            return this.voclist.slice(start, end);
         },
     },
     methods: {
         detail(item) {
             let name = '';
             if (this.accounttype == 1) {
-                name = 'HeadNotice';
+                name = 'HeadVoc';
             } else if (this.accounttype == 2) {
-                name = 'StoreNotice';
+                name = 'StoreVoc';
             }
+            console.log(item.vocnum)
 
             this.$router.push({
                 name,
                 query: {
-                    noticenum: item.noticenum,
+                    vocnum: item.vocnum,
                     category: item.category,
                     title: item.title,
                     wdate: item.wdate,
-                    cnt: item.cnt,
                 },
             });
         },
@@ -133,19 +141,16 @@ export default {
             return formattedDate;
         },
         getBoardList() {
-            console.log(this.schbox, this.schVal);
-            let url = "http://localhost:8085/notices";
+            let url = "http://localhost:8085/vocs";
 
             if (this.schbox && this.schVal) {
                 switch (this.schbox) {
-                    case "noticenum":
+                    case "vocnum":
                         url += `/schid/${this.schVal}`;
                         break;
                     case "category":
                         if (this.categoryVal !== "") {
-                            if (this.categoryVal === "1" || this.categoryVal === "2") {
-                                url += `/schctg/${this.categoryVal}`;
-                            }
+                            url += `/schctg/${this.categoryVal}`;
                         }
                         break;
                     case "title":
@@ -163,9 +168,9 @@ export default {
             const self = this;
             self.$axios.get(url).then(function (res) {
                 if (res.data.list) {
-                    self.noticelist = res.data.list;
-                } else if (res.data.notice) {
-                    self.noticelist = [res.data.notice];
+                    self.voclist = res.data.list;
+                } else if (res.data.voc) {
+                    self.voclist = [res.data.voc];
                 }
             });
         },

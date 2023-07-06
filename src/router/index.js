@@ -44,10 +44,13 @@ import SideBar from '../views/SideBar.vue'
 
 import NoticeList from '@/components/notice/NoticeList.vue'
 import NoticeWriter from '@/components/notice/NoticeWriter.vue';
-import HeadDetail from '@/components/notice/HeadDetail.vue';
-import StoreDetail from '@/components/notice/StoreDetail.vue';
+import HeadNotice from '@/components/notice/HeadNotice.vue';
+import StoreNotice from '@/components/notice/StoreNotice.vue';
 
-
+import VocList from '@/components/voc/VocList.vue';
+import VocWriter from '@/components/voc/VocWriter.vue';
+import HeadVoc from '@/components/voc/HeadVoc.vue';
+import StoreVoc from '@/components/voc/StoreVoc.vue';
 
 const routes = [
  
@@ -214,14 +217,34 @@ const routes = [
     component: NoticeWriter
   },
   {
-    path: '/HeadDetail',
-    name: 'HeadDetail',
-    component: HeadDetail
+    path: '/HeadNotice',
+    name: 'HeadNotice',
+    component: HeadNotice
   },
   {
-    path: '/StoreDetail',
-    name: 'StoreDetail',
-    component: StoreDetail
+    path: '/StoreNotice',
+    name: 'StoreNotice',
+    component: StoreNotice
+  },
+  {
+    path: '/VocList',
+    name: 'VocList',
+    component: VocList
+  },
+  {
+    path: '/VocWriter',
+    name: 'VocWriter',
+    component: VocWriter
+  },
+  {
+    path: '/HeadVoc',
+    name: 'HeadVoc',
+    component: HeadVoc
+  },
+  {
+    path: '/StoreVoc',
+    name: 'StoreVoc',
+    component: StoreVoc
   },
   {
     path:'/inventory',
