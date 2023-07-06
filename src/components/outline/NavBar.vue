@@ -1,3 +1,4 @@
+네브바 
 <template>
     <nav v-if="loginId == null" class="navbar navbar-expand-lg bg-light">
         <div class="container-fluid">
@@ -51,9 +52,9 @@
                         </a>
                         <ul class="dropdown-menu">
                             <li><router-link class="dropdown-item" to="/orderlist">발주현황</router-link></li>
-                            <li v-if="accounttype == 1"><router-link class="dropdown-item" active-class="active"
+                            <li v-if="accounttype == 1"><router-link class="dropdown-item" 
                                     to="/productlist">상품리스트</router-link></li>
-                            <li v-if="accounttype == 2"><router-link class="dropdown-item" active-class="active"
+                            <li v-if="accounttype == 2"><router-link class="dropdown-item" 
                                     to="/inventory">재고관리</router-link></li>
                         </ul>
                     </li>
@@ -71,13 +72,12 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <!-- <router-link class="nav-link active" to="/branchsales"> -->
-                        <router-link class="nav-link active" to="/headsales">
-                            매출관리
-                        </router-link>
+                            <router-link class="nav-link active" v-if="accounttype == 1" to="/headsales">매출관리</router-link>
+                            <router-link class="nav-link active" v-if="accounttype == 2" to="/branchsales">매출관리</router-link>
                     </li>
+            
                     <li class="nav-item">
-                        <router-link class="nav-link" to="/about">
+                        <router-link class="nav-link" to="/VocList">
                             고객의소리
                         </router-link>
                     </li>
@@ -100,7 +100,6 @@
                 <router-link class="nav-link" to="/about" style="margin-left: 10px; margin-right: 10px;">
                     <P v-on:click="logout"> LOGOUT </P>
                 </router-link>
-
             </div>
         </div>
     </nav>
@@ -131,19 +130,16 @@ export default {
             location.href = '/';
             alert('로그아웃이 완료되었습니다.')
         },
-
     }
 }
 </script>
   
   <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-
 * {
     font-size: 20px;
-    
+    color:black
 }
-
 .logo {
     width: 50px;
     height: 60px;
@@ -152,45 +148,31 @@ export default {
 .logotitle{
     font-family: 'NotoSansKR-Bold';
 }
-
 h3 {
     margin: 40px 0 0;
 }
-
 ul {
     list-style-type: none;
     padding: 0;
 }
-
 li {
     display: inline-block;
     margin: 0 10px;
 }
-
-a {
-    color: black
-}
-
 .mailicon {
     margin-left: 10px;
     margin-right: 13px;
 }
-
 .logorouter {
     text-decoration: none;
 }
-
 .fa-house-chimney {
     font-size: 23px;
 }
-
 .fa-envelope {
     font-size: 23px;
-
 }
-
 a {
     text-decoration: none;
 }
 </style>
-  

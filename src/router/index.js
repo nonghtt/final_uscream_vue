@@ -24,8 +24,8 @@ import WorkLogs from '@/components/worklogs/WorkLogs.vue'
 import ScheduleModal from '@/components/schedule/ScheduleModal.vue'
 import ScheduleAddModal from '@/components/schedule/ScheduleModal.vue'
 
-// import BranchSales from '@/components/sales/BranchSales.vue'
-// import CalendarTest from '@/components/sales/CalendarTest.vue'
+import BranchSales from '@/components/sales/BranchSales.vue'
+import HeadSalesDetail from '@/components/sales/HeadSalesDetail.vue'
 import HeadSales from '@/components/sales/HeadSales.vue'
 
 import OrderDetail from '@/components/product/OrderDetail.vue'
@@ -129,14 +129,16 @@ const routes = [
     path: '/headsales',
     name: 'headsales',
     component: HeadSales
-
-    // path: '/branchsales',
-    // name: 'branchsales',
-    // component: BranchSales
-
-    // path: '/calendarTest',
-    // name: 'calendarTest',
-    // component: CalendarTest
+  },
+  {
+    path: '/branchsales',
+    name: 'branchsales',
+    component: BranchSales
+  },
+  {
+    path: '/headsalesDetail',
+    name: 'headsalesDetail',
+    component: HeadSalesDetail
   },
   {
     path: '/OrderDetail',
@@ -151,7 +153,7 @@ const routes = [
   },
   {
     path: '/AddMsg',
-    name: 'AddMsg',
+    name: 'AddMsg', 
     component: AddMsg
   },
   {
