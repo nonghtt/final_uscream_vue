@@ -24,9 +24,9 @@ import WorkLogs from '@/components/worklogs/WorkLogs.vue'
 import ScheduleModal from '@/components/schedule/ScheduleModal.vue'
 import ScheduleAddModal from '@/components/schedule/ScheduleModal.vue'
 
+import BranchSales from '@/components/sales/BranchSales.vue'
 import HeadSales from '@/components/sales/HeadSales.vue'
 import HeadSalesDetail from '@/components/sales/HeadSalesDetail.vue'
-
 import OrderDetail from '@/components/product/OrderDetail.vue'
 
 import ReceiveMsg from '@/components/msg/ReceiveMsg.vue'
@@ -131,6 +131,7 @@ const routes = [
   {
     path: '/headsales',
     name: 'headsales',
+    component: HeadSales
   },
   {
     path: '/branchsales',
@@ -141,11 +142,6 @@ const routes = [
     path: '/headsalesDetail',
     name: 'headsalesDetail',
     component: HeadSalesDetail,
-  },
-  {
-    path: '/branchsales',
-    name: 'branchsales',
-    component: BranchSales,
   },
   {
     path: '/OrderDetail',
