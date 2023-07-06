@@ -18,7 +18,7 @@
 
                         직원
                         <select v-model="selectedEmp" @change="empChange()"  class="form-select">
-                            <option :key=0 :value="none" disabled>
+                            <option :key=0 :value=0 disabled>
                                 --직원 선택--
                             </option>
                             <option v-for="(item, index) in empList" :key="index" :value="item.empnum">
@@ -67,15 +67,15 @@ export default {
     name: 'ScheduleModal',
     data() {
         return {
-            empList: [],
+            empList: [],     // 한 스토어의 전체 직원 불러오기 
             storeid: sessionStorage.getItem("loginId"),
-            selectedEmp: '',
+            selectedEmp: 0,
             empSelectedList: [],
             bsEmp: false,
             schedule: [],
             empEmpty: true,
             selectedMonth: 0,  // 처음 : 현재 달, 이전 이후 버튼 누르면 달이 바뀜
-            selectedYear: 0,
+            selectedYear: 0,    // 현재 년도 (버튼 눌렀을 때 값 변하면 넣어주기)
 
         }
     },
@@ -86,6 +86,7 @@ export default {
     },
     methods: {
         // 모달 클릭시 직원 list 출력 
+        // 근데 이거 여기에 있는 것보다 created에 있는게 맞는듯?
         SdClick() {
             const self = this;
             const storeid = self.storeid;
@@ -140,7 +141,7 @@ export default {
         // 닫기 버튼을 눌렀을 때 
         close() {
             this.bsEmp = false;
-            console.log(this.bsEmp)
+            //console.log(this.bsEmp)
             this.empEmpty = true;
         },
         // 외부창을 누르면서 닫았을 때 
@@ -150,6 +151,7 @@ export default {
                 this.empEmpty = true;
             }
         },
+        // 추가하기
         realAdd() {
             const self = this
             let arr = self.schedule
@@ -161,6 +163,7 @@ export default {
                         console.log("schedule 등록");
                         console.log(res.status)
                         console.log(res.data)
+                        self.$emit('button-clicked', "10cm 버튼 클릭");
                     })
 
                 self.$axios.put(`http://localhost:8085/basicschedule/${arr[i]}`)
@@ -173,6 +176,7 @@ export default {
                     })
             }
         },
+        // 기본 스케줄 삭제 -> 캘린더 변경 X
         delBasicSchedule() {
             const self = this
             let arr = self.schedule;

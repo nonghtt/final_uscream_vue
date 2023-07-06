@@ -2,10 +2,10 @@
   <div id="sdBody">
     <div id="menu">
       <div>
-        <ScheduleModal />
+        <ScheduleModal @button-clicked="scAdd" />
       </div>
       <div>
-        <ScheduleAddModal />
+        <ScheduleAddModal @button-clicked="scAdd" />
       </div>
       <div>
         <button @click="look30and10" class="btn btncolor">{{ lookMinute }}분 단위로 보기</button>
@@ -16,42 +16,8 @@
     <div id="fullCalendar">
       <FullCalendar :options="calendarOptions" />
     </div>
-
-    <!-- 등록 Modal -->
-    <div class="modal fade" id="addSchedule" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-      <div class="modal-dialog modal-dialog-scrollable">
-        <div class="modal-content">
-          <div class="modal-header">
-            <h5 class="modal-title" id="exampleModalLabel">스케줄 등록</h5>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-          </div>
-          <div class="modal-body">
-            <div>
-              안녕?
-              <select v-model="selectedEmp" @change="empChange()">
-                <option :key=0 :value="none" disabled>
-                  --직원 선택--
-                </option>
-                <option v-for="(item, index) in empList" :key="index" :value="item.empnum">
-                  {{ item.empname }}
-                </option>
-              </select>
-            </div>
-
-            <!-- <div> 
-              <input v-for="(item, index) in empSelectedList" :key="index" :value="item.bsnum" >
-              {{ item.bsnum }}
-            </div> -->
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
-            <button type="button" class="btn btncolor" data-bs-dismiss="modal">등록</button>
-          </div>
-        </div>
-      </div>
-    </div>
-
-    <!-- 삭제 Modal -->
+  
+    <!-- 삭제 Modal : 컬러 블록 선택했을 때 보이는 모달 -->
     <div class="modal fade" id="scModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog modal-dialog-centered">
         <div class="modal-content">
@@ -76,7 +42,6 @@
 import FullCalendar from '@fullcalendar/vue3';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
-//   , { Draggable }
 import timeGridPlugin from '@fullcalendar/timegrid';
 import momentPlugin from '@fullcalendar/moment';
 
@@ -91,13 +56,10 @@ export default {
     return {
       storeid: sessionStorage.getItem("loginId"),
       list: [],
-      empList: [],
+     // empList: [],              
       empSelectedList: [],     // 스케줄 등록에서 선택한 직원의 기본 스케줄
       storename: '',
-      selectedEmp: '',
-      //scheduleModal:false,
-      //test: false,
-      // 일정 클릭했을 때의 정보
+      selectedEmp: '',         // 스케줄 등록에서 선택한 한 명의 직원원
       snum: 0,
       empname: '',
       sdate: '',
@@ -133,7 +95,7 @@ export default {
           },
         },
         selectable: true,               // 달력 일자 드래그 설정가능
-
+       // eventDidMount: this.formatEventTime,  // 이벤트 시간 형식 변경
       },
     };
   },
@@ -143,69 +105,67 @@ export default {
     ScheduleAddModal
   },
   created: function () {
-    this.storeid = sessionStorage.getItem('loginId');
     const self = this;
-
-    self.$axios.get('http://localhost:8085/schedule/storeid/' + self.storeid)
-      .then(function (res) {
-        if (res.status == 200 && res.data.flag == true) {
-          //console.log(res.data.list);
-          self.list = res.data.list;
-          console.log("길이 문제 : " + self.list.length)
-          //console.log(self.list[0].emp.empname);
-          self.list.forEach(item => {
-            //console.log(item.starttime);
-            const event = {
-              id: item.snum,
-              //groupId: item.emp.empnum,
-              title: item.emp.empname,
-              start: item.starttime,
-              end: item.endtime,
-              backgroundColor: item.emp.color,
-              borderColor: item.emp.color
-            };
-            // console.log("event");
-            // console.log(event);
-            self.calendarOptions.events.push(event);
-
-          });
-        }
-        // console.log(self.calendarOptions.events);
-      });
-    console.log(self.calendarOptions.events);
-
+    self.storeid = sessionStorage.getItem('loginId');
+    self. getCalendar();   // 캘린더 list 가져오기 
+    //console.log(self.calendarOptions.events);
   },
   methods: {
+    getCalendar(){
+      const self =this;
+      self.$axios.get('http://localhost:8085/schedule/storeid/' + self.storeid)
+        .then(function (res) {
+          if (res.status == 200 && res.data.flag == true) {
+            //console.log(res.data.list);
+            self.list = res.data.list;
+
+            // for문 : 하나 하나 events 배열에 담아주기
+            self.list.forEach(item => {
+              // event 객체에 담기
+              const event = {
+                id: item.snum,
+                title: item.emp.empname,
+                start: item.starttime,
+                end: item.endtime,
+                backgroundColor: item.emp.color,
+                borderColor: item.emp.color
+              };
+              // event 객체를 events 배열에 넣어주기
+              self.calendarOptions.events.push(event);
+            });
+          }
+        });
+    },
     // 등록된 스케줄을 눌렀을 때
     workDayClick(info) {
       const self = this;
-      console.log(info.event)
+      //console.log(info.event)
       const modal = document.getElementById('scModal');
 
-      let day = info.event._instance.range.start;
-      const date = new Date(day);
+      //let startDay = info.event._instance.range.start;
+      const startDate = new Date(info.event._instance.range.start);
+      //let endDay = info.event._instance.ragnge.end;
+      //const endDate = new Date(info.event._instance.ragnge.end)
       const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
 
       let startTime = JSON.stringify(info.event._instance.range.start).slice(12, 17)
       startTime = startTime.replace(/^0/, '').replace(/:/g, '시 ').replace(/$/, '분');
+      // /^0/ → 첫 문자가 0 이라면, /:/g → 모든 문자에 :가 있다면, /$/ → 마지막에 추가.
       let endTime = JSON.stringify(info.event._instance.range.end).slice(12, 17)
       endTime = endTime.replace(/^0/, '').replace(/:/g, '시 ').replace(/$/, '분');
 
-      self.sdate = `${date.toLocaleDateString('ko-KR', options)}`;
+      self.sdate = `${startDate.toLocaleDateString('ko-KR', options)}`;
       self.starttime = startTime
       self.endtime = endTime
       self.snum = info.event._def.publicId
       self.empname = info.event._def.title
-      //self.sdate = info.event._instance.range.start
-      // self.starttime = info.event._instance.range.start
-      // self.endtime = info.event._instance.range.end
-      //console.log(self.calendarOptions.events[0])
-
+      
+      console.log("self.sdate :" + self.sdate)
       let myModal = new Modal(modal)
       myModal.show();
-
-
+      // 클릭했을 때 모달 눌러주기
     },
+    // 캘린더 네모 박스 움직였을 때 db 수정해주는 함수
     workDayEdit(info) {
       this.formatDate(info.event._instance.range.start, info.event._instance.range.end, info.event._def.publicId)
     },
@@ -226,9 +186,11 @@ export default {
 
       let endDateObj = new Date(end)
       endDateObj.setHours(endDateObj.getHours() - 9);
+      year = endDateObj.getFullYear();
+      month = String(endDateObj.getMonth() + 1).padStart(2, "0");
+      day = String(endDateObj.getDate()).padStart(2, "0");
       let etime = String(endDateObj.getHours()).padStart(2, "0") + ":" + String(endDateObj.getMinutes()).padStart(2, "0")
       let endTime = `${year}-${month}-${day}T${etime}:00`;
-      //console.log("formatDate : " + editDate + " / " + startTime + " / " + endTime + " / " + num)
 
       // 드래그 수정 함수 
       this.editSchedule(editDate, startTime, endTime, num);
@@ -240,7 +202,7 @@ export default {
       formData.append("sdate", editDate);
       formData.append("starttime", startTime);
       formData.append("endtime", endTime);
-
+     
       const self = this;
       self.$axios.put('http://localhost:8085/schedule', formData)
         .then(function (res) {
@@ -250,10 +212,11 @@ export default {
             console.log("에러 editSchedule() : " + res.status)
           }
         })
-
     },
     // 등록하기 전 직원 선택
+    /*
     empChange() {
+      console.log("뵤송")
       const self = this;
       let empnum = self.selectedEmp;
 
@@ -268,6 +231,7 @@ export default {
         })
 
     },
+    */
     // 30분 단위로 보기 ↔ 10분 단위로 보기 
     look30and10() {
       // 현재 보여주고 있는 시간 불러오기 
@@ -280,50 +244,50 @@ export default {
         this.calendarOptions.views.timeGridWeek.slotDuration = '00:30:00';
         this.lookMinute = 10;
       }
-      //this.calendarOptions.views.timeGridWeek.scrollTime = '08:00:00';
+      // this.calendarOptions.views.timeGridWeek.scrollTime = '08:00:00';
+      // 흑 이거 적용 안되네네
     },
     // 스케줄 삭제하기
-    delsc(){
+    delsc() {
       const self = this;
-      console.log(self.snum)
       let num = self.snum;
+
       self.$axios.delete(`http://localhost:8085/schedule/${num}`)
-      .then(function(res){
-        if(res.status == 200 & res.data.flag == true){
-          console.log("삭제 성공");
-        } else {
-          console.log("삭제 에러 :" + res.status)
-        }
-      })
-      self.calendarOptions.events=[];
-
-      self.$axios.get('http://localhost:8085/schedule/storeid/' + self.storeid)
-      .then(function (res) {
-        if (res.status == 200 && res.data.flag == true) {
-          //console.log(res.data.list);
-          self.list = res.data.list;
-          console.log("길이 문제 : " + self.list.length)
-          //console.log(self.list[0].emp.empname);
-          self.list.forEach(item => {
-            //console.log(item.starttime);
-            const event = {
-              id: item.snum,
-              //groupId: item.emp.empnum,
-              title: item.emp.empname,
-              start: item.starttime,
-              end: item.endtime,
-              backgroundColor: item.emp.color,
-              borderColor: item.emp.color
-            };
-            // console.log("event");
-            // console.log(event);
-            self.calendarOptions.events.push(event);
-
-          });
-        }
-        // console.log(self.calendarOptions.events);
-      });
-    }
+        .then(function (res) {
+          if (res.status == 200 & res.data.flag == true) {
+            console.log("삭제 성공");
+          } else {
+            console.log("삭제 에러 :" + res.status)
+          }
+        })
+      self.calendarOptions.events = [];
+      self.getCalendar(); // 스케줄 다시 불러오기
+    },
+   // 과연 될랑가? 됨! → 다른 컴포넌트에서 누른 버튼 이벤트를 여기서 받기. 
+   scAdd(){
+    const self = this;
+    //console.log("버튼 클릭 이벤트 수신:", message);
+    self.calendarOptions.events = [];
+    // 다른 컴포넌트에서 스케줄 등록 & 추가했을 때 반영 해주기 위해 
+    self.getCalendar();
+   },
+   /*
+   async formatEventTime(info) {
+      await this.$nextTick(); // 다음 DOM 업데이트 사이클까지 기다립니다.
+      console.log(info.el)
+      console.log("info.elApi :"+info.el)
+      const eventTime = info.el.querySelector('.fc-event-time');
+      if (eventTime) {
+        const startTime = info.event.start;
+        const formattedTime = startTime.toLocaleTimeString('ko-KR', {
+          hour: 'numeric',
+          minute: 'numeric',
+          hour12: true,
+        });
+        eventTime.textContent = formattedTime;
+      }
+    },
+    */
   }
 };
 </script>
@@ -340,15 +304,15 @@ export default {
 #fullCalendar {
   /* float : left; */
   flex: 1;
-  width:90%;
-  margin:0 auto;
-  padding-top:50px;
+  width: 90%;
+  margin: 0 auto;
+  padding-top: 50px;
 }
 
-#menu{
+#menu {
   margin-top: 50px;
   flex: 0.2;
-  margin-right : 5px;
+  margin-right: 5px;
 }
 
 
@@ -374,8 +338,8 @@ export default {
   color: #595959;
   background-color: #bee96d;
   font-weight: bolder;
-  margin-top:5px;
-  margin-bottom:5px;
+  margin-top: 5px;
+  margin-bottom: 5px;
 }
 </style>
   
@@ -392,7 +356,6 @@ export default {
 }
 
 .fc-day-sat a {
-  /* //color: lightblue; */
   color: lightskyblue;
 }
 
@@ -404,8 +367,8 @@ export default {
 .fc-toolbar .fc-prev-button,
 .fc-toolbar .fc-next-button,
 .fc-toolbar .fc-today-button {
-  background-color: #B3C755;
-  border-color: #9caf4a;
+  background-color: #bee96d;
+  border-color: whtie;
   color: white;
 }
 
@@ -413,26 +376,26 @@ export default {
 .fc-toolbar .fc-prev-button:hover,
 .fc-toolbar .fc-next-button:hover,
 .fc-toolbar .fc-today-button:hover {
-  background-color: #9caf4a;
-  border-color: #B3C755;
+  background-color: #FFC67B;
+  border-color: white;
 }
 
 /* month 버튼 */
 .fc-toolbar .fc-dayGridMonth-button,
 .fc-toolbar .fc-timeGridWeek-button {
-  background-color: #84943f;
-  border-color: #B3C755;
+  background-color: #FFC67B;
+  border-color: whtie;
 }
 
 .fc-toolbar .fc-dayGridMonth-button:hover,
 .fc-toolbar .fc-timeGridWeek-button:hover {
-  background-color: #B3C755;
-  border-color: #9caf4a;
+  background-color: #bee96d;
+  border-color: white;
 }
 
 .fc-toolbar .fc-today-button:disabled {
   /* today 버튼 */
-  background-color: #2c3e50;
+  background-color: #76818D;
 }
 
 /* 이거 왜 적용 안될까..흑 */
@@ -444,12 +407,12 @@ export default {
 
 .fc .fc-button-primary:not(:disabled).fc-button-active {
   /* 내가 누른 부분의 색깔 */
-  background-color: #B3C755;
-  border-color: #9caf4a;
+  background-color: #bee96d;
+  border-color: whtie;
 }
 
 .fc .fc-button-primary:not(:disabled):active {
   /* 딱 클릭했을 때 색 */
-  background-color: #84943f;
+  background-color: #FFC67B;
 }
 </style>
