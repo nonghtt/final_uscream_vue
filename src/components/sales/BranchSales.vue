@@ -1,4 +1,4 @@
-<template>
+<template> 
   <div class="BranchSalesContent" >
     <div id="netsalesTitle">
       <br />

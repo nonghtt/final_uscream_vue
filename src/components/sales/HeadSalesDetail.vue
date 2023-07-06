@@ -18,7 +18,7 @@
     <div id="storeMonthlychart" style="width: 800px; height: 600px"></div>
   </div>
   </div>
-</template>
+</template> 
 
 <script>
 import 'bootstrap/dist/css/bootstrap.css';

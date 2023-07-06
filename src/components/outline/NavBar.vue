@@ -71,7 +71,6 @@
                         </ul>
                     </li>
                     <li class="nav-item">
-                        <!-- <router-link class="nav-link active" to="/branchsales">매출관리</router-link> -->
                             <router-link class="nav-link active" v-if="accounttype == 1" to="/headsales">매출관리</router-link>
                             <router-link class="nav-link active" v-if="accounttype == 2" to="/branchsales">매출관리</router-link>
                     </li>
