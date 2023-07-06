@@ -77,7 +77,7 @@
                         </router-link>
                     </li>
                     <li class="nav-item">
-                        <router-link class="nav-link" to="/about">
+                        <router-link class="nav-link" to="/VocList">
                             고객의소리
                         </router-link>
                     </li>

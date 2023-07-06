@@ -6,32 +6,30 @@
                     <label for="title" class="form-label"
                         style="font-size: 16px; font-weight: bold; color: gray;">제목</label>
                     <div class="underline-input">
-                        <input type="text" id="title" class="form-control" v-model="title">
+                        <input type="text" id="title" class="form-control" v-model="title" :readonly="!canEdit">
                         <div class="underline"></div>
                     </div>
                 </div>
                 <div class="mb-5">
-                    <label for="category" class="form-label" style="font-size: 16px; font-weight: bold; color: gray;">분류</label>
+                    <label for="category" class="form-label"
+                        style="font-size: 16px; font-weight: bold; color: gray;">분류</label>
                     <div class="underline-input">
-                        <select id="category" class="form-control" v-model="category">
-                        <option value="1">칭찬</option>
-                        <option value="2">불만</option>
-                        </select>
+                        <input type="text" id="category" class="form-control" v-model="categoryText" :readonly="!canEdit">
                         <div class="underline"></div>
                     </div>
                 </div>
+                <div style="height: 300px;">
                 <div class="mb-5">
-                    <label for="content" class="form-label"
-                        style="font-size: 16px; font-weight: bold; color: gray;">내용</label>
+                    <label for="content" class="form-label" style="font-size: 16px; font-weight: bold; color: gray;">내용</label>
+                    <div ref="viewer"></div>
                     <div class="underline-input">
-                        <div ref="editor" class="editor-container"></div>
                     </div>
+                </div>
                 </div>
                 <hr>
                 <div class="d-flex justify-content-end">
-                    <button @click="saveChanges" class="btn btn-warning btn-sm mr-1">{{ editButtonText }}</button>
-                    <button @click="deleteBoard" class="btn btn-danger btn-sm">삭제</button>
-                    <button @click="movePage('/NoticeList')" class="btn btn-secondary btn-sm">목록</button>
+                    <button v-if="accounttype === '2'" @click="movePage('/NoticeList')"
+                        class="btn btn-secondary btn-sm">목록</button>
                 </div>
             </div>
         </div>
@@ -40,11 +38,12 @@
 
 <script>
 import axios from 'axios';
-import Editor from '@toast-ui/editor';
-import '@toast-ui/editor/dist/toastui-editor.css';
+
+import Viewer from '@toast-ui/editor/dist/toastui-editor-viewer';
+import '@toast-ui/editor/dist/toastui-editor-viewer.css';
 
 export default {
-    name: "HeadDetail",
+    name: 'StoreNotice',
     data() {
         return {
             noticenum: 0,
@@ -52,8 +51,9 @@ export default {
             category: 0,
             content: '',
             canEdit: true,
+            accounttype: sessionStorage.getItem('accounttype'),
             editButtonText: '완료',
-            editor: null,
+            viewerInstance: null,
         };
     },
     computed: {
@@ -63,8 +63,17 @@ export default {
     },
     mounted() {
         this.fetchBoardDetail();
+
+        if (this.accounttype === '2') {
+            this.canEdit = false;
+        }
     },
     methods: {
+        setContent(content) {
+            if (this.viewerInstance) {
+                this.viewerInstance.setMarkdown(content);
+            }
+        },
         fetchBoardDetail() {
             const noticenum = this.$route.query.noticenum;
             axios
@@ -74,18 +83,15 @@ export default {
                     this.title = response.data.notice.title;
                     this.category = response.data.notice.category;
                     this.content = response.data.notice.content;
-                    this.createEditor();
+                    this.viewerInstance = new Viewer({
+                        el: this.$refs.viewer,
+                        initialValue: this.content,
+                    });
+                    console.log(this.content);
                 })
                 .catch(error => {
                     console.error(error);
                 });
-        },
-        createEditor() {
-            this.editor = new Editor({
-                el: this.$refs.editor,
-                initialValue: this.content,
-                viewer: !this.canEdit, // Set viewer option based on edit mode
-            });
         },
         deleteBoard() {
             const noticenum = this.noticenum;
@@ -106,27 +112,29 @@ export default {
                 });
         },
         movePage(url) {
-            this.$router.push(url);
+            this.$router.push(url).catch(error => {
+                console.error(error);
+            });
         },
         saveChanges() {
-            const noticenum = this.noticenum;
-            const formData = new FormData();
-            formData.append('content', this.content);
-            formData.append('category', this.category);
-            formData.append('title', this.title);
+        const noticenum = this.noticenum;
+        const formData = new FormData();
+        formData.append('content', this.content);
+        formData.append('category', this.category);
+        formData.append('title', this.title);
 
-            axios
-                .put(`http://localhost:8085/notices/edit/${noticenum}`, formData)
-                .then(response => {
-                    console.log(response.data);
-                    // 저장 후 목록으로 이동하면서 새로고침되어 데이터가 갱신됨
-                    this.$router.push('/NoticeList').catch(error => {
-                        console.error(error);
-                    });
-                })
-                .catch(error => {
+        axios
+            .put(`http://localhost:8085/notices/edit/${noticenum}`, formData)
+            .then(response => {
+                console.log(response.data);
+                // 저장 후 목록으로 이동하면서 새로고침되어 데이터가 갱신됨
+                this.$router.push('/NoticeList').catch(error => {
                     console.error(error);
                 });
+            })
+            .catch(error => {
+                console.error(error);
+            });
         },
     },
 };
@@ -154,7 +162,6 @@ export default {
     background-color: #000;
 }
 
-.editor-container {
+textarea.form-control {
     height: 300px;
-}
-</style>
+}</style>

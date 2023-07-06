@@ -2,9 +2,15 @@
     <div class="container">
         <div class="card">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
-                <span style="font-weight: bold; font-size: 20px;">공지사항</span>
+                <span style="font-weight: bold; font-size: 20px;">고객의소리</span>
             </div>
-            
+            <div class="schbox">
+                <label for="category">분류</label>
+                <select id="category" v-model="category">
+                    <option value="1">칭찬</option>
+                    <option value="2">불만</option>
+                </select>
+            </div>
 
             <div>
                 <label for="title">제목</label>
@@ -12,11 +18,11 @@
             </div>
             <div ref="editor"></div>
             <button type="button" class="btn btn-primary mr-2" style="background-color: #8eb443; border-color:#8eb443;"
-                @click="goToNoticeList">
+                @click="goToVocList">
                 목록
             </button>
             <button type="button" class="btn btn-primary savebtn" style="background-color: #8eb443; border-color:#8eb443;"
-                @click="saveNotice">
+                @click="saveVoc">
                 저장
             </button>
         </div>
@@ -28,16 +34,19 @@ import Editor from '@toast-ui/editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
 export default {
-    name: "NoticeWriter",
+    name: "VocWriter",
     data() {
         return {
             editor: null,
+            category: "", // 선택된 분류를 담을 변수
             title: "", // 입력된 제목을 담을 변수
-            noticeContent: "" // 입력된 공지사항 내용을 담을 변수
+            vocContent: "", // 입력된 공지사항 내용을 담을 변수
+            storeid : sessionStorage.getItem('loginId'),
         };
     },
     mounted() {
         const query = this.$route.query;
+        this.category = query.category || "";
         this.title = query.title || "";
 
         this.editor = new Editor({
@@ -52,15 +61,19 @@ export default {
     },
     methods: {
         handleEditroChange() {
-            this.noticeContent = this.editor.getMarkdown();
+         //   console.log(this.editor.getMarkdown());
+            this.vocContent = this.editor.getMarkdown();
+          //  console.log(this.vocContent)
         },
-        saveNotice() {
+        saveVoc() {
             const formData = new FormData();
-            formData.append("content", this.noticeContent);
+            formData.append("content", this.vocContent);
+            formData.append("category", this.category);
             formData.append("title", this.title);
-
+            formData.append("storeid", this.storeid);
+           // console.log(this.vocContent + this.title + this.category + this.storeid);
             this.$axios
-                .post("http://localhost:8085/notices", formData, {
+                .post("http://localhost:8085/vocs", formData, {
                     headers: {
                         "Content-Type": "multipart/form-data"
                     }
@@ -68,7 +81,7 @@ export default {
                 .then(response => {
                     console.log(response.data);
                     // 저장 후 목록으로 이동하면서 새로고침되어 데이터가 갱신됨
-                    this.$router.push("/NoticeList").catch(error => {
+                    this.$router.push("/VocList").catch(error => {
                         console.error(error);
                     });
                 })
@@ -76,9 +89,9 @@ export default {
                     console.error(error);
                 });
         },
-        goToNoticeList() {
+        goToVocList() {
             // 목록 버튼 클릭 시 바로 이동
-            this.$router.push("/NoticeList").catch(error => {
+            this.$router.push("/VocList").catch(error => {
                 console.error(error);
             });
         }
