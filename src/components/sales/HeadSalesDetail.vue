@@ -19,17 +19,15 @@
   </div>
   </div>
 </template> 
-
 <script>
-import 'bootstrap/dist/css/bootstrap.css';
-import 'bootstrap-icons/font/bootstrap-icons.css';
+import 'bootstrap/dist/css/bootstrap.css';  
 
+import 'bootstrap-icons/font/bootstrap-icons.css';
 import * as echarts from 'echarts/core';
 import { TitleComponent, ToolboxComponent, TooltipComponent, GridComponent, LegendComponent } from 'echarts/components';
 import { LineChart } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
-
 
 export default {
   name: 'HeadSalesDetail',
@@ -82,7 +80,6 @@ export default {
                 self['storeMonthlySales' + year + month] = storeMonthlySales;
               }
             }
-
             const myChart = echarts.init(document.getElementById('storeMonthlychart'));
 
             const option = {
@@ -166,12 +163,10 @@ export default {
 
       if (keyword) {
         console.log(keyword);
-
         self.$axios
           .get(`http://localhost:8085/selling/monthlysales/${keyword}`)
           .then(response => {
             self.list2 = response.data.list;
-
             console.log(self.list2);
 
             if (self.list2 && self.list2.length > 0) {
@@ -184,9 +179,7 @@ export default {
                   self['storeMonthlySales' + year + month] = storeMonthlySales;
                 }
               }
-
               const myChart = echarts.init(document.getElementById('storeMonthlychart'));
-
               const option = {
                 title: {
                   text: '연도별 매출 추이'
@@ -277,4 +270,7 @@ export default {
   align-items: center;
 }
   
+
 </style>
+
+

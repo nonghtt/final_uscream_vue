@@ -1,10 +1,131 @@
+<template>
+  <div id="title">매출 조회</div>
+  <div>
+    <div>
+      월별 전체 매출
+      <select v-model="selectYear">
+        <option v-for="year in years" :key="year" :value="year">{{ year }}년</option>
+      </select>
+      <button @click="getMonthlySales">조회</button>
+    </div>
+    <div id="monthlychart"></div>
+  </div>
+</template>
+<script>
+import * as echarts from 'echarts/core';
+import { TitleComponent, TooltipComponent, GridComponent, LegendComponent } from 'echarts/components';
+import { LineChart } from 'echarts/charts';
+import { UniversalTransition } from 'echarts/features';
+import { CanvasRenderer } from 'echarts/renderers';
+export default {
+  name: 'HeadSales',
+  components: {},
+  data() {
+    return {
+      years: [2020, 2021, 2022, 2023],
+      selectYear: null,
+      list3: [],
+      myChart: null
+    };
+  },
+  created() {
+    echarts.use([
+      TitleComponent,
+      TooltipComponent,
+      GridComponent,
+      LegendComponent,
+      LineChart,
+      CanvasRenderer,
+      UniversalTransition
+    ]);
+  },
+  mounted() {
+    const currentDate = new Date();
+    this.selectYear = currentDate.getFullYear();
+  },
+  methods: {
+    getMonthlySales() {
+      const year = this.selectYear;
+      console.log(year);
+      if (year) {
+        this.$axios
+          .get(`http://localhost:8085/selling/monthlysales2/${year}`)
+          .then(response => {
+            this.list3 = response.data.list;
+            console.log(this.list3);
+            const monthlyTotalSales = Array(12).fill(0);
+            if (this.list3 && this.list3.length > 0) {
+              this.list3.forEach(item => {
+                const month = item.MONTH;
+                const monthlySales = item.TOTALPRICE;
+                monthlyTotalSales[month - 1] = monthlySales;
+              });
+              const myChart = echarts.init(document.getElementById('monthlychart'));
+              const option = {
+                title: {
+                  text: '월별 매출'
+                },
+                tooltip: {
+                  trigger: 'axis'
+                },
+                legend: {
+                  data: ['월별 매출']
+                },
+                grid: {
+                  left: '3%',
+                  right: '4%',
+                  bottom: '3%',
+                  containLabel: true
+                },
+                xAxis: {
+                  type: 'category',
+                  boundaryGap: false,
+                  data: [
+                    '1월','2월','3월','4월','5월','6월','7월','8월','9월','10월',
+                    '11월', '12월']
+                },
+                yAxis: {
+                  type: 'value'
+                },
+                series: [
+                  {
+                    name: '월별 매출',
+                    type: 'line',
+                    data: [
+                      parseInt(self['monthlyTotalSales1']),
+                      parseInt(self['monthlyTotalSales2']),
+                      parseInt(self['monthlyTotalSales3']),
+                      parseInt(self['monthlyTotalSales4']),
+                      parseInt(self['monthlyTotalSales5']),
+                      parseInt(self['monthlyTotalSales6']),
+                      parseInt(self['monthlyTotalSales7']),
+                      parseInt(self['monthlyTotalSales8']),
+                      parseInt(self['monthlyTotalSales9']),
+                      parseInt(self['monthlyTotalSales10']),
+                      parseInt(self['monthlyTotalSales11']),
+                      parseInt(self['monthlyTotalSales12'])
+                    ]
+                  }
+                ]
+              };
+              
+              myChart.setOption(option);
+             }
+           })
+           .catch(error => {
+             console.error(error);
+           });
+        }
+      }
+    }
+  };
+</script> -->
 
 <template>
   <div id="branchSalesTitle"> 
     <br/>
     <h3>매출 조회</h3><span>  <router-link to="/headsalesDetail">상세 검색</router-link></span>
   </div>
-
   <div id="dailySales" style="width:700px; height:500px"></div>
   <div>
     <div>일간 지점 매출 TOP3</div>
@@ -25,7 +146,6 @@ import { BarChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
 import { LineChart } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
-
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
@@ -33,8 +153,6 @@ import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 import { Calendar } from '@fullcalendar/core';
-
-
 export default {
   name: 'HeadSales',
   components: {
@@ -71,32 +189,25 @@ export default {
   mounted() {
   const currentDate = new Date();
   this.selectYear = currentDate.getFullYear();
-
   this.addDailySales();
-
   this.myChart = echarts.init(document.getElementById('rankingchart'));
   this.myChart2 = echarts.init(document.getElementById('monthlychart'));
-
   this.getDailyRank3();
   this.getMonthlySales();
   },
   methods: {
     addDailySales() {
       const self = this;
-
       self.$axios
         .get('http://localhost:8085/selling/dailysales')
         .then(response => {
           self.list = response.data;
-
           console.log(self.list);
-
           if (self.list && self.list.length > 0) {
             const events = self.list.map(item => ({
               title: item.TOTALPRICE.toLocaleString(),
               start: item.SELLINGDATE
             }));
-
             const calendarE1 = document.getElementById('dailySales');
             const calendar = new Calendar(calendarE1, {
               plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, bootstrap5Plugin],
@@ -120,16 +231,13 @@ export default {
       day.setDate(day.getDate() - 1);
       day.setHours(0, 0, 0, 0);
       const self = this;
-
       self.$axios
         .get(`http://localhost:8085/selling/dailyrank3`)
         .then(response => {
           self.list2 = response.data.list;
-
           for (let i = 0; i < 3; i++) {   // 차트에 참조값으로 띄울 TOP3 지점 매출 초기화
             self['rank' + (i + 1) + 'StoreSales'] = 0;
           }
-
           if (self.list2 && self.list2.length > 0) {  //  데이터가 있을 경우만 진행
             for (let i = 0; i < 3; i++) {
               const rank = i + 1;
@@ -138,16 +246,13 @@ export default {
                 const dayDate = day.toString();
                 return itemDate === dayDate && obj.RANK === rank;
               });
-
               if (item) {
                 const rank = item.RANK;
                 const rankStore = item.STORENAME;
                 self['rank' + rank + 'Store'] = rankStore;
                 const rankSales = item.TOTALPRICE;
                 self['rank' + rank + 'Sales'] = rankSales;
-
                 console.log(self['rank' + rank + 'Store'], self['rank' + rank + 'Sales']);
-
                 const option = {
                   tooltip: {
                     trigger: 'axis',
@@ -185,7 +290,6 @@ export default {
                   ]
                 };
                 self.myChart.setOption(option);
-
               }
             }
           }
@@ -194,28 +298,20 @@ export default {
           console.error(error);
         });
     },
-
     getMonthlySales() {
       const year = this.selectYear;
       console.log(year);
-
       if (year) {
         const self = this;
-
         self.$axios
           .get(`http://localhost:8085/selling/monthlysales2/${year}`)
           .then(response => {
             self.list3 = response.data.list;
-
             console.log(self.list3);
-
             for (let i = 0; i < 12; i++) {
               self['monthlyTotalSales' + (i + 1)] = 0;
-
               console.log(self['monthlyTotalSales' + (i + 1)]);
-
             }
-
             if (self.list3 && self.list3.length > 0) {
               for (let i = 0; i < 12; i++) {
                 const month = i + 1;
@@ -223,11 +319,9 @@ export default {
                 if (item) {
                   const monthlySales = item.TOTALPRICE;
                   self['monthlyTotalSales' + month] = monthlySales;
-
                   console.log(self['monthlyTotalSales' + month]);
                 }
               }
-
               const option = {
                 title: {
                   text: '월별 전체 매출'
@@ -240,7 +334,6 @@ export default {
                     }
                   }
                 },
-
                 xAxis: [
                   {
                     type: 'category',
@@ -298,4 +391,4 @@ export default {
     }
   }
 }
-</script>  
+</script>

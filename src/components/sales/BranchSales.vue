@@ -5,11 +5,9 @@
       <h3>매출 조회</h3>
       <br />
     </div>
-
     <div id="branchSalesContent"  style="display: flex;">
         <!-- 일별 매출 표시 캘린더 -->
         <div id="dailySales" style="width:700px"></div>
-
         <div style="display: flex; flex-direction: column; justify-content: space-between;">
 
           <!-- 순매출 분석 차트 -->
@@ -30,7 +28,6 @@
             <h6 style="text-align: center; font-weight:bold">총매출: {{ monthSales }} 원</h6>
             <div id="donutchart" style="width: 450px; height: 280px"></div>
           </div>
-
           <!-- 월별 순매출 차트 -->
           <div id="yearlyNetsales" style="border: 1px solid lightgray; width:500px; height:350px; padding:1%">
             <div style="display: flex; justify-content:space-between; align-items: center">
@@ -44,12 +41,9 @@
             </div>
             <div id="linechart" style="width:500px; height:350px"></div>
           </div>
-
         </div>
-
       </div>
     </div>
-
 </template>
 <script>
 import * as echarts from 'echarts/core';
@@ -60,7 +54,6 @@ import timeGridPlugin from '@fullcalendar/timegrid';
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-
 import { ToolboxComponent, TooltipComponent, LegendComponent, GridComponent } from 'echarts/components';
 import { PieChart } from 'echarts/charts';
 import { LabelLayout } from 'echarts/features';
@@ -68,7 +61,6 @@ import { CanvasRenderer } from 'echarts/renderers';
 import { BarChart, LineChart } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
 import { Calendar } from '@fullcalendar/core';
-
 export default {
   name: 'BranchSales',
   components: {
@@ -104,13 +96,11 @@ export default {
           },
         },
       }
-
     };
   },
   created() {
     this.getSearchCriteria();
     this.monthlyNetsales = Array(12).fill(0);
-
     echarts.use([
       TooltipComponent,
       LegendComponent,
@@ -129,15 +119,11 @@ export default {
     this.selectYear = currentDate.getFullYear();
     this.selectMonth = currentDate.getMonth();
     this.selectYear2 = currentDate.getFullYear();
-
     this.addDailySales();
-
     this.myChart = echarts.init(document.getElementById('donutchart'));
     this.myChart2 = echarts.init(document.getElementById('linechart'));
-
     this.renderChart();
     this.getYearlyNetsales();
-
   },
   methods: {
     getSearchCriteria() {
@@ -146,26 +132,21 @@ export default {
       this.year = currentDate.getFullYear();
       this.month = currentDate.getMonth() + 1;
     },
-
     addDailySales() {
       const storeId = this.storeId;
       const self = this;
-
       self.$axios
         .get(`http://localhost:8085/selling/dailysales/${storeId}`)
         .then(response => {
           const data = response.data;
           self.list3 = response.data.list;
-
           console.log(data);
           console.log(self.list3);
-
           if (self.list3 && self.list3.length > 0) {
             const events = self.list3.map(item => ({
               title: item.TOTALPRICE.toLocaleString(),
               start: item.SELLINGDATE
             }));
-
             const calendarE1 = document.getElementById('dailySales');
             const calendar = new Calendar(calendarE1, {
               plugins: [interactionPlugin, dayGridPlugin, timeGridPlugin, bootstrap5Plugin],
@@ -175,9 +156,8 @@ export default {
                 right: 'today prev,next',
               },
               navLinks: true,
-              events: events, // events 배열을 전달합니다.
+              events: events
             });
-
             calendar.render();
           }
         })
@@ -185,44 +165,34 @@ export default {
           console.error(error);
         });
     },
-
     renderChart() {
       const storeId = this.storeId;
       const year = this.selectYear;
       const month = this.selectMonth;
-
       console.log(year);
       console.log(month);
-
       if (year && month) {
         const self = this;
-
         self.$axios
           .get(`http://localhost:8085/netsales/${storeId}/${year}/${month}`)
           .then(response => {
             const data = response.data;
             self.list4 = response.data.list;
-
             console.log(data);
             console.log(self.list4);
-
             if (self.list4 && self.list4.length > 0) {
               const totalSales = self.list4[0].MSELLINGPRICE;
               const formattedTotalSales = totalSales.toLocaleString();
               self.monthSales = formattedTotalSales;
-
               const totalPayroll = self.list4[0].MPSALARY;
               const formattedTotalPayroll = totalPayroll.toLocaleString();
               self.monthPayroll = formattedTotalPayroll;
-
               const totalOrder = self.list4[0].MORDERCOST;
               const formattedTotalOrder = totalOrder.toLocaleString();
               self.monthOrder = formattedTotalOrder;
-
               const totalNetsales = self.list4[0].MNETSALES;
               const formattedTotalNetsales = totalNetsales.toLocaleString();
               self.monthNetsales = formattedTotalNetsales;
-
               const option = {
                 tooltip: {
                   trigger: 'item',
@@ -230,7 +200,6 @@ export default {
                 legend: {
                   top: '2%',
                   left: 'center',
-
                   selectedMode: false
                 },
                 series: [
@@ -238,7 +207,6 @@ export default {
                     type: 'pie',
                     radius: ['40%', '70%'],
                     center: ['50%', '70%'],
-
                     startAngle: 180,
                     label: {
                       show: true,
@@ -246,17 +214,14 @@ export default {
                         return param.name + ' (' + param.percent * 2 + '%)';
                       }
                     },
-
                     data: [
                       {},
                       { value: totalPayroll, name: '인건비' },
                       { value: totalOrder, name: '발주금액' },
                       { value: totalNetsales, name: '순매출' },
                       {
-
                         value: totalPayroll + totalOrder + totalNetsales,
                         itemStyle: {
-
                           color: 'none',
                           decal: {
                             symbol: 'none'
@@ -288,23 +253,18 @@ export default {
       const self = this;
       const storeId = this.storeId;
       const year = this.selectYear2;
-
       if (year) {
         console.log(year);
-
         self.$axios
           .get(`http://localhost:8085/netsales/${storeId}/${year}`)
           .then(response => {
             const data = response.data;
             self.list5 = response.data.list;
-
             console.log(data);
             console.log(self.list4);
-
             for (let i = 0; i < 12; i++) {
               self['monthlyNetsales' + (i + 1)] = 0;
             }
-
             if (self.list5 && self.list5.length > 0) {
               for (let i = 0; i < 12; i++) {
                 const month = i + 1;
@@ -312,7 +272,6 @@ export default {
                 if (item) {
                   const monthNetsales = item.MNETSALES;
                   self['monthlyNetsales' + month] = monthNetsales;
-
                   const option = {
                     tooltip: {
                       trigger: 'axis',
@@ -372,7 +331,6 @@ export default {
                     ]
                   };
                   self.myChart2.setOption(option);
-
                 } else {
                   self['monthlyNetsales' + month] = 0;
                 }
@@ -390,36 +348,32 @@ export default {
   }
 }
 </script>
-
 <style scoped>
 .BranchSalesContent{
   margin-left: 50px;
 }
-
 #netsalesAnalysis {
   margin-left: 30px;
 }
-
 #yearlyNetsales {
   margin-left: 30px;
   margin-top: auto;
 }
-
-
 </style>
 
 <style>
 .fc-daygrid-event-dot {
   display: none;
 }
-
 .fc-event-time {
   display: none;
 }
-
 .fc-event-title {
   color: red;
   text-align: center;
 }
 
 </style>
+
+
+
