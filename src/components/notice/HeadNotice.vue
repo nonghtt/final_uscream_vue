@@ -19,7 +19,7 @@
                 </div>
                 <hr>
                 <div class="d-flex justify-content-end">
-                    <button @click="saveChanges" class="btn btn-warning btn-sm mr-1">{{ editButtonText }}</button>
+                    <button @click="saveChanges" class="btn btn-warning btn-sm mr-1">저장</button>
                     <button @click="deleteBoard" class="btn btn-danger btn-sm">삭제</button>
                     <button @click="movePage('/NoticeList')" class="btn btn-secondary btn-sm">목록</button>
                 </div>
@@ -41,14 +41,8 @@ export default {
             title: '',
             content: '',
             canEdit: true,
-            editButtonText: '완료',
             editor: null,
         };
-    },
-    computed: {
-        categoryText() {
-            return this.category === 1 ? '칭찬' : '불만';
-        },
     },
     mounted() {
         this.fetchBoardDetail();
@@ -98,6 +92,7 @@ export default {
         },
         saveChanges() {
             const noticenum = this.noticenum;
+            this.content = this.editor.getMarkdown();
             const formData = new FormData();
             formData.append('content', this.content);
             formData.append('title', this.title);

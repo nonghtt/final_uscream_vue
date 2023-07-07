@@ -30,7 +30,7 @@
                 </div>
                 <hr>
                 <div class="d-flex justify-content-end">
-                    <button @click="saveChanges" class="btn btn-warning btn-sm mr-1">{{ editButtonText }}</button>
+                    <button @click="saveChanges" class="btn btn-warning btn-sm mr-1">저장</button>
                     <button @click="deleteBoard" class="btn btn-danger btn-sm">삭제</button>
                     <button @click="movePage('/VocList')" class="btn btn-secondary btn-sm">목록</button>
                 </div>
@@ -53,7 +53,6 @@ export default {
             category: 0,
             content: '',
             canEdit: true,
-            editButtonText: '완료',
             accounttype: sessionStorage.getItem('accounttype'),
             storeid: sessionStorage.getItem('loginId'),
             editor: null,
@@ -75,11 +74,11 @@ export default {
                 .get(`http://localhost:8085/vocs/schid/${vocnum}`)
                 .then(response => {
                     console.log(response.data)
-                    this.vocnum = response.data.dto.vocnum;
-                    this.title = response.data.dto.title;
-                    this.category = response.data.dto.category;
-                    this.content = response.data.dto.content;
-                    this.storeid = response.data.dto.storeid;
+                    this.vocnum = response.data.voc.vocnum;
+                    this.title = response.data.voc.title;
+                    this.category = response.data.voc.category;
+                    this.content = response.data.voc.content;
+                    this.storeid = response.data.voc.storeid;
                     this.createEditor();
                 })
                 .catch(error => {
@@ -116,6 +115,7 @@ export default {
         },
         saveChanges() {
             const vocnum = this.vocnum;
+            this.content = this.editor.getMarkdown();
             const formData = new FormData();
             formData.append('content', this.content);
             formData.append('category', this.category);
