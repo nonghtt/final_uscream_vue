@@ -9,6 +9,7 @@
                     class="btn btncolor" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                     제품등록
                 </button></div>
+                <button @click="addinventory">인벤토리</button>
         </div>
         <div v-for="product in productlist" :key="product.productnum" class="card mb-3"
             style="float:left; width:31%; height:140px;">
@@ -126,6 +127,33 @@ export default {
                     })
                 } */
             })
+        },
+        addinventory(){
+            const self = this
+            self.$axios.get("http://localhost:8085/store").then(function(res){
+                let storelist =  res.data.storelist
+                for(let i =0 ; i < storelist.length ; i++){
+                    let accounttype = storelist[i].accounttype
+                    if(accounttype ==2){
+                self.$axios.get('http://localhost:8085/products').then(function(res){
+                for(let j=0; j<res.data.list.length; j++){
+                let productnum = res.data.list[j].productnum
+                console.log(productnum)
+                let form = new FormData()
+                form.append("productname",productnum)
+                form.append("storeid",storelist[i].storeid)
+                form.append("amount",0)
+                self.$axios.post('http://localhost:8085/inventorys',form).then(function(res2){
+                  console.log(res2.data.inventory)
+                })
+              }
+
+            })
+          }
+                    
+                }
+            })
+
         }
     }
 }
@@ -157,4 +185,5 @@ img {
     font-weight: bolder;
 }
 </style>
+
 
