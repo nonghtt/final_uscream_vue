@@ -49,6 +49,7 @@ import VocList from '@/components/voc/VocList.vue';
 import VocWriter from '@/components/voc/VocWriter.vue';
 import HeadVoc from '@/components/voc/HeadVoc.vue';
 import StoreVoc from '@/components/voc/StoreVoc.vue';
+import VocComment from '@/components/voc/VocComment.vue';
 
 const routes = [
  
@@ -228,6 +229,11 @@ const routes = [
     path: '/VocWriter',
     name: 'VocWriter',
     component: VocWriter
+  },
+  {
+    path: '/VocComment',
+    name: 'VocComment',
+    component: VocComment
   },
   {
     path: '/HeadVoc',

@@ -4,7 +4,7 @@
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-weight: bold; font-size: 20px;">공지사항</span>
             </div>
-            
+
 
             <div>
                 <label for="title">제목</label>
