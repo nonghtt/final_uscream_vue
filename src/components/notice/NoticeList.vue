@@ -79,7 +79,6 @@ export default {
             store: sessionStorage.getItem("loginId"),
             schbox: "", // 추가: 검색 조건 선택값을 저장하기 위한 변수
             schVal: "", // 추가: 검색어 입력값을 저장하기 위한 변수
-            categoryVal: "", // 추가: 칭찬/불만 선택값을 저장하기 위한 변수
             currentPage: 1, // 추가: 현재 페이지 번호
             itemsPerPage: 10, // 추가: 페이지 당 출력할 게시물 수
         };
@@ -121,7 +120,6 @@ export default {
                 name,
                 query: {
                     noticenum: item.noticenum,
-                    category: item.category,
                     title: item.title,
                     wdate: item.wdate,
                     cnt: item.cnt,
@@ -168,14 +166,6 @@ export default {
                     self.noticelist = [res.data.notice];
                 }
             });
-        },
-        getCategoryText(category) {
-            if (category === 1) {
-                return "칭찬";
-            } else if (category === 2) {
-                return "불만";
-            }
-            return "";
         },
         prevPage() {
             if (this.currentPage > 1) {
