@@ -10,14 +10,6 @@
                         <div class="underline"></div>
                     </div>
                 </div>
-                <div class="mb-5">
-                    <label for="category" class="form-label"
-                        style="font-size: 16px; font-weight: bold; color: gray;">분류</label>
-                    <div class="underline-input">
-                        <input type="text" id="category" class="form-control" v-model="categoryText" :readonly="!canEdit">
-                        <div class="underline"></div>
-                    </div>
-                </div>
                 <div style="height: 300px;">
                 <div class="mb-5">
                     <label for="content" class="form-label" style="font-size: 16px; font-weight: bold; color: gray;">내용</label>

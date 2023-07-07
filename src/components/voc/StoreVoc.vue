@@ -27,36 +27,47 @@
                         </div>
                     </div>
                 </div>
-                <hr>
-                <div class="d-flex justify-content-end">
-                    <button v-if="accounttype === '2'" @click="movePage('/VocList')"
-                        class="btn btn-secondary btn-sm">목록</button>
-                </div>
-                <hr>
-
-                <div class="mb-5">
-                    <label for="reply" class="form-label" style="font-size: 16px; font-weight: bold; color: gray;">댓글</label>
-
-                    <!-- 댓글 리스트 -->
-                    <div v-for="item in replies" :key="item.voccomnum" class="mb-3">
-                        <div>작성자: {{ item.storeid.storename }}</div>
-                        <div>댓글 내용: {{ item.storecomment }}</div>
-                        <div>작성일시: {{ formatDate(item.wdate) }}</div>
-                        <button @click="addComment" class="btn btn-primary" style="background-color: greenyellow;">수정</button>
-                        <button @click="delComment" class="btn btn-primary" style="background-color: red;">삭제</button>
-
-                        <hr>
-                    </div>
-
-                    <!-- 댓글 작성 칸 -->
-                    <div>
-                        <label for="commentInput" class="form-label" style="font-size: 16px; font-weight: bold; color: gray;">여기다 댓글 작성해</label>
-                        <input type="text" id="commentInput" v-model="newComment" class="form-control mb-3">
-                        <button @click="saveComment" class="btn btn-primary">저장</button>
-                    </div>
-                </div>
-
             </div>
+
+            <div class="mt-5">
+                <label for="comment" class="form-label" style="font-size: 16px; font-weight: bold; color: gray;">댓글</label>
+                <tbody>
+                <tr v-for="index in replies" :key="index.voccomnum" @click="reply(index)" style="cursor: pointer;">
+                    <td class="bi bi-person-fill me-1"></td>
+                    {{ reply.writer }}
+                    <td>{{ reply.content }}</td>
+                    <td>{{ reply.regDttm }}</td>
+                    <td>
+                    <button @click="replyEdit(reply.replyNo, reply.content)" class="btn btn-primary btn-sm">
+                        <i class="bi bi-pencil-fill"></i>
+                    </button>
+                    </td>
+                    <td>
+                    <button @click="replyDel(reply.replyNo)" class="btn btn-danger btn-sm">
+                        <i class="bi bi-trash-fill"></i>
+                    </button>
+                    </td>
+                </tr>
+                </tbody>
+            </div>
+
+            <div class="card-footer">
+                <div class="d-flex justify-content-end">
+                    <button @click="movePage('/VocComment')" class="btn btn-warning me-2">
+                        <i class="bi bi-pencil-fill me-1"></i>
+                        수정
+                    </button>
+                    <button @click="del" class="btn btn-danger me-2">
+                        <i class="bi bi-trash-fill me-1"></i>
+                        삭제
+                    </button>
+                    <button @click="movePage('/VocList')" class="btn btn-secondary">
+                        <i class="bi bi-arrow-left-circle-fill me-1"></i>
+                        목록
+                    </button>
+                </div>
+            </div>
+
         </div>
     </div>
 </template>
@@ -80,8 +91,6 @@ export default {
             storeid: sessionStorage.getItem('loginId'),
             editButtonText: '완료',
             viewerInstance: null,
-            replies:[], //댓글 데이터
-            newComment:'',
         };
     },
     computed: {
@@ -95,8 +104,6 @@ export default {
         if (this.accounttype === '2') {
             this.canEdit = false;
         }
-
-        this.fetchReplies(); //댓글 데이터 불러오기
     },
     methods: {
         detail(item) {
@@ -126,13 +133,15 @@ export default {
         },
         fetchBoardDetail() {
             const vocnum = this.$route.query.vocnum;
+            console.log(vocnum)
             axios
                 .get(`http://localhost:8085/vocs/schid/${vocnum}`)
                 .then(response => {
-                    this.vocnum = response.data.dto.vocnum;
-                    this.title = response.data.dto.title;
-                    this.category = response.data.dto.category;
-                    this.content = response.data.dto.content;
+                    console.log(response.data)
+                    this.vocnum = response.data.voc.vocnum;
+                    this.title = response.data.voc.title;
+                    this.category = response.data.voc.category;
+                    this.content = response.data.voc.content;
                     this.viewerInstance = new Viewer({
                         el: this.$refs.viewer,
                         initialValue: this.content,
@@ -144,7 +153,7 @@ export default {
                 });
         },
         deleteBoard() {
-            const vocnum = this.vocnum;
+            const vocnum = this.$route.query.vocnum;
             axios
                 .delete(`http://localhost:8085/vocs/del/${vocnum}`)
                 .then(response => {
@@ -167,7 +176,7 @@ export default {
             });
         },
         saveChanges() {
-            const vocnum = this.vocnum;
+            const vocnum = this.$route.query.vocnum;
             const formData = new FormData();
             formData.append('content', this.content);
             formData.append('category', this.category);
@@ -185,87 +194,6 @@ export default {
                 .catch(error => {
                     console.error(error);
                 });
-        },
-
-        fetchReplies() { // 화살표 함수로 변경
-            axios
-                .get('http://localhost:8085/voccomments') // 댓글 데이터를 불러오는 API 엔드포인트
-                .then((response) => {
-                    console.log(response.data)
-                    this.replies = response.data.list; // 댓글 데이터를 replies에 저장
-                    //console.log(response.data)
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
-        },
-        replyEdit(reply) {
-            const voccomnum = reply.voccomnum;
-            const storecomment = reply.storecomment;
-            axios
-                .put(`http://localhost:8085/voccomments/edit/${voccomnum}`, { storecomment })
-                .then(response => {
-                    console.log(response.data);
-                    // 수정 완료 후 작업 수행
-                })
-                .catch(error => {
-                    console.error(error);
-                });
-        },
-
-        replyDel(reply) {
-            const voccomnum = reply.voccomnum;
-            axios
-                .delete(`http://localhost:8085/voccomments/del/${voccomnum}`)
-                .then(response => {
-                    if (response.data.flag) {
-                        this.$store.commit('SET_SNACKBAR', {
-                            show: true,
-                            msg: '삭제 완료',
-                            color: 'error',
-                        });
-
-                        // 삭제한 댓글을 replies 배열에서 제거
-                        const index = this.replies.findIndex(item => item.voccomnum === voccomnum);
-                        if (index !== -1) {
-                            this.replies.splice(index, 1);
-                        }
-                    }
-                })
-                .catch(error => {
-                    console.error(`댓글 삭제에 실패했습니다. 오류: ${error.message}`);
-                });
-        },
-        saveComment() {
-        const formData = new FormData();
-        formData.append('storeid', this.storeid);
-        formData.append('storecomment', this.newComment);
-        formData.append('vocnum', this.vocnum);
-        console.log(this.newComment);
-        
-        axios
-            .post('http://localhost:8085/voccomments', formData)
-            .then(response => {
-                console.log(response.data)
-                if (response.data.flag) {
-                  
-                    const addedComment = response.data.dto;
-                    this.replies.push(addedComment); // 새로운 댓글을 replies 배열에 추가
-                    this.newComment = ''; // 댓글 입력 칸 초기화
-
-                    this.$store.commit('SET_SNACKBAR', {
-                        show: true,
-                        msg: '댓글이 추가되었습니다.',
-                        color: 'success'
-                    });
-                } else{
-                    console.log('에러 :'+response.status)
-                }
-            })
-            .catch(error => {
-                console.error(`댓글 추가에 실패했습니다. 오류: ${error.message}`);
-            });
-
         },
     },
 };
