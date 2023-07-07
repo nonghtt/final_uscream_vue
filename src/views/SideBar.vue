@@ -172,9 +172,5 @@ ul {
 .select_bar:hover{
     background-color: rgb(199, 247, 196);
 }
-.select_menu{
-    border-color:#04ac4e;
-    color:#04ac4e;
-    background-color: rgb(251, 253, 252);
-}
+
 </style>

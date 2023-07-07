@@ -33,7 +33,7 @@
                     <img class="lcon" :src="readimg" v-if="msg.readcheck == 1" v-on:click="read(msg.msgnum)">
                     <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum)">
                 </td>
-                <td :class="{ 'bold': msg.readcheck === true}">{{ msg.sender.storeid }}</td>
+                <td :class="{ 'bold': msg.readcheck === true}">{{ msg.receiver.managername }}</td>
                 <td v-on:click="detail(msg.msgnum)" :class="{ 'bold': msg.readcheck === true}">{{ msg.title }}</td>
                 <td :class="{ 'bold': msg.readcheck === true}">{{ msg.msgdate }}</td>
             </tr>

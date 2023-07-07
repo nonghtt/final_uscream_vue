@@ -35,6 +35,7 @@
             </tr>
         </tabel>
     </div>
+
 </template>
     
 <script>
@@ -45,15 +46,16 @@ export default {
     data() {
         return {
             countall: 0,
-            count: 0,
-            sender: sessionStorage.getItem("loginId"),
+            sender:'',
             id: '',
             receiver: '',
             title: '',
             content: '',
             file: '',
             array: [],
-            alertname: []
+            alertname: [],
+            query: '',
+         suggestions: [],
         }
     },
     created: function () {
@@ -63,31 +65,33 @@ export default {
             .then(function (res) {
                 self.countall = res.data.countAllByTempMsg;
             })
-    },
-    methods: {
-        fileUpload() {
-            this.file = this.$refs.fileref.files[0];
-        },
-        async addmsg() {
-            const str_receiver = this.receiver.replace(/\s/g, '');
-            this.array = str_receiver.split(",")
-            this.alertname = [];
-            const name = [];
-            const self = this;
-            for (var i = 0; i < this.array.length; i++) {
-
+        self.$axios.get("http://localhost:8085/msg/search/"+ id)
+        .then(function(res){
+            self.sender = res.data.dto.managername;
+        })  
+        },  
+    methods: {  
+        fileUpload() {  
+            this.file = this.$refs.fileref.files[0];    
+        },  
+        async addmsg() {    
+            const str_receiver = this.receiver.replace(/\s/g, '');  // 매니저 이름이 들어간다.
+            this.array = str_receiver.split(",")                    // 김희수,원유경,양승혁
+            this.alertname = [];                                    // 알림 이름 배열 초기화
+            const name = [];                                        // 이름  배열 초기화
+            const self = this;                              
+            for (var i = 0; i < this.array.length; i++) {           
+                
                 let form = new FormData();
-                form.append('sender', self.sender);
-                form.append('receiver', self.array[i]);
-                form.append('title', self.title);
-                form.append('content', self.content);
+                form.append('sender', sessionStorage.getItem("loginId"));                  
+                form.append('receiver', self.array[i]);             // 김희수와 원유경 양승혁이 들어온다(managername),받는사람에는 storeid가 필요
+                form.append('title', self.title);                   // 타이틀 그대로
+                form.append('content', self.content);               // 내용 그대로
                 if (self.file) {
                     form.append('mfile', self.file);
                 }
                 await self.$axios.post("http://localhost:8085/msg", form, { headers: { "Content-Type": "multipart/form-data" } })
                 name[i] = self.array[i];
-
-
             }
 
             for (var j = 0; j < name.length; j++) {
@@ -99,7 +103,7 @@ export default {
             }
             if(self.alertname !=''){
 
-                alert(self.alertname + "라는 사용자는 없는 사용자입니다.");
+                alert(self.alertname + " 없는 사용자");
             }
             self.$router.push({ name: 'SendMsg' });
         },
@@ -122,7 +126,8 @@ export default {
             }
             this.$router.push({ name: 'TempMsg' });
 
-        }
+        },
+    
     }
 }
 </script>
