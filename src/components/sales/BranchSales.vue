@@ -369,8 +369,16 @@ export default {
   display: none;
 }
 .fc-event-title {
-  color: red;
+  color:rgb(174, 174, 174);
   text-align: center;
+  font-weight:normal;
+}
+
+.fc-daygrids-day-event {
+  color: grey;
+  text-align: center;
+  font-weight:normal;
+
 }
 
 </style>
