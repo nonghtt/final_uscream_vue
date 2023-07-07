@@ -24,29 +24,38 @@
                 <input type="button" class="but e btncolor" value="읽음" v-on:click="readlist()">
             </div>
             <div class="searchbar">
-                <input type="text" class="textbar" name="searchbar" id="searchbar" placeholder="받을 사람으로 메일 검색" autocomplete="off">
+                <input type="text" class="textbar" name="searchbar" id="searchbar" placeholder="받을 사람으로 메일 검색"
+                    autocomplete="off">
                 <input type="button" class="but f e btncolor" value="검색" v-on:click="sendertempmsg()">
             </div>
         </div>
         <div class="null_div" v-if="list == ''">메일이 없습니다.</div>
-        <table v-else class="main">
-            <tr v-for="(msg, index) in list" :key="index">
+        <div class="scroll">
 
-                <td class="check">
-                    <input type="checkbox" class="checkbox_icon" v-model="checked[index]" @change="checklist(msg.msgnum)">
-                    <img class="lcon" :src="markimg" v-if="msg.mark == 1" v-on:click="mark(msg.msgnum)">
-                    <img class="lcon" :src="markimg2" v-else v-on:click="mark(msg.msgnum)">
-
-
-                    <img class="lcon" :src="readimg" v-if="msg.readcheck == 1" v-on:click="read(msg.msgnum)">
-                    <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum)">
-
-                </td>
-                <td :class="{ 'bold': msg.readcheck === true}">{{ msg.receiver.managername }}</td>
-                <td v-on:click="detail(msg.msgnum)" :class="{ 'bold': msg.readcheck === true}">{{ msg.title }}</td>
-                <td :class="{ 'bold': msg.readcheck === true}">{{ msg.msgdate }}</td>
-            </tr>
-        </table>
+            <table v-if="paginatedData.length > 0" class="main">
+                <tr v-for="(msg, index) in paginatedData" :key="index">
+                    <td class="check">
+                        <input type="checkbox" class="checkbox_icon" v-model="checked[index]"
+                            @change="checklist(msg.msgnum)">
+                        <img class="lcon" :src="markimg" v-if="msg.mark == 1" v-on:click="mark(msg.msgnum)">
+                        <img class="lcon" :src="markimg2" v-else v-on:click="mark(msg.msgnum)">
+                        <img class="lcon" :src="readimg" v-if="msg.readcheck == 1" v-on:click="read(msg.msgnum)">
+                        <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum)">
+                    </td>
+                    <td :class="{ 'bold': msg.readcheck === true }">{{ msg.receiver.managername }}</td>
+                    <td v-on:click="detail(msg.msgnum)" :class="{ 'bold': msg.readcheck === true }">{{ msg.title }}</td>
+                    <td :class="{ 'bold': msg.readcheck === true }">{{ msg.msgdate }}</td>
+                </tr>
+            </table>
+        </div>
+        <div class="pagination">
+            <button :disabled="currentPage === 1" @click="prevPage">이전</button>
+            <div v-for="pageNumber in totalPages" :key="pageNumber">
+                <button :class="{ active: currentPage === pageNumber }" @click="goToPage(pageNumber)">{{ pageNumber
+                }}</button>
+            </div>
+            <button :disabled="currentPage === totalPages" @click="nextPage">다음</button>
+        </div>
     </div>
 </template>
     
@@ -69,7 +78,9 @@ export default {
             checkedmsg: [],
             checked: [],
             num: [],
-            clickmsg: []
+            clickmsg: [],
+            currentPage: 1,
+            pageSize: 11,
         }
     },
     created: function () {
@@ -81,6 +92,16 @@ export default {
                 self.count = res.data.countByReadTempMsg;
                 self.countall = res.data.countAllByTempMsg;
             })
+    },
+    computed: {
+        totalPages() {
+            return Math.ceil(this.list.length / this.pageSize);
+        },
+        paginatedData() {
+            const startIndex = (this.currentPage - 1) * this.pageSize;
+            const endIndex = startIndex + this.pageSize;
+            return this.list.slice(startIndex, endIndex);
+        },
     },
     methods: {
         checklist() {
@@ -145,12 +166,20 @@ export default {
                 .then(function (res) {
                     self.list = res.data.msglist;
                 })
-        }
+        },
+        prevPage() {
+            this.currentPage--;
+        },
+        nextPage() {
+
+            this.currentPage++;
+        },
+        goToPage(pageNumber) {
+            this.currentPage = pageNumber;
+        },
     }
 }
 </script>
-    
-    
     
     
     
@@ -188,13 +217,13 @@ h3 {
 
 }
 
-/* middlebar_container{
-    
-    
-} */
+.middlebar_container {
+    border-bottom: 1px solid black;
+}
+
 .middlebar {
     display: inline-block;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .searchbar {
@@ -209,13 +238,75 @@ h3 {
     font-size: 25px;
 }
 
+.scroll {
+    overflow: scroll;
+    height: 500px;
+    overflow-x: hidden;
+}
+
+.scroll::-webkit-scrollbar {
+    width: 10px;
+}
+
+.scroll::-webkit-scrollbar-track {
+    background-color: #a9abab;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+    background-color: #03c75a;
+}
+
+
+.scroll::-webkit-scrollbar-thumb:hover {
+    background-color: #04ac4e;
+}
+
+.pagination {
+
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    margin-top: 10px;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: #03c75a;
+    color: #fefefe;
+    border: none;
+    border-radius: 5px;
+    font-weight: 550;
+}
+
+.pagination button.active {
+    background-color: #04ac4e;
+}
+
 .main {
     width: 100%;
     text-align: center;
+
 }
+
+/* .boldtext{
+    font-weight: bold;
+} */
 
 table {
     border-radius: 6px;
+}
+
+th {
+    text-align: left;
+
+}
+
+th:nth-child(4) {
+    text-align: center;
 }
 
 tr {
@@ -263,45 +354,44 @@ td:nth-child(4) {
     zoom: 1.5;
 }
 
+.btncolor:hover {
+    background-color: #04ac4e;
+    color: #fefefe;
+}
 
-.btncolor:hover{
-  background-color: #04ac4e;
-  color:#fefefe;
-}
-.btncolor{
-    color:#fefefe;
+.btncolor {
+    color: #fefefe;
     background-color: #03c75a;
-    font-weight: 550 ;
-    padding : 5px 10px;
-    width : 100px;
+    font-weight: 550;
+    padding: 5px 10px;
+    width: 100px;
 }
+
 .but {
-    border:none;
+    border: none;
     border-right: 2px solid rgba(0, 49, 9, 0.108);
 }
 
-.f{
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px; 
+.f {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 
-.e{
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px; 
+.e {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
-.textbar{
+.textbar {
     border-radius: 5px;
-    width:250px;
+    width: 250px;
     border-color: #EAEAEA;
 }
 
-.textbar:hover{
+.textbar:hover {
     border-color: black;
 }
-.bold {
-  font-weight: bold;
-}
 
-</style>
-    
+.bold {
+    font-weight: bold;
+}</style>

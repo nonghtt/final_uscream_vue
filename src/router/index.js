@@ -38,7 +38,6 @@ import DetailMsg from '@/components/msg/DetailMsg.vue'
 import MarkMsg from '@/components/msg/MarkMsg.vue'
 import ReplyMsg from '@/components/msg/ReplyMsg.vue'
 import AddTempMsg from '@/components/msg/AddTempMsg.vue'
-import PAGETEST from '@/components/msg/PAGETEST.vue'
 import SideBar from '../views/SideBar.vue'
 
 import NoticeList from '@/components/notice/NoticeList.vue'
@@ -195,11 +194,6 @@ const routes = [
     path: '/AddTempMsg',
     name: 'AddTempMsg',
     component: AddTempMsg
-  },
-  {
-    path: '/PAGETEST',
-    name: 'PAGETEST',
-    component: PAGETEST
   },
   {
     path: '/SideBar',
