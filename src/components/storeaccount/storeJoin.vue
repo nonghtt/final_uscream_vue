@@ -7,7 +7,7 @@
           
           <div class="title_join" role="alert" style="font-size:25px; font-weight:bold;">
         JOIN</div>
-        
+
 
 
         <!-- 왼쪽 컨테이너 -->
@@ -42,7 +42,7 @@
                          @input="validationpassword">
                 <label class="label_pwd">비밀번호</label>  
                          <span v-if="passwordErrorText">{{ passwordErrorText }}</span>
-              </div>validationpassword
+              </div>
 
 
 <input type="password" v-if="validationpassword()">
