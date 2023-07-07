@@ -1,6 +1,5 @@
 <template>
     <div id="eaBody">
-        <!-- <button @click="testGrade">등급 추가 버튼 (한 번만 눌러야함..)</button> -->
 
         <div id="divEmp">
             <h3>직원 등록</h3>
@@ -22,7 +21,7 @@
                         --등급 선택--
                     </option>
                     <option v-for="(item, index) in gradeList" :key="index" :value="item.gnum">
-                        {{ item.gnum }} : {{ item.salary }}
+                        {{ item.gnum }} : {{ item.salary.toLocaleString() }}
                     </option>
                 </select>
             </div>
@@ -124,8 +123,9 @@
             </div>
 
             <div class="content">
-                <button class="btn custom-btn" @click="addBasicSchedule" data-bs-toggle="modal" data-bs-target="#add">스케줄
-                    등록</button>
+                <button class="btn custom-btn" @click="addBasicSchedule">
+                    스케줄 등록
+                </button>
             </div>
 
             <!-- Modal -->
@@ -151,6 +151,8 @@
 </template>
 
 <script>
+import { Modal } from 'bootstrap';
+
 export default {
     name: 'EmpAdd',
     data() {
@@ -161,25 +163,26 @@ export default {
             grade: '',
             color: '',              // emp dto 
             gradeList: [],          // 등급 리스트 보여주기
-            selectedGrade: 0,      // 등급 선택 
+            selectedGrade: 0,       // 등급 선택 
             week: [],               // 요일 선택 
             startdate: null,        // 언제부터 언제까지 반복할건지 
             enddate: null,
-            startTimeSun: null,     // 요일별로 선택한 시간 받아오기
-            endTimeSun: null,
-            startTimeMon: null,
-            endTimeMon: null,
-            startTimeTue: null,
-            endTimeTue: null,
-            startTimeWed: null,
-            endTimeWed: null,
-            startTimeThu: null,
-            endTimeThu: null,
-            startTimeFri: null,
-            endTimeFri: null,
-            startTimeSat: null,
-            endTimeSat: null,
-            empnum: ''               // schedule 넣을 때 필요함.
+            startTimeSun: '09:00',     // 요일별로 선택한 시간 받아오기
+            endTimeSun: '18:00',
+            startTimeMon: '09:00',
+            endTimeMon: '18:00',
+            startTimeTue: '09:00',
+            endTimeTue: '18:00',
+            startTimeWed: '09:00',
+            endTimeWed: '18:00',
+            startTimeThu: '09:00',
+            endTimeThu: '18:00',
+            startTimeFri: '09:00',
+            endTimeFri: '18:00',
+            startTimeSat:'09:00',
+            endTimeSat: '18:00',
+            empnum: '',               // schedule 넣을 때 필요함.
+            showModal : false         // 직원 등록 잘못됐을시 모달안보여줄거임
         }
     },
     created: function () {
@@ -193,47 +196,17 @@ export default {
                     console.log(self.gradeList)
                 }
             })
-        // console.log("흠 :"+this.startTimeMon>this.startTimeSat)
-        // console.log(this.startTimeMon !=null )
     },
     mounted: function () {
         // 직원 등록 전에 스케줄 등록 none
         document.getElementById("divSchedule").style.display = "none";
-
-        // 요일 선택을 해야 시간 선택이 보일 수 있게 
-        // const workTime = document.getElementsByClassName("workTime");
-        // for (let i = 0; i < workTime.length; i++) {
-        //     workTime[i].style.display = "none";
-        // }
-        console.log("ee")
     },
     methods: {
         // 등급 선택 
         gradeChange() {
             const self = this;
             self.grade = self.selectedGrade
-            //console.log("gradeChange() self.grade :" + self.grade);
         },
-        // 이 함수는 지울 예정 (데이터 넣기 편하라고 넣어둔 함수)
-        /*
-        testGrade() {
-            let mul = [1, 1.2, 1.4, 1.6];
-            for (let i = 0; i < 4; i++) {
-                let formData = new FormData();
-                let money = parseInt(9620 * mul[i]);
-                money = Math.ceil(money / 10) * 10;
-
-                formData.append("gnum", i + 1);
-                formData.append("salary", money);
-
-                const self = this;
-                self.$axios.post('http://localhost:8085/grade', formData)
-                    .then(function (res) {
-                        console.log(res.status)
-                    })
-            }
-        },
-        */
         // 직원 등록 
         empAdd() {
             let empForm = new FormData();
@@ -242,11 +215,6 @@ export default {
             empForm.append("joindate", this.joindate);
             empForm.append("grade", this.grade);
             empForm.append("color", this.color);
-
-            console.log("this.empname :" + this.empname)
-            console.log("this.joindate :" + this.joindate)
-            console.log("this.grade :" + this.grade)
-            console.log("this.color :" + this.color)
 
             if (this.empname === null || this.empname == '') {
                 alert("직원 이름을 입력해주세요")
@@ -303,21 +271,17 @@ export default {
 
                 }
             }
-            console.log(checkedWeekArr);
 
-            //console.log("checkedWeek :" + checkedWeek);
             let startdate = new Date(self.startdate)
             const enddate = new Date(self.enddate)
-            //console.log("startdate :" + startdate)
-            //console.log("enddate :" + enddate)
 
-            if (startdate > enddate) {
-                alert("끝날짜가 시작날짜보다 나중이어야 해요!!!")
-            }
+      
 
             let start = ''
             let end = ''
             let check = true;
+       
+            
 
             // if(self.startTimeSun)
             if (checkedWeekArr[0] == 1) {
@@ -391,8 +355,27 @@ export default {
                 }
             }
 
-            if (check) {
-                // 첫날짜부터 마지막 날짜까지 while문으로 돌리기 
+
+           if(startdate === null){
+                alert("시작 날짜를 설정해주세요")
+                document.getElementById("add").setAttribute("aria-hidden", "true")
+                //self.showModal=false;
+           } else if(enddate === null){
+            alert("종료 날짜를 설정해주세요")
+            document.getElementById("add").setAttribute("aria-hidden", "true")
+            //self.showModal=false;
+           } else if(startdate > enddate) {
+                alert("끝날짜가 시작날짜보다 나중이어야 해요!!!")
+                document.getElementById("add").setAttribute("aria-hidden", "true")
+                //self.showModal=false;
+            } else if(self.week.length === 0){
+                alert("요일을 선택해주세요!")
+            } else if(check){
+                //self.showModal=true;
+                const modal = document.getElementById('add');
+                let myModal = new Modal(modal)
+                myModal.show();
+
                 while (startdate <= enddate) {
                     start = ''
                     end = ''
@@ -429,8 +412,6 @@ export default {
                     }
                     startdate.setDate(startdate.getDate() + 1);
                 }
-                //self.$router.push("/emplist")
-
             }
         },
         basicScheduleAdd(start, end, day) {     // 스케줄 추가 함수
@@ -470,9 +451,28 @@ export default {
 
         },
         addSuccess(){
+             // 초기화 해주기기
+             self.startdate = null;
+            self.enddate = null;
+            self.startTimeSun = '09:00';
+            self.startTimeMon = '09:00';
+            self.startTimeTue = '09:00';
+            self.startTimeWed = '09:00';
+            self.startTimeThu = '09:00';
+            self.startTimeFri = '09:00';
+            self.startTimeSat = '09:00';
+            self.endTimeSun = '18:00';
+            self.endTimeMon = '18:00';
+            self.endTimeTue = '18:00';
+            self.endTimeWed = '18:00';
+            self.endTimeThu ='18:00';
+            self.endTimeFri = '18:00';
+            self.endTimeSat = '18:00';
+
             this.$router.push({
                 name: 'emplist'
             });
+
         
         }
     }
@@ -492,13 +492,13 @@ h3 {
 }
 
 .custom-btn {
-    background-color: #B3C755;
+    background-color: #bee96d;
     width: 150px;
     margin-top: 20px;
 }
 
 .custom-btn:hover {
-    background-color: #99ab49;
+    background-color: #FFC67B;
 }
 
 .content {
@@ -551,5 +551,9 @@ li {
     display: inline-block;
     text-align: left;
     vertical-align: middle;
+}
+
+.modal-content {
+    width : 500px;
 }
 </style>
