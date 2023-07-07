@@ -14,7 +14,7 @@
       <br/>
       <br/>
       <br/>
-      <div>메시지사이드바 빠지면 width 600에서 300으로 바꿔야함</div>
+
     </div>
 
 
@@ -42,7 +42,7 @@
 #map {
   position: fixed;
     top: 76px;
-    left: 600px;
+    left: 300px;
     width: 100%;
     height: 100%;
 }
