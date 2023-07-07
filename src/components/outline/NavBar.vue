@@ -175,4 +175,18 @@ li {
 a {
     text-decoration: none;
 }
+
+.nav-link:active{
+    background-color:  #bee96d;
+}
+
+.dropdown-item:active{
+    background-color:  #bee96d;
+    color : #595959;
+}
+
+.nav-link{
+    color : #000000;
+}
+
 </style>

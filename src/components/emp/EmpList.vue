@@ -1,6 +1,6 @@
 <template>
     <div id="elBody">
-        <h3>{{ storename }}점 직원</h3>
+        <h3>{{ storename }} 직원</h3>
         <div class="row row-cols-1 row-cols-md-3 g-4">
             <div class="col" v-for="emp in list" :key="emp.empnum" :id="emp.empnum">
                 <div class="card text-center" style="width: 18rem;" :id="'emp' + emp.empnum">
@@ -84,8 +84,8 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <span class="name">{{ emp.empname }}</span>님을 삭제하시겠습니까? <br/>
-                            
+                                <span class="name">{{ emp.empname }}</span>님을 삭제하시겠습니까? <br />
+
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">취소</button>
@@ -129,13 +129,23 @@ export default {
             .then(function (res) {
                 if (res.status == 200 && res.data.flag == true) {
                     self.list = res.data.list
-                    console.log(self.list[0].storeid.storename)
-                    self.storename = self.list[0].storeid.storename
+                    //self.storename = self.list[0].storeid.storename
                     console.log(self.list)
                 } else {
                     console.log("에러 :" + res.status)
                 }
             });
+
+        // 지점명 불러오기
+        self.$axios.get(`http://localhost:8085/store/storeid/${storeid}`)
+            .then(function (res) {
+                if (res.status == 200) {
+                    console.log(res.data);
+                    self.storename = res.data.dto.storename
+                } else {
+                    console.log("에러 :" + res.status)
+                }
+            })
 
         // grade 셀렉버튼 창 만들어주기 위해서 
         self.$axios.get(`http://localhost:8085/grade/all`)
@@ -205,11 +215,11 @@ export default {
 }
 
 .custom-btn {
-    background-color: #B3C755;
+    background-color: #bee96d;
 }
 
 .custom-btn:hover {
-    background-color: #99ab49;
+    background-color: #FFC67B;
 }
 
 .emps {
@@ -237,7 +247,7 @@ export default {
     display: inline-block;
     text-align: left;
     vertical-align: middle;
-    width : 50%;
+    width: 50%;
 }
 
 h3 {
@@ -246,25 +256,26 @@ h3 {
     margin-bottom: 30px;
 }
 
-.name{
-    font-weight : 700;
+.name {
+    font-weight: 700;
 }
 
-.editInput{
-    margin-top:20px;
-    margin-bottom:20px;
+.editInput {
+    margin-top: 20px;
+    margin-bottom: 20px;
 }
-.editInputTitle{
-    margin-bottom : 5px;
+
+.editInputTitle {
+    margin-bottom: 5px;
 }
 
 .color-circle {
-  display: inline-block;
-  width: 20px;
-  height: 20px;
-  border-radius: 50%;
-  margin-left: 3px;
-  vertical-align: middle;
-  margin-bottom:3px;
+    display: inline-block;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    margin-left: 3px;
+    vertical-align: middle;
+    margin-bottom: 3px;
 }
 </style>
