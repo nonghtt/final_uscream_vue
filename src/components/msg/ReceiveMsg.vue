@@ -18,6 +18,7 @@
                     <input type="button" class="but btncolor" value="휴지통으로" v-on:click="delmsg()">
                     <input type="button" class="but btncolor"  value="즐찾" v-on:click="marklist()">
                     <input type="button" class="but e btncolor" value="읽음" v-on:click="readlist()">
+                    <input type="button" class="but e btncolor" value="페이지테스트" v-on:click="gop()">
             </div>
             <div class="searchbar">
                 <input type="text" class="textbar" name="searchbar" id="searchbar" placeholder="보낸 사람으로 메일 검색" autocomplete="off">
@@ -34,7 +35,7 @@
                     <img class="lcon" :src="readimg" v-if="msg.readcheck == 1" v-on:click="read(msg.msgnum)">
                     <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum)">
                 </td>
-                    <td :class="{ 'bold': msg.readcheck === true}">{{ msg.sender.storeid }}</td>
+                    <td :class="{ 'bold': msg.readcheck === true}">{{ msg.sender.managername }}</td>
                     <td v-on:click="detail(msg.msgnum)" :class="{ 'bold': msg.readcheck === true}">{{ msg.title }}</td>
                     <td :class="{ 'bold': msg.readcheck === true}">{{ msg.msgdate }}</td>
             </tr>
@@ -141,6 +142,9 @@ export default {
                 .then(function (res) {
                     self.list = res.data.msglist;
                 })
+        },
+        gop(){
+            this.$router.push({ name: 'PAGETEST' });
         }
     }
 
@@ -206,6 +210,13 @@ h3 {
 
 table {
     border-radius: 6px;
+}
+th {
+    text-align: left;
+
+}
+th:nth-child(4)  {
+    text-align: center;
 }
 
 tr {

@@ -9,8 +9,8 @@
             <p style="margin-left:0px ;">{{ 8 }}</p>
         </div>
         <div class="middlebar">
-            <input v-if="re == null" type="button" value="답장" v-on:click="replymsg(dto.msgnum)">
-            <input type="button" value="휴지통" v-on:click="delmsg(dto.msgnum)">
+            <input v-if="re == null" type="button" class="but f btncolor" value="답장" v-on:click="replymsg(dto.msgnum)">
+            <input type="button" value="휴지통" class="but e btncolor" v-on:click="delmsg(dto.msgnum)">
         </div>
         <tabel>
             <tr>
@@ -184,5 +184,45 @@ textarea {
     margin-top: 2.5%;
     resize: none;
     width: 100%;
+}
+
+
+.btncolor:hover{
+  background-color: #04ac4e;
+  color:#fefefe;
+}
+.btncolor{
+    color:#fefefe;
+    background-color: #03c75a;
+    font-weight: 550 ;
+    padding : 5px 10px;
+    width : 100px;
+}
+.but {
+    border:none;
+    border-right: 2px solid rgba(0, 49, 9, 0.108);
+}
+
+.f{
+  border-top-left-radius: 5px;
+  border-bottom-left-radius: 5px; 
+}
+
+.e{
+  border-top-right-radius: 5px;
+  border-bottom-right-radius: 5px; 
+}
+
+.textbar{
+    border-radius: 5px;
+    width:250px;
+    border-color: #EAEAEA;
+}
+
+.textbar:hover{
+    border-color: black;
+}
+.bold {
+  font-weight: bold;
 }</style>
     

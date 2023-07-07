@@ -43,7 +43,7 @@
                     <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum)">
 
                 </td>
-                <td :class="{ 'bold': msg.readcheck === true}">{{ msg.sender.storeid }}</td>
+                <td :class="{ 'bold': msg.readcheck === true}">{{ msg.sender.managername }}</td>
                 <td v-on:click="detail(msg.msgnum)" :class="{ 'bold': msg.readcheck === true}">{{ msg.title }}</td>
                 <td :class="{ 'bold': msg.readcheck === true}">{{ msg.msgdate }}</td>
             </tr>
@@ -193,14 +193,13 @@ h3 {
     margin-bottom: 2%;
 
 }
+.middlebar_container{
+    border-bottom:1px solid black;
+}
 
-/* middlebar_container{
-    
-    
-} */
 .middlebar {
     display: inline-block;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .searchbar {
@@ -215,13 +214,25 @@ h3 {
     font-size: 25px;
 }
 
+
 .main {
     width: 100%;
     text-align: center;
 }
 
+/* .boldtext{
+    font-weight: bold;
+} */
+
 table {
     border-radius: 6px;
+}
+th {
+    text-align: left;
+
+}
+th:nth-child(4)  {
+    text-align: center;
 }
 
 tr {
@@ -269,7 +280,6 @@ td:nth-child(4) {
     zoom: 1.5;
 }
 
-
 .btncolor:hover{
   background-color: #04ac4e;
   color:#fefefe;
@@ -310,4 +320,4 @@ td:nth-child(4) {
 }
 
 </style>
-    
+  
