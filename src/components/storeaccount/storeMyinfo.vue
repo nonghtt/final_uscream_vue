@@ -107,7 +107,7 @@ name:"StoreEdit",
             this.storeid = sessionStorage.getItem('loginId')
             this.accounttype = sessionStorage.getItem('accounttype')
             const self = this;
-            self.$axios.get('http://localhost:8085/store/'+self.storeid)
+            self.$axios.get('http://localhost:8085/store/storeid/'+self.storeid)
             .then(function(res){
                 if(res.status == 200){
                     let dto = res.data.dto
@@ -136,9 +136,11 @@ name:"StoreEdit",
             formdata.append('pwd',self.pwd)
             formdata.append('managername',self.managername)
             formdata.append('accounttype',self.accounttype)
-            self.$axios('http://localhost/8085/store/'+self.storeid)
+            alert('수정하러 간다?'+self.pwd);
+            alert(formdata);
+            self.$axios.post("http://localhost:8085/store",formdata)
             .then(function(res){
-             
+             alert('수정하러갔당 옴?')
                 if(res.status == 200){
                     let dto = res.data.store
                     self.pwd = dto.pwd

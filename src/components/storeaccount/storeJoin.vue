@@ -35,23 +35,24 @@
             <button v-on:click="idcheck">중복체크</button><br/>
             {{idmsg}}
 
-<div v-if="iddescription" class="iddescript_window">(ex) 지역코드 + 숫자 KG001</div>
+        <div v-if="iddescription" class="iddescript_window">(ex) 지역코드 + 숫자 KG001</div>
 
               <div class="div_pwd">
                 <input class="input_pwd" type="password" v-model="password" required
                          @input="validationpassword">
                 <label class="label_pwd">비밀번호</label>  
-                         <p v-if="passwordErrorText">{{ passwordErrorText }}</p>
-              </div>{{password}}
+                         <span v-if="passwordErrorText">{{ passwordErrorText }}</span>
+              </div>validationpassword
 
+
+<input type="password" v-if="validationpassword()">
+<div v-else>{{pwdmsg}}</div>
+
+                  
            <div class="image-container">   
               <i class="fa-solid fa-circle-question" 
                       @mouseenter="showDescription = true"
                       @mouseleave="showDescription = false"></i>
-                      <!-- <button @click="validatePassword">유효성검사</button> -->
-                    <!-- 비밀번호 정규식 설명창 -->
-                      <div v-if="showDescription" class="validation">
-                        최소 8 자, 하나 이상의 대문자, 하나의 소문자 및 하나의 숫자 정규식</div>
           </div>
 
               <!-- <span class="span_pwd"></span> -->
@@ -80,9 +81,6 @@
             
 
 
-
-
-
   </div>
           
 
@@ -109,24 +107,9 @@
 <br/><br/>
   <div>
     진짜 지도 띄울거임↓↓↓↓↓↓↓↓↓↓
-      <!-- <div class="div_map">
-        <div>주소:&nbsp;
-        <input type="text" v-model="address" placeholder="주소를 입력하세요" />&nbsp;
-        <button class="btn_location" @click="showLocation" >검색</button></div>
-      </div>
-      <div id="map"></div> -->
-       
-    
     </div>
-    
-    
-    </div>
-        
-
+    </div>    
 <div> <button class="btn_join" v-on:click="join">가입하기</button></div></div>
-
-
-
 
 </div>
 
@@ -166,38 +149,19 @@ export default {
         created:function(){
           this.initialImage();
         },
-        
- 
-    // mounted() {
-    //   if (window.kakao && window.kakao.maps) {
-    //     this.loadMap();
-    //   } else {
-    //     this.loadScript();
-    //   }
-    // },
-
-
-    
     methods :{
-        join(){
+      join(){
         const self = this;
         let formdata = new FormData();
+        console.log(formdata)
         formdata.append('storeid',self.storeid);
         formdata.append('storename',self.storename);
         formdata.append('pwd',self.pwd);
         formdata.append('managername',self.managername);
         formdata.append('accounttype',self.accounttype);
-        // formdata.append('x',self.latitutde);
-        // formdata.append('y',self.longtitude);
-
-        //폼양식에서 사용자가 이미지 추가한 부분을 id(simg)로 당겨오는 곳
-        // const file = document.getElementById('f1')
-        // formdata.append('simg', file.files[0]);
-
-        self.$axios.post('http://localhost:8085/store', formdata
-        // ,{ headers: { "Content-Type": "multipart/form-data" } }
-        )
-        .then(function(res){
+        alert(formdata)
+        
+        self.$axios.post('http://localhost:8085/store', formdata).then(function(res){
          if(res.status==200){
             alert(self.storeid+"님, 회원가입이 완료되었습니다. 축하드립니다.")
             if(self.accounttype ==2){
@@ -222,12 +186,11 @@ export default {
         }
     })
     },
+        
         idcheck(){
-          alert('1')
             const self = this;
       self.$axios.get('http://localhost:8085/store/storeid/'+self.storeid).then(function(res){
         if(res.status==200){
-          alert(2)
           if(res.data.dto==null){
             self.idmsg='사용가능한 아이디'
           }else{
@@ -240,16 +203,16 @@ export default {
       }); 
    },
         pwdcheck(){
-          if(this.password == this.pwd_confirm){
-            alert("사용가능한 비밀번호입니다.")
-            this.pwdmsg = '비밀번호 확인완료';
-          }else{
-            alert("비밀번호가 일치하지 않습니다.")
-            this.pwdmsg = '비밀번호가 일치하지 않습니다.';
-            // self.pwd = ''
-            this.pwd_confirm=''
-          }
-     },
+            if(this.password == null){
+              alert('비밀번호를 입력하세요')
+            }else if(this.password !== this.pwd_confirm) {
+              alert("비밀번호가 일치하지 않습니다.")
+                this.pwdmsg = '비밀번호가 일치하지 않습니다.';
+                this.pwd_confirm ='';
+            }else{
+                this.pwdmsg = '사용가능한 비밀번호 입니다.';
+            }             
+          },
       clean_input_id(){
           this.idmsg = ''
         },   previewImage(event) {
@@ -261,22 +224,14 @@ export default {
       };
 
       reader.readAsDataURL(file);
-    }
-       
-        
-       
-
-    ,
+    },
     validationpassword(){
       const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;      
       if (this.password != passwordRegex){
         this.passwordErrorText = "최소 8 자, 하나 이상의 대문자, 하나의 소문자 및 하나의 숫자 정규식";
       }else{
-        this.passwordErrorText = "";
+        this.passwordErrorText = "사용가능한 비밀번호";
       }
-            
-
-
     },
     initialImage(){ 
       // 이미지를 미리 채워넣을 URL
@@ -294,84 +249,17 @@ export default {
         this.passwordvalidation = '비밀번호 형식이 유효하지 않습니다.';
       }
     },
-    }
-    // loadScript() {
-    //     const script = document.createElement("script");
-    //     script.src =
-    //       "//dapi.kakao.com/v2/maps/sdk.js?appkey=90a9e14a8d8d8c4e2a9a92bd4ca90bbb&autoload=false";
-    //     script.onload = () => window.kakao.maps.load(this.loadMap.bind(this));
-  
-    //     document.head.appendChild(script);
-    //   },
-    //   loadMap() {
-    //     const container = document.getElementById("map");
-    //     const options = {
-    //       center: new window.kakao.maps.LatLng(37.541, 126.986),
-    //       level: 3
-    //     };
-  
-    //     this.map = new window.kakao.maps.Map(container, options);
-  
-    //     this.showLocation();
-    //   },
-    //   showLocation() {
-    //     if (this.address === "") {
-    //       alert("주소를 입력하세요.");
-    //       return;
-    //     }
-  
-    //     const encodedAddress = encodeURIComponent(this.address);
-    //     const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=AIzaSyAEMcBVXcTsB5UmbNou29kkZkSPpq4mDJA`;
-  
-    //     axios
-    //       .get(apiUrl)
-    //       .then(response => {
-    //         const result = response.data.results[0];
-    //         if (result) {
-    //           const location = result.geometry.location;
-    //           const latitude = location.lat;
-    //           const longitude = location.lng;
-  
-    //           const position = new window.kakao.maps.LatLng(latitude, longitude);
-  
-    //           if (this.marker) {
-    //             this.marker.setMap(null);
-    //           }
-  
-    //           this.map.setCenter(position);
-    //           this.map.setLevel(3);
-  
-    //           // Custom marker image
-    //           const markerImage = new window.kakao.maps.MarkerImage(
-    //             // "../../../assets/1.png",
-    //           //이미지 경로를 url 설정하는 것 말고 이미지.png 자체로 등록할 수 없나..? 후...
-    //           "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT-lJDJem-WwpIuCvdiHHHtx8bC1ub8lmtrsmx5hCMd4v3tM11x45XkwU79KF8qTxP3BqQ&usqp=CAU",// 마커 이미지 URL로 변경
-    //             new window.kakao.maps.Size(50, 50)
-    //           );
-  
-    //           this.marker = new window.kakao.maps.Marker({
-    //             position: position,
-    //             image: markerImage // Custom marker image 설정
-    //           });
-  
-    //           this.marker.setMap(this.map);
-    //         } else {
-    //           alert("주소를 찾을 수 없습니다.");
-    //         }
-    //       })
-    //       .catch(error => {
-    //         console.error("Error:", error);
-    //         alert("주소를 가져오는 도중 오류가 발생했습니다.");
-    //       });
-    //   }
-    // }
-    ,
-    watch: {
-      'password':function(){
-
+    validationPassword() {
+      const passwordRegex = /^(?=.*[A-Za-z])(?=.*\d)(?=.*[@$!%*#?&])[A-Za-z\d@$!%*#?&]{8,}$/;
+      if (!passwordRegex.test(this.password)) {
+        this.passwordErrorText = "비밀번호는 최소 8자 이상이어야 하며, 최소 하나의 대문자, 하나의 소문자, 하나의 숫자, 하나의 특수문자를 포함해야 합니다.";
+      } else {
+        this.passwordErrorText = "";
       }
     }
+  }
 }
+
 </script>
 
 
