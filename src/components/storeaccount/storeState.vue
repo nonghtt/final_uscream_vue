@@ -59,7 +59,10 @@ export default {
       address: "오리역",
       map: null,
       marker: null,
-      storename:''
+      storename:'',
+      markers:[],
+      infowindow:[],
+      markerPositions:[]
     };
   },
   mounted() {
@@ -126,7 +129,7 @@ export default {
             // Custom marker image
             const markerImage = new window.kakao.maps.MarkerImage(
               "https://velog.velcdn.com/images/heesoo_tory/post/41e69776-b413-4f6b-9b4e-c8f2858ad78a/image.png"
-              , // 강아지 모양 이미지 URL로 변경
+              ,
               new window.kakao.maps.Size(50, 50)
             );
 

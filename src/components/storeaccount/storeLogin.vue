@@ -3,10 +3,12 @@
       <!-- <div class="text_login">LOGIN</div> -->
 
 
-      <!-- <div>
-        <img src="../../assets/bckimg.jpg" 
-            style="width:100%; height:100%;"
-            class="background_img"></div> -->
+         
+            <!-- 지도 테스트 -->
+      <li><router-link class="test" to="/location">지도 API</router-link></li>
+     
+
+      
       
       <div id="login_window">
       <div class="brandname">USCREAM</div>
@@ -16,11 +18,6 @@
 
       
          
-
-        
-
-        <!-- <router-link class="logorouter" to="/">
-        <img class="logo" style="width:50px; height:50px;" src="../assets/uscreamlogo.png"></router-link> -->
           
           <div class="div_storeid">
           <input class="input_storeid" type="text" v-model="storeid" required>

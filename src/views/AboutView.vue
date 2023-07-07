@@ -4,6 +4,9 @@
 
 
     <div class="test">
+
+            <!-- 지도 테스트 -->
+      <li><router-link class="test" to="/latitude">지도테스트</router-link></li>
       <li><router-link class="test" to="/location">위도출력</router-link></li>
       <li><router-link class="test" to="/latitude">주소입력</router-link></li>
       <li><router-link class="test" to="/marker">합친거</router-link></li>
