@@ -16,7 +16,7 @@
     <nav v-if="loginId != null" class="navbar navbar-expand-lg bg-light shadow">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
-                <router-link to="/">
+                <router-link to="/about">
                     <img class="logo" src="../../assets/uscreamlogo.png">
                 </router-link>
             </a>

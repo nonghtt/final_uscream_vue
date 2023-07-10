@@ -29,6 +29,8 @@
     </div>
 </template>
 <script>
+import router from '@/router';
+
 export default {
     name: "ProductOrder",
     data() {
@@ -95,6 +97,7 @@ export default {
             }})
             .then(function(res){
                 alert(res.data.ordercnt+"개의 상품이 발주신청 되었습니다.")
+                router.push('OrderList')
         })
     }
 }
