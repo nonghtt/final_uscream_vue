@@ -19,11 +19,11 @@
             </tr>
             <tr>
                 <td>보낸 사람</td>
-                <td><input type="text" class="enter" v-model="dto.sender.storeid" readonly></td>
+                <td><input type="text" class="enter" v-model="dto.sender.managername" readonly></td>
             </tr>
             <tr>
                 <td>받는 사람</td>
-                <td><input type="text" class="enter" v-model="dto.receiver.storeid" readonly></td>
+                <td><input type="text" class="enter" v-model="dto.receiver.managername" readonly></td>
             </tr>
             <tr v-if="dto.msgfile">
                 <td>첨부 파일</td>

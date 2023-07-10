@@ -13,14 +13,19 @@
             <input type="button" class="but f btncolor" value="작성하기" v-on:click="addmsg">
             <input type="button" class="but e btncolor" value="임시보관" v-on:click="tempmsg">
         </div>
-        <tabel>
+        <table>
             <tr>
                 <td>보내는 사람</td>
                 <td><input type="text" class="enter" v-model="sender" readonly></td>
             </tr>
             <tr>
                 <td>받는 사람</td>
-                <td><input type="text" class="enter" v-model="receiver"></td>
+                <input type="text" class="enter" v-model="receiver" @blur="searchStoreId">
+                <!-- <div v-if="searchResults.length > 0" class="search-results">
+                    <span v-for="result in searchResults" :key="result.storeid" @click="selectStoreId(result.storeid)">
+                        {{ result.storeid }}
+                    </span>
+                </div> -->
             </tr>
             <tr>
                 <td>제목</td>
@@ -33,9 +38,8 @@
             <tr>
                 <td colspan="2"><textarea rows="20" cols="30" v-model="content"></textarea></td>
             </tr>
-        </tabel>
+        </table>
     </div>
-
 </template>
     
 <script>
@@ -46,7 +50,7 @@ export default {
     data() {
         return {
             countall: 0,
-            sender:'',
+            sender: '',
             id: '',
             receiver: '',
             title: '',
@@ -55,7 +59,8 @@ export default {
             array: [],
             alertname: [],
             query: '',
-         suggestions: [],
+            suggestions: [],
+            searchResults: []
         }
     },
     created: function () {
@@ -65,69 +70,111 @@ export default {
             .then(function (res) {
                 self.countall = res.data.countAllByTempMsg;
             })
-        self.$axios.get("http://localhost:8085/msg/search/"+ id)
-        .then(function(res){
-            self.sender = res.data.dto.managername;
-        })  
-        },  
-    methods: {  
-        fileUpload() {  
-            this.file = this.$refs.fileref.files[0];    
-        },  
-        async addmsg() {    
-            const str_receiver = this.receiver.replace(/\s/g, '');  // 매니저 이름이 들어간다.
-            this.array = str_receiver.split(",")                    // 김희수,원유경,양승혁
-            this.alertname = [];                                    // 알림 이름 배열 초기화
-            const name = [];                                        // 이름  배열 초기화
-            const self = this;                              
-            for (var i = 0; i < this.array.length; i++) {           
-                
+        self.$axios.get("http://localhost:8085/msg/search/" + id)
+            .then(function (res) {
+                self.sender = res.data.dto.managername;
+            })
+    },
+    methods: {
+        fileUpload() {
+            this.file = this.$refs.fileref.files[0];
+        },
+       async searchStoreId() {
+            const self = this;
+            const str_receiver = self.receiver.replace(/\s/g, '');
+            self.array = str_receiver.split(",")                 //array에는 manager 이름이 갯수만큼있다.   
+            self.searchResults=[];                               //storeid를 담을 배열변수
+            
+        
+                for(var i=0;i<self.array.length;i++){
+
+                   await self.$axios.get("http://localhost:8085/store/manager/" + self.array[i], { params: { name: self.array[i]} })
+                        .then(res => {
+                           
+                            self.searchResults[i] = res.data; 
+
+                            if(res.data=='전송오류'){
+                                self.searchResults[i] = self.array[i]; 
+                            }
+                            
+                        })
+                        .catch(error => {
+                            console.error('검색 중 오류 발생:', error);
+                        });
+                } 
+
+        },
+        async addmsg() {
+            const self = this;
+            this.alertname = [];                                    
+            const name = [];                                                  
+            
+            
+            for (var i = 0; i < self.searchResults.length; i++) {
+
                 let form = new FormData();
-                form.append('sender', sessionStorage.getItem("loginId"));                  
-                form.append('receiver', self.array[i]);             // 김희수와 원유경 양승혁이 들어온다(managername),받는사람에는 storeid가 필요
-                form.append('title', self.title);                   // 타이틀 그대로
-                form.append('content', self.content);               // 내용 그대로
+                form.append('sender', sessionStorage.getItem("loginId"));
+                form.append('receiver', self.searchResults[i]);           
+                form.append('title', self.title);                  
+                form.append('content', self.content);              
                 if (self.file) {
                     form.append('mfile', self.file);
                 }
                 await self.$axios.post("http://localhost:8085/msg", form, { headers: { "Content-Type": "multipart/form-data" } })
-                name[i] = self.array[i];
+                name[i] = self.searchResults[i];
             }
 
             for (var j = 0; j < name.length; j++) {
-                const res = await self.$axios.get("http://localhost:8085/msg/search/" + name[j])
+                const res = await self.$axios.get("http://localhost:8085/msg/search/" + name[j])    
+            
                 let dtoo = res.data.dto;
                 if (dtoo == null) {
                     self.alertname.push(name[j]);
                 }
             }
-            if(self.alertname !=''){
+            if (self.alertname !='') {
 
-                alert(self.alertname + " 없는 사용자");
+                alert("["+self.alertname+"]"+ "  없는 사용자입니다.");  
             }
             self.$router.push({ name: 'SendMsg' });
         },
+
+
+
+
         tempmsg() {
             const str_receiver = this.receiver.replace(/\s/g, '');
             this.array = str_receiver.split(",")
+            const self = this;
+            let sender = sessionStorage.getItem("loginId");
 
+            alert("receiver" + str_receiver)
             for (let i = 0; i < this.array.length; i++) {
 
                 let form = new FormData();
-                form.append('sender', this.sender);
-                form.append('receiver', this.array[i]);
-                form.append('title', this.title);
-                form.append('content', this.content);
-                if (this.file) {
-                    form.append('mfile', this.file);
+                form.append('sender', sender);
+                form.append('receiver', self.array[i]);
+                form.append('title', self.title);
+                form.append('content', self.content);
+                if (self.file) {
+                    form.append('mfile', self.file);
                 }
-                const self = this;
+
                 self.$axios.post("http://localhost:8085/msg/temp", form, { headers: { "Content-Type": "multipart/form-data" } })
+
             }
-            this.$router.push({ name: 'TempMsg' });
+
+
+            self.$router.push({ name: 'ReceiveMsg' });
 
         },
-    
+
+        // selectStoreId(storeid) {
+        //     const self = this;
+        //     self.receiver = storeid;
+        //     self.searchResults = [];
+        // }
+
     }
 }
 </script>
@@ -137,7 +184,7 @@ export default {
 <style scoped>
 .sidebar_container {
     display: inline-block;
-    width: 300px;
+    width: 220px;
     text-align: left;
     border-right: 1px solid black;
     background-color: whitesmoke;
@@ -215,29 +262,34 @@ textarea {
     width: 100%;
 }
 
-.btncolor{
-    color:#fefefe;
+.btncolor {
+    color: #fefefe;
     background-color: #03c75a;
-    font-weight: 550 ;
-    padding : 5px 10px;
-    width : 100px;
+    font-weight: 550;
+    padding: 5px 10px;
+    width: 100px;
 }
+
 .but {
-    border:none;
+    border: none;
     border-right: 2px solid rgba(0, 49, 9, 0.108);
 }
 
-.f{
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px; 
+.f {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 
-.e{
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px; 
+.e {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
 
-
-
+.search-results {
+    position: absolute;
+    background-color: white;
+    border: 1px solid #ccc;
+    padding: 5px;
+}
 </style>
     
