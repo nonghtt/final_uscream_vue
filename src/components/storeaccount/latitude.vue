@@ -3,8 +3,7 @@
     <div>
 
       <input class="inputsearch" type="text" v-model="address" placeholder="주소를 입력하세요" />
-      <i class="fa-solid fa-magnifying-glass fa-beat-fade fa-2xl" id="icon" @click="showLocation"></i>
-    
+      <i class="fa-solid fa-magnifying-glass fa-2xl" id="icon" @click="showLocation"></i>
     </div>
     <div id="map"></div>
     <div>
@@ -37,6 +36,7 @@
     position:relative;
     outline: none;
     border:solid;
+    border-color: #8eb443;
 
 }
 #icon{
@@ -44,8 +44,8 @@
   height:100px;
   z-index:5;
   position:absolute;
-  top:455px;
-  left:700px;
+  top:108px;
+  left:672px;
   border:none;
   z-index:100;
 }
@@ -64,7 +64,8 @@ export default {
       msg:'',
       latitude:0, //위도(x)
       longitude:0, //경도(y)
-      position:[]
+      position:[],
+      markerimg:require("../../assets/marker2.png")
     };
   },
   mounted() {
@@ -132,7 +133,8 @@ export default {
 
             // Custom marker image
             const markerImage = new window.kakao.maps.MarkerImage(
-              "https://media.istockphoto.com/id/1268251949/ko/%EB%B2%A1%ED%84%B0/%ED%94%8C%EB%9E%AB-%EC%95%A0%EC%99%84-%EB%8F%99%EB%AC%BC-gps-%EB%A1%9C%EA%B3%A0-%EB%94%94%EC%9E%90%EC%9D%B8-%EA%B0%9C-%EB%A7%B5-%EB%A7%88%EC%BB%A4-%EB%B2%A1%ED%84%B0-%EB%8F%99%EB%AC%BC-%EC%82%B0%EC%B1%85%EC%9D%80-%EC%9C%84%EC%B9%98-%EC%9C%84%EC%B9%98%EC%97%90-%EC%A3%BC%EC%9D%98%ED%95%A9%EB%8B%88%EB%8B%A4-%EC%95%A0%EC%99%84-%EB%8F%99%EB%AC%BC-%EC%9B%B9-%EC%9D%91%EC%9A%A9-%ED%94%84%EB%A1%9C%EA%B7%B8%EB%9E%A8%EC%97%90-%EB%8C%80%ED%95%9C-%EB%84%A4%EB%B9%84%EA%B2%8C%EC%9D%B4%EC%85%98-%EA%B8%B0%ED%98%B8-%EA%B7%80%EC%97%AC%EC%9A%B4-%ED%96%89%EB%B3%B5-%EA%B0%95%EC%95%84%EC%A7%80.jpg?s=612x612&w=0&k=20&c=hBf2iFyW03qcuBKd_WoD8g96ZA6sk1dwHk3SMuZoIQg=", // 강아지 모양 이미지 URL로 변경
+              this.markerimg
+              , // 강아지 모양 이미지 URL로 변경
               new window.kakao.maps.Size(50, 50)
             );
 

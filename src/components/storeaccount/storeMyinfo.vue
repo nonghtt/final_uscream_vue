@@ -109,8 +109,8 @@ name:"StoreEdit",
             // myinfo:require("'http://localhost:8085/store/img/store/'+storeid"),
             x:0,
             y:0,
-            url:'http://localhost:8085/store/img/storeid',
-            dto:{}
+            url:'http://localhost:8085/store/img/storeid'
+            // dto:{}
          }
      },
      created:function(){    //컴포넌트 실행될 때 한번 실행
@@ -130,7 +130,6 @@ name:"StoreEdit",
                         self.x =dto.y
                         self.simg=dto.simg
                         self.url = 'http://localhost:8085/store/img/'+dto.storeid
-                        alert(self.url)
                         // alert(self.storeid)
                         if(self.accounttype == 1){
                             self.accounttype = '본사';
@@ -210,14 +209,14 @@ font-weight:bold;
 }
 
 .brandname{
-   color: #eb34a4;
+   color: #8eb443;
    font-size:30px;
    font-weight: bold;
    vertical-align: center;
   }
 
 .title_myinfo{
-  background-color: #eb34a4;
+  background-color: #8eb443;
   color:white;
 }
 
