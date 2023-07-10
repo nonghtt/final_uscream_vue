@@ -50,6 +50,12 @@ import VocWriter from '@/components/voc/VocWriter.vue';
 import HeadVoc from '@/components/voc/HeadVoc.vue';
 import StoreVoc from '@/components/voc/StoreVoc.vue';
 
+// 인덱스
+import IndexNetsales from '@/components/index/IndexNetsales.vue';
+import IndexNotice from '@/components/index/IndexNotice.vue';
+import IndexOrder from '@/components/index/IndexOrder.vue';
+import IndexVoc from '@/components/index/IndexVoc.vue';
+
 const routes = [
  
   {
@@ -253,6 +259,27 @@ const routes = [
     path : '/scheduleaddmodal',
     name : 'ScheduleAddModal',
     component : ScheduleAddModal
+  },
+  // 인덱스
+  {
+    path : '/indexnetsales',
+    name : 'IndexNetsales',
+    component : IndexNetsales
+  },
+  {
+    path : '/indexnotice',
+    name : 'IndexNotice',
+    component : IndexNotice
+  },
+  {
+    path : '/indexorder',
+    name : 'IndexOrder',
+    component : IndexOrder
+  },
+  {
+    path : '/indexvoc',
+    name : 'IndexVoc',
+    component : IndexVoc
   }
   
 

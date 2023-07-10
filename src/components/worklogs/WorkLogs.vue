@@ -45,7 +45,7 @@
                     </tr>
                 </thead>
                 <tbody>
-                    <tr v-for="wl in list" :key="wl.whitenum">
+                    <tr v-for="wl in paginatedData" :key="wl.whitenum">
                         <td scope="row">{{ wl.emp.empname }}</td>
                         <td>{{ wl.emp.grade.salary.toLocaleString() }}</td>
                         <td>{{ wl.wdate }}</td>
@@ -59,6 +59,15 @@
                     </tr>
                 </tbody>
             </table>
+
+            <div class="pagination">
+                <button :disabled="currentPage === 1" @click="prevPage">이전</button>
+                <div v-for="pageNumber in totalPages" :key="pageNumber">
+                    <button :class="{ active: currentPage === pageNumber }" @click="goToPage(pageNumber)">{{ pageNumber
+                    }}</button>
+                </div>
+                <button :disabled="currentPage === totalPages" @click="nextPage">다음</button>
+            </div>
         </div>
     </div>
 </template>
@@ -78,8 +87,10 @@ export default {
             list: [],
             empList: [],
             selectedEmp: 0,
-          //  lookwltable : '지각만 보기',
+            //  lookwltable : '지각만 보기',
             choiceNum: 0,
+            pageSize: 12,
+            currentPage: 1,
             calendarOptions: {
                 plugins: [dayGridPlugin, interactionPlugin, momentPlugin],
                 // timeGridPlugin
@@ -132,6 +143,16 @@ export default {
         this.getWorkdLogsAllList();
 
     },
+    computed:{
+        totalPages() {
+            return Math.ceil(this.list.length / this.pageSize);
+        },
+        paginatedData() {
+            const startIndex = (this.currentPage - 1) * this.pageSize;
+            const endIndex = startIndex + this.pageSize;
+            return this.list.slice(startIndex, endIndex);
+        },
+    },
     methods: {
         // 지점별로 근태 관리 리스트 보기 
         getWorkdLogsAllList() {
@@ -160,12 +181,12 @@ export default {
                                 if (item.latetime > 0) {
                                     event.title = event.title + " " + item.latetime + "분";
                                 }
-                                console.log(event.title + " 지각시간은 ? " + item.latetime);
+                               // console.log(event.title + " 지각시간은 ? " + item.latetime);
                                 self.calendarOptions.events.push(event);
                             })
                         } else {
                             console.log("표")
-                             self.list = self.chageTime(list);
+                            self.list = self.chageTime(list);
                         }
 
 
@@ -184,11 +205,11 @@ export default {
                     if (res.status == 200 & res.data.flag == true) {
                         let list = res.data.list
                         //self.list = self.chageTime(list)
-                       // console.log(list)
-                        
+                        // console.log(list)
+
                         if (self.choiceNum === 0) {
                             self.calendarOptions.events = []
-                           // console.log("캘린더ㄹㄹㄹㄹ")
+                            // console.log("캘린더ㄹㄹㄹㄹ")
                             list.forEach(item => {
                                 const event = {
                                     id: item.wnum,
@@ -211,7 +232,7 @@ export default {
                             })
                         } else {
                             //console.log("표")
-                             self.list = self.chageTime(list);
+                            self.list = self.chageTime(list);
                         }
                     } else {
                         console.log("에러 : " + res.status)
@@ -222,7 +243,7 @@ export default {
             const self = this;
             let empNum = self.selectedEmp;
             if (empNum === 0) {
-                
+
                 console.log("전체보기 ㅇㅇㅇㅇㅇㅇㅇㅇㅇ")
                 self.getWorkdLogsAllList();
             } else {
@@ -236,7 +257,7 @@ export default {
             for (let i = 0; i < list.length; i++) {
                 list[i].starttime = list[i].starttime.slice(11, 16)
                 list[i].endtime = list[i].endtime.slice(11, 16)
-               // console.log(list[i].alltime / 60)
+                // console.log(list[i].alltime / 60)
                 list[i].alltime = list[i].alltime / 60
 
             }
@@ -253,7 +274,7 @@ export default {
         lookCalendar() {
             const self = this;
             self.choiceNum = 0
-           // console.log(self.choiceNum)
+            // console.log(self.choiceNum)
 
             let empNum = self.selectedEmp;
             if (empNum === 0) {
@@ -269,7 +290,7 @@ export default {
             const self = this;
             self.choiceNum = 1
             //console.log(self.choiceNum)
-           // console.log("gmdmdmda" + self.selectedEmp)
+            // console.log("gmdmdmda" + self.selectedEmp)
 
             let empNum = self.selectedEmp;
             if (empNum === 0) {
@@ -279,6 +300,16 @@ export default {
                 //console.log("특정멤버로 보기")
                 self.getWorkLogs(empNum);
             }
+        },
+        prevPage() {
+            this.currentPage--;
+        },
+        nextPage() {
+
+            this.currentPage++;
+        },
+        goToPage(pageNumber) {
+            this.currentPage = pageNumber;
         },
         // lookWlLate(){
         //     const self = this;
@@ -336,19 +367,42 @@ h3 {
     border-bottom-right-radius: 10px;
 }
 
-.selectbox{
-    width:210px;
+.selectbox {
+    width: 210px;
     /* margin: 0 auto;  */
 }
 
-#sb{
+#sb {
     justify-content: center;
     display: flex;
-    margin-top:15px;
-    margin-bottom:40px;
+    margin-top: 15px;
+    margin-bottom: 40px;
 }
 
-#fullCalendar{
-    margin-bottom:50px;
+#fullCalendar {
+    margin-bottom: 50px;
+}
+
+.pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+    margin-top: 10px;
+    margin-bottom : 50px;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: #bee96d;
+    color: #fefefe;
+    border: none;
+    border-radius: 5px;
+    font-weight: 550;
+}
+
+.pagination button.active {
+    background-color: #9ec457;
 }
 </style>
