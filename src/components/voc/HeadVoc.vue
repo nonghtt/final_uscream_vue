@@ -21,18 +21,29 @@
                         <div class="underline"></div>
                     </div>
                 </div>
-                <div class="mb-5">
+                <div class="mb-3">
                     <label for="content" class="form-label"
                         style="font-size: 16px; font-weight: bold; color: gray;">내용</label>
                     <div class="underline-input">
                         <div ref="editor" class="editor-container"></div>
+                        <button @click="saveChanges" class="btn btn-warning btn-sm mr-1">저장</button>
+                        <button @click="deleteBoard" class="btn btn-danger btn-sm">삭제</button>
+                        <button @click="movePage('/VocList')" class="btn btn-secondary btn-sm">목록</button>
                     </div>
                 </div>
-                <hr>
-                <div class="d-flex justify-content-end">
-                    <button @click="saveChanges" class="btn btn-warning btn-sm mr-1">저장</button>
-                    <button @click="deleteBoard" class="btn btn-danger btn-sm">삭제</button>
-                    <button @click="movePage('/VocList')" class="btn btn-secondary btn-sm">목록</button>
+            </div>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="mb-4">
+                    <label for="title" class="form-label" style="font-size: 16px; font-weight: bold; color: gray;">지점댓글
+                        뿅</label>
+                    <div v-for="comment in storeVocComments" :key="comment.storeid">
+                            <p>내용: {{ comment.storecomment }}</p>
+                            <button class="btn btn-primary" @click="confirmHQ">본사확인</button>
+                        </div>
+                    <div class="underline-input">
+                    </div>
                 </div>
             </div>
         </div>
@@ -56,6 +67,7 @@ export default {
             accounttype: sessionStorage.getItem('accounttype'),
             storeid: sessionStorage.getItem('loginId'),
             editor: null,
+            storeVocComments : [],
         };
     },
     computed: {
@@ -65,6 +77,7 @@ export default {
     },
     mounted() {
         this.fetchBoardDetail();
+        this.storeComments();
     },
     methods: {
         fetchBoardDetail() {
@@ -85,11 +98,23 @@ export default {
                     console.error(error);
                 });
         },
+        storeComments() {
+            const vocnum = this.$route.query.vocnum;
+            axios
+                .get(`http://localhost:8085/voccomments/schnum/${vocnum}`)
+                .then(response => {
+                    console.log(response.data)
+                    this.storeVocComments = response.data.list
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        },
         createEditor() {
             this.editor = new Editor({
                 el: this.$refs.editor,
                 initialValue: this.content,
-                viewer: !this.canEdit, // Set viewer option based on edit mode
+                viewer: !this.canEdit, 
             });
         },
         deleteBoard() {
@@ -126,7 +151,7 @@ export default {
                 .put(`http://localhost:8085/vocs/edit/${vocnum}`, formData)
                 .then(response => {
                     console.log(response.data);
-                    // 저장 후 목록으로 이동하면서 새로고침되어 데이터가 갱신됨
+                    //저장 후 목록으로 이동하면서 새로고침되어 데이터가 갱신
                     this.$router.push('/VocList').catch(error => {
                         console.error(error);
                     });
@@ -135,6 +160,19 @@ export default {
                     console.error(error);
                 });
         },
+        confirmHQ() {
+            const vocnum = this.$route.query.vocnum;
+            axios
+                .get(`http://localhost:8085/vocs/schid/${vocnum}`)
+                .then(response => {
+                    this.vocnum = response.data.voc.vocnum;
+                    this.content = response.data.voc.content;
+                    this.voccheck = response.data.voc.voccheck;
+                })
+                .catch(error => {
+                    console.error(error);
+                });
+        }
     },
 };
 </script>

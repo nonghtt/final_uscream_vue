@@ -42,11 +42,13 @@
             <!-- 댓글 리스트 출력 -->
             <div v-for="comment in comments" :key="comment.storeid">
                 <p>내용: {{ comment.storecomment }}</p>
-                <button class="btn btn-sm btn-primary" @click="editComment(comment.voccomnum)">
-                수정
+                <div v-if="voccheck==1">본사 확인</div>
+                <div v-else>본사 미확인</div>
+                <button class="btn btn-sm btn-primary" @click="editComment(comment.voccomnum, comment.storecomment)">
+                    수정
                 </button>
                 <button class="btn btn-sm btn-danger" @click="deleteComment(comment.voccomnum)">
-                삭제
+                    삭제
                 </button>
             </div>
             <hr>
@@ -56,7 +58,8 @@
                 <label for="cmtContent" class="form-label">댓글 내용</label>
                 <textarea id="cmtContent" class="form-control" v-model="cmtContent"></textarea>
             </div>
-            <button class="btn btn-secondary" @click="addComment">댓글 저장</button>
+            <button class="btn btn-secondary" @click="addComment" v-if="saveclick">댓글 저장</button>
+            <button class="btn btn-secondary" @click="reeditComment" v-if="editclick">수정완료</button>
         </div>
     </div>
 </template>
@@ -78,9 +81,14 @@ export default {
             accounttype: sessionStorage.getItem('accounttype'),
             storeid: sessionStorage.getItem('loginId'),
             viewerInstance: null,
-            cmtTitle: '', // 댓글 제목
-            cmtContent: '', // 댓글 내용
-            comments: [] // 댓글 리스트
+            cmtTitle: '', //댓글 제목
+            cmtContent: '', //댓글 내용
+            comments: [], //댓글 리스트
+            editnum: 0,
+            editclick: false,
+            saveclick: true,
+            isConfirmed: false, //본사확인 여부
+            voccheck: 0,
         };
     },
     computed: {
@@ -95,7 +103,6 @@ export default {
             this.canEdit = false;
         }
         this.vocDetail();
-        console.log("mounted:" + this.storeid)
     },
     methods: {
         detail(item) {
@@ -124,6 +131,8 @@ export default {
                     this.title = response.data.voc.title;
                     this.category = response.data.voc.category;
                     this.content = response.data.voc.content;
+                    this.voccheck = response.data.voc.voccheck;
+
                     this.viewerInstance = new Viewer({
                         el: this.$refs.viewer,
                         initialValue: this.content,
@@ -142,23 +151,23 @@ export default {
                 alert("댓글 내용을 입력하세요.");
                 return;
             }
-
+            this.comments.push({
+                storeid: this.storeid,
+                storecomment: this.cmtContent,
+            });
+            
             const formData = new FormData();
-            console.log("ggg:" + this.storeid)
             formData.append("storecomment", this.cmtContent);
             formData.append("vocnum", this.vocnum);
             formData.append("storeid", this.storeid);
-            console.log(this.storeid);
-            console.log(this.accounttype);
             this.$axios
-                .post('http://localhost:8085/voccomments', formData, {} )
+                .post('http://localhost:8085/voccomments', formData, {})
                 .then(response => {
                     console.log(response.data);
-                    // 저장 후 목록으로 이동하면서 새로고침되어 데이터가 갱신됨
-                    this.vocDetail();
+                    
+                    this.vocDetail(); //저장 후 목록으로 이동하면서 새로고침되어 데이터가 갱신
 
-                    // 댓글 입력창 초기화
-                    this.cmtContent = '';
+                    this.cmtContent = ''; //댓글 입력창 초기화
 
                 })
                 .catch(error => {
@@ -177,50 +186,56 @@ export default {
                     console.error(error);
                 });
         },
-        editComment(comment) {
-            // 선택한 댓글의 내용을 입력 필드에 표시하여 수정할 수 있도록 설정합니다.
-            this.cmtContent = comment.storecomment;
+        editComment(comnum, comment) {
+            //선택한 댓글의 내용을 입력 필드에 표시하여 수정할 수 있도록 설정
+            this.editclick = true;
+            this.saveclick = false;
+            this.cmtContent = comment;
+            this.editnum = comnum;
 
-            // 댓글 입력창으로 자동 스크롤됩니다.
+            //댓글 입력창으로 자동 스크롤
             const commentInput = document.getElementById('cmtContent');
             if (commentInput) {
                 commentInput.scrollIntoView({ behavior: 'smooth', block: 'start' });
             }
-
-            // 저장 버튼 클릭 시 수정된 내용을 서버에 전송합니다.
+        },
+        reeditComment() {
+            //수정된 내용을 서버에 전송
             const formData = new FormData();
-            formData.append("voccomnum", comment.voccomnum);
-            formData.append("storecomment", this.cmtContent);
+            formData.append('voccomnum', this.editnum);
+            formData.append('storecomment', this.cmtContent);
 
             axios
-                .put(`http://localhost:8085/voccomments/edit/${comment}`, formData)
+                .put(`http://localhost:8085/voccomments/edit/${this.editnum}`, formData)
                 .then(response => {
-                    if (response.data.flag) { // 수정 성공 여부를 확인합니다.
+                    if (response.status == 200) { //수정 성공 여부를 확인
                         this.$store.commit('SET_SNACKBAR', {
                             show: true,
                             msg: '수정 완료',
                             color: 'success',
+
                         });
-                        // 댓글 목록을 갱신합니다.
                         this.vocDetail();
+                        this.cmtContent = ''; //댓글 목록을 갱신
                     }
+                    this.saveclick = true;
+                    this.editclick = false;
                 })
                 .catch(error => {
                     console.error(`댓글 수정에 실패했습니다. 오류: ${error.message}`);
                 });
         },
-
         deleteComment(comment) {
             axios
                 .delete(`http://localhost:8085/voccomments/del/${comment}`)
                 .then(response => {
-                    if (response.data.flag) { // 삭제 성공 여부를 확인합니다.
+                    if (response.data.flag) { //삭제 성공 여부를 확인
                         this.$store.commit('SET_SNACKBAR', {
                             show: true,
                             msg: '삭제 완료',
                             color: 'error',
                         });
-                        // 댓글 목록을 갱신합니다.
+                        //댓글 목록을 갱신
                         this.vocDetail();
                     }
                 })
@@ -228,7 +243,6 @@ export default {
                     console.error(`댓글 삭제에 실패했습니다. 오류: ${error.message}`);
                 });
         },
-
     },
 };
 </script>
