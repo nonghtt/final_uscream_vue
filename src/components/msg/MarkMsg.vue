@@ -1,5 +1,6 @@
 <template>
-    <div class="sidebar_container">
+    <div class="full_container">
+    <div class="sidebar_container shadow">
         <SideBar />
     </div>
     <div class="container">
@@ -21,7 +22,7 @@
             </div>
             <div class="searchbar">
                 <form>
-                    <input type="text" name="searchbar" placeholder="메일 검색" autocomplete="off">
+                    <input type="text" class="textbar" name="searchbar" placeholder="메일 검색" autocomplete="off">
                     <input type="submit" value="검색">
                 </form>
             </div>
@@ -37,11 +38,14 @@
                     <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum)">
                 </td>
                 <td>{{ msg.sender.managername }}</td>
-                <td v-on:click="detail(msg.msgnum)">{{ msg.title }}</td>
+                <td v-on:click="detail(msg.msgnum)" :class="{ 'bold': msg.readcheck === true }" @mouseover="changeCursor">
+                        <span :class="limited-title">{{ truncateTitle(msg.title, 30) }}</span>
+                    </td>
                 <td>{{ msg.msgdate }}</td>
             </tr>
         </table>
     </div>
+</div>
 </template>
       
 <script>
@@ -61,7 +65,9 @@ export default {
             readimg2: require("../../assets/msgread.png"),
             checkedmsg: [],
             checked: [],
-            num: []
+            num: [],
+            title:'',
+            maxLength:30
         }
     },
     created: function () {
@@ -76,6 +82,12 @@ export default {
     },
     methods: {
 
+        truncateTitle(title, maxLength) {
+                    if (title.length > maxLength) {
+                        return title.substring(0, maxLength) + '...';
+                    }
+                    return title;
+                },
         checklist() {
             this.checkedmsg = [];
             for (let i = 0; i < this.checked.length; i++) {
@@ -135,12 +147,23 @@ export default {
       
  
 <style scoped>
+
+body {
+  font-family: sans-serif;
+  background-color: rgb(255, 255, 254);
+}
+
+
+.full_container{
+    display: flex;
+}
+
 .sidebar_container {
     display: inline-block;
     width: 220px;
     text-align: left;
-    border-right: 1px solid black;
-    background-color: whitesmoke;
+    border-right:  rgb(157, 157, 157);
+    background-color: rgb(255, 255, 254);
     height: 770px;
 }
 
@@ -324,8 +347,9 @@ td:nth-child(4) {
 
 .textbar {
     border-radius: 5px;
-    width: 250px;
+    width: 200px;
     border-color: #EAEAEA;
+    margin-right: 5px;
 }
 
 .textbar:hover {

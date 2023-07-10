@@ -1,5 +1,8 @@
 <template>
-    <div class="sidebar_container">
+    <div class="full_container">
+
+    
+    <div class="sidebar_container shadow">
 
         <SideBar />
     </div>
@@ -40,6 +43,7 @@
             </tr>
         </table>
     </div>
+</div>
 </template>
     
 <script>
@@ -142,31 +146,35 @@ export default {
 
 
 
-        tempmsg() {
-            const str_receiver = this.receiver.replace(/\s/g, '');
-            this.array = str_receiver.split(",")
+        async tempmsg() {
             const self = this;
+            this.alertname = [];                                    
+            const name = [];  
             let sender = sessionStorage.getItem("loginId");
 
-            alert("receiver" + str_receiver)
-            for (let i = 0; i < this.array.length; i++) {
+            for (let i=0;i<self.searchResults.length;i++) {
 
                 let form = new FormData();
                 form.append('sender', sender);
-                form.append('receiver', self.array[i]);
+                form.append('receiver', self.searchResults[i]);
                 form.append('title', self.title);
                 form.append('content', self.content);
                 if (self.file) {
                     form.append('mfile', self.file);
                 }
-
-                self.$axios.post("http://localhost:8085/msg/temp", form, { headers: { "Content-Type": "multipart/form-data" } })
-
+              await self.$axios.post("http://localhost:8085/msg/temp", form, { headers: { "Content-Type": "multipart/form-data" } })
             }
-
-
+            for (var j = 0; j < name.length; j++) {
+                const res = await self.$axios.get("http://localhost:8085/msg/search/" + name[j])    
+                let dtoo = res.data.dto;
+                if (dtoo == null) {
+                    self.alertname.push(name[j]);
+                }
+            }
+            if (self.alertname !='') {
+                alert("["+self.alertname+"]"+ "  없는 사용자입니다.");  
+            }
             self.$router.push({ name: 'ReceiveMsg' });
-
         },
 
         // selectStoreId(storeid) {
@@ -182,12 +190,20 @@ export default {
     
     
 <style scoped>
+body {
+  font-family:  'Noto Sans KR', sans-serif;
+  background-color: rgb(255, 255, 254);
+}
+
+.full_container{
+    display: flex;
+}
 .sidebar_container {
     display: inline-block;
     width: 220px;
     text-align: left;
-    border-right: 1px solid black;
-    background-color: whitesmoke;
+    border-right:  rgb(157, 157, 157);
+    background-color: rgb(255, 255, 254);
     height: 770px;
 }
 

@@ -1,5 +1,8 @@
 <template>
-    <div class="sidebar_container">
+    <div class="full_container">
+
+    
+    <div class="sidebar_container shadow">
 
         <SideBar />
     </div>
@@ -43,8 +46,8 @@
                         <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum)">
                     </td>
                     <td :class="{ 'bold': msg.readcheck === true }">{{ msg.receiver.managername }}</td>
-                    <td v-on:click="detail(msg.msgnum)" :class="{ 'bold': msg.readcheck === true }" @mouseover="changeCursor">
-                        <span :class="['limited-title']">{{ truncateTitle(msg.title, 30) }}</span>
+                    <td v-on:click="addtempmsg(msg.msgnum)" :class="{ 'bold': msg.readcheck === true }" @mouseover="changeCursor">
+                        <span :class="limited-title">{{ truncateTitle(msg.title, 30) }}</span>
                     </td>
                     <td :class="{ 'bold': msg.readcheck === true }">{{ msg.msgdate }}</td>
                 </tr>
@@ -59,6 +62,7 @@
             <button :disabled="currentPage === totalPages" @click="nextPage">다음</button>
         </div>
     </div>
+</div>
 </template>
     
 <script>
@@ -187,11 +191,11 @@ export default {
                     self.list = res.data.msglist;
                 })
         },
-        detail(num) {
-            const self = this
-            self.$axios.patch("http://localhost:8085/msg/read/detail/check/" + num)
-            self.$router.push({ name: 'DetailMsg', query: { 'num': num } })
-        },
+        // detail(num) {
+        //     const self = this
+        //     self.$axios.patch("http://localhost:8085/msg/read/detail/check/" + num)
+        //     self.$router.push({ name: 'DetailMsg', query: { 'num': num } })
+        // },
 
 
 
@@ -217,12 +221,23 @@ export default {
     
   
 <style scoped>
+
+body {
+  font-family:  'Noto Sans KR', sans-serif;
+  background-color: rgb(255, 255, 254);
+}
+
+.full_container{
+    display: flex;
+}
+
+
 .sidebar_container {
     display: inline-block;
     width: 220px;
     text-align: left;
-    border-right: 1px solid black;
-    background-color: whitesmoke;
+    border-right:  rgb(157, 157, 157);
+    background-color: rgb(255, 255, 254);
     height: 770px;
 }
 
@@ -408,8 +423,9 @@ td:nth-child(4) {
 
 .textbar {
     border-radius: 5px;
-    width: 250px;
+    width: 200px;
     border-color: #EAEAEA;
+    margin-right: 5px;
 }
 
 .textbar:hover {

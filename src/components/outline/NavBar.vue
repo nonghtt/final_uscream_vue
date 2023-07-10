@@ -1,6 +1,6 @@
 네브바 
 <template>
-    <nav v-if="loginId == null" class="navbar navbar-expand-lg bg-light">
+    <nav v-if="loginId == null" class="navbar navbar-expand-lg bg-light shadow">
         <div class="container-fluid">
             <div></div>
             <div class="justify-content-center">
@@ -13,7 +13,7 @@
             <div></div>
         </div>
     </nav>
-    <nav v-if="loginId != null" class="navbar navbar-expand-lg bg-light">
+    <nav v-if="loginId != null" class="navbar navbar-expand-lg bg-light shadow">
         <div class="container-fluid">
             <a class="navbar-brand" href="#">
                 <router-link to="/">
