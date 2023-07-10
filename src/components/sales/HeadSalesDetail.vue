@@ -81,6 +81,8 @@ export default {
                   const year = item.YEAR;
                   const storeMonthlySales = item.TOTALPRICE;
                   self['storeMonthlySales' + year + month] = storeMonthlySales;
+                } else {
+                  self['storeMonthlySales' + year + month] = 0;
                 }
               }
               const myChart = echarts.init(document.getElementById('storeMonthlychart'));
@@ -213,6 +215,8 @@ export default {
                     const year = item.YEAR;
                     const storeMonthlySales = item.TOTALPRICE;
                     self['storeMonthlySales' + year + month] = storeMonthlySales;
+                  } else {
+                    self['storeMonthlySales' + year + month] = 0;
                   }
                 }
                 const myChart = echarts.init(document.getElementById('storeMonthlychart'));
@@ -279,8 +283,7 @@ export default {
                     type: 'line',
                     data: [
                       self['storeMonthlySales20231'], self['storeMonthlySales20232'], self['storeMonthlySales20233'], self['storeMonthlySales20234'],
-                      self['storeMonthlySales20235'], self['storeMonthlySales20236'], self['storeMonthlySales20237'], self['storeMonthlySales20238'],
-                      self['storeMonthlySales20239'], self['storeMonthlySales202310'], self['storeMonthlySales202311'], self['storeMonthlySales202312']
+                      self['storeMonthlySales20235'], self['storeMonthlySales20236'], self['storeMonthlySales20237'],
                     ]
                   }
                 ]
