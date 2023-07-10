@@ -1,6 +1,17 @@
 <template>
   <div id="container">
-
+    <div class="box" id="box1">
+      <IndexNotice />
+    </div>
+    <div class="box" id="box2">
+      <IndexOrder />
+    </div>
+    <div class="box" id="box3">
+      <IndexNetsales />
+    </div>
+    <div class="box" id="box4">
+      <IndexVoc />
+    </div>
 
   </div>
 </template>
