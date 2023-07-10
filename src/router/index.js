@@ -5,14 +5,16 @@ import ProductOrder from '../components/product/ProductOrder.vue'
 import OrderList from '../components/product/OrderList.vue'
 import storeJoin from '@/components/storeaccount/storeJoin.vue'
 import storeMyinfo from '@/components/storeaccount/storeMyinfo.vue'
-import storeState from '@/components/storeaccount/storeState.vue'
+import storeList from '@/components/storeaccount/storeList.vue'
 import storeLogin from '@/components/storeaccount/storeLogin.vue'
+import storeState from '@/components/storeaccount/storeState.vue'
+import storeManagement from '@/components/storeaccount/storeManagement.vue'
 
 import StoreInventory from '@/components/product/StoreInventory.vue'
 
 import latitude from '@/components/storeaccount/latitude.vue'
 import location from '@/components/storeaccount/location.vue'
-import marker from '@/components/storeaccount/marker.vue'
+// import marker from '@/components/storeaccount/marker.vue'
 
 
 
@@ -94,6 +96,11 @@ const routes = [
     component: storeState
   },
   {
+    path: '/storeList',
+    name: 'storeList',
+    component: storeList
+  },
+  {
     path: '/latitude',
     name: 'latitude',
     component: latitude
@@ -104,9 +111,9 @@ const routes = [
     component: location
   },
   {
-    path: '/marker',
-    name: 'marker',
-    component: marker
+    path: '/storeManagement',
+    name: 'storeManagement',
+    component: storeManagement
   },
   {
     path: '/',

@@ -10,11 +10,15 @@
         <p>위도: {{ coordinates.latitude }}</p>
         <p>경도: {{ coordinates.longitude }}</p>
       </div>
+      <div>
+        {{ msg }}
+      </div>
     </div>
   </template>
-  
+
   <script>
-  import axios from "axios";
+ 
+import axios from "axios";
   
   export default {
     name: "AddressGeocoding",
@@ -22,13 +26,14 @@
       return {
         address: "",
         coordinates: null,
-        x:0,
-        y:0,
-        storeid:'',
-        storename:'',
-        pwd:'',
-        managername:'',
-        accounttype: 0
+        x: 37.3389,
+        y: 127.1092,
+        storeid:'test',
+        storename:'test',
+        pwd:'test',
+        managername:'test',
+        accounttype: 1,
+        msg:''
       };
     },
     methods: {
@@ -44,32 +49,40 @@
         const apiUrl = `https://maps.googleapis.com/maps/api/geocode/json?address=${encodedAddress}&key=AIzaSyAEMcBVXcTsB5UmbNou29kkZkSPpq4mDJA`;
   
         axios.get(apiUrl).then((response) => {
+
+          const self = this;
             const result = response.data.results[0];
+            // console.log(result)
+            console.log(result.geometry.location.lat)
+            console.log(result.geometry.location.lng)
+
+            // console.log(result.address_components)
+
+            // 데이터가 있다면
             if (result) {
           
           
               const result = response.data.results[0];
 
-
-
-            if (result) {
-              const location1 = result.geometry.location;
-              this.coordinates = {
-                latitude: location1.lat,
-                longitude: location1.lng,
-              }
-            }
-              alert(1)
-              const location = result.geometry.location;
+              // 화면에 띄워주는 조건문
+            // if (result) {
+            //   const location1 = result.geometry.location;
+            //   this.coordinates = {
+            //     latitude: location1.lat,
+            //     longitude: location1.lng
+            //                   }
+              
+            // }
+            
+      
              
+// alert(1)
 
-                  this.x = location.x
-                  this.y = location.y
+                  self.x = result.geometry.location.lat
+                  self.y = result.geometry.location.lng
+               
 
                   let formdata = new FormData;
-
-                  const self = this;
-
                   formdata.append('storeid',self.storeid);
                   formdata.append('storename',self.storename);
                   formdata.append('pwd',self.pwd);
@@ -77,21 +90,36 @@
                   formdata.append('accounttype',self.accounttype);
                   formdata.append('x',self.x);
                   formdata.append('y',self.y);
-                  
+                
+                  alert(self.x);
+                  alert(self.y);
+                
+                  // alert(2)
 
               self.$axios.post('http://localhost:8085/store', formdata).then(function(res){
-               this.x =res.data.dto.x
-                this.y = res.data.dto.y
+                alert(3)
+                self.x =res.data.dto.x
+                self.y = res.data.dto.y
+                if (self.x != null && self.y != null){
+                  self.msg = '주소가 완료되었습니다.';
+                }
+                alert(4)
               })
          
-            } else {
-              alert("주소를 찾을 수 없습니다.");
-            }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            alert("주소를 가져오는 도중 오류가 발생했습니다.");
-          });
+                  } 
+                  
+                  
+                  
+                  
+                  else {
+                    alert("주소를 찾을 수 없습니다.");
+                  }
+
+                })
+                .catch((error) => {
+                  console.error("Error:", error);
+                  alert("주소를 가져오는 도중 오류가 발생했습니다.");
+                });
       },
     },
   };

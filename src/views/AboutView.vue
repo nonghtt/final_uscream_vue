@@ -1,36 +1,6 @@
 <template>
   <div id="container">
 
-    <!-- 지도 테스트 -->
-    <!--
-    <div class="test">
-      <li><router-link class="test" to="/latitude">지도테스트</router-link></li>
-      <li><router-link class="test" to="/location">위도출력</router-link></li>
-      <li><router-link class="test" to="/latitude">주소입력</router-link></li>
-      <li><router-link class="test" to="/marker">합친거</router-link></li>
-      <li><router-link class="test" to="/testComponent">아웃라인</router-link></li>
-    </div>
-
-    <div>
-    <label class="custom-file-upload">
-      <input type="file" @change="previewImage" />
-      <span>파일 선택</span>
-    </label>
-    <img :src="previewImageUrl" v-if="previewImageUrl" />
-    </div>
-    -->
-    <div class="box" id="box1">
-      <IndexNotice />
-    </div>
-    <div class="box" id="box2">
-      <IndexOrder />
-    </div>
-    <div class="box" id="box3">
-      <IndexNetsales />
-    </div>
-    <div class="box" id="box4">
-      <IndexVoc />
-    </div>
 
   </div>
 </template>
