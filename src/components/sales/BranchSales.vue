@@ -1,70 +1,79 @@
-<template> 
-  <div class="BranchSalesContent" >
-    <div id="netsalesTitle">
-      <br />
-      <h3>매출 조회</h3>
-      <br />
-    </div>
-    <div id="branchSalesContent"  style="display: flex;">
-        <!-- 일별 매출 표시 캘린더 -->
-        <div id="dailySales" style="width:700px"></div>
-        <div style="display: flex; flex-direction: column; justify-content: space-between;">
+<template>
+  <div id="branchSalesTitle" style="text-align:left">매출 조회</div>
 
-          <!-- 순매출 분석 차트 -->
-          <div id="netsalesAnalysis" style="border: 1px solid lightgray; width:400px; height:300px; padding:1%">
-            <div style="display:flex; justify-content:space-between; align-items: center">
-              <div style="font-weight:bold">순매출 분석</div>
-              <div>
-                <select v-model="selectYear">
-                  <option v-for="year in years" :key="year" :value="year">{{ year }}년</option>
-                </select>
-                <select v-model="selectMonth">
-                  <option v-for="month in months" :key="month" :value="month">{{ month }}월</option>
-                </select>
-                <button @click="renderChart">조회</button>
-            </div>
-            </div>
-            <br />
-            <h6 style="text-align: center; font-weight:bold">총매출: {{ monthSales }} 원</h6>
-            <div id="donutchart" style="width: 450px; height: 280px"></div>
+  <div id="branchSalesContent">
+
+    <!-- 일별 매출 표시 캘린더 -->
+    <div id="dailySales" style="width:750px"></div>
+
+    <div style="display:flex; flex-direction:column; justify-content:space-between; padding-left:20px">
+      <!-- 순매출 분석 차트 -->
+      <div id="netsalesChart"
+        style="border: 1px solid lightgray; width:500px; height:320px; padding:1%; position: relative">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:10px">
+          <div style="font-size:16px; font-weight:bold">순매출 조회</div>
+          <div style="display:flex">
+            <select v-model="selectYear" class="form-select" style="width:auto">
+              <option v-for="year in years" :key="year" :value="year">{{ year }}년</option>
+            </select>
+            <select v-model="selectMonth" class="form-select">
+              <option v-for="month in months" :key="month" :value="month">{{ month }}월</option>
+            </select>
+            <button @click="getNetsalesAnalysis" class="btn btncolor" style="white-space: nowrap">조회</button>
           </div>
-          <!-- 월별 순매출 차트 -->
-          <div id="yearlyNetsales" style="border: 1px solid lightgray; width:500px; height:350px; padding:1%">
-            <div style="display: flex; justify-content:space-between; align-items: center">
-            <div style="font-weight: bold"> 월별 순매출 </div>
-            <div>
-              <select v-model="selectYear2">
-                <option v-for="year in years" :key="year" :value="year">{{ year }}년</option>
-              </select>
-              <button @click="getYearlyNetsales">조회</button>
-            </div>
-            </div>
-            <div id="linechart" style="width:500px; height:350px"></div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding:10px">
+          <h6 style="font-weight:bold; margin-top:10px">총매출 : {{ monthSales }} 원</h6>
+          <div id="donutChart" v-if="showDonutChart"></div>
+          <div v-else>  <img src="/nodata.PNG"></div>
+        </div>
+      </div>
+
+      <!-- 월별 순매출 차트 -->
+      <div id="yearlyChart"
+        style="border: 1px solid lightgray; width:500px; height:340px; padding:1%; position:relative; z-index:2; margin-top:20px">
+        <div style="display:flex; align-items:center; justify-content:space-between; padding:10px">
+          <div style="font-size:16px; font-weight:bold">월별 순매출</div>
+          <div style="display:flex; z-index:3">
+            <select v-model="selectYear2" class="form-select" style="width:auto">
+              <option v-for="year in years" :key="year" :value="year">{{ year }}년</option>
+            </select>
+            <select v-model="selectHalf" class="form-select">
+              <option v-for="half in halves" :key="half" :value="half">{{ half }}</option>
+            </select>
+            <button @click="getYearlyNetsales" class="btn btncolor" style="white-space: nowrap">조회</button>
           </div>
+        </div>
+        <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding:10px">
+         <div id="barChart"></div>
         </div>
       </div>
     </div>
+  </div>
 </template>
+
 <script>
 import * as echarts from 'echarts/core';
-// import FullCalendar from '@fullcalendar/vue3'
+import { TooltipComponent, GridComponent } from 'echarts/components';
+import { BarChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
+import { ToolboxComponent, LegendComponent } from 'echarts/components';
+import { PieChart } from 'echarts/charts';
+import { LabelLayout } from 'echarts/features';
+import { UniversalTransition } from 'echarts/features';
+
+import { Calendar } from '@fullcalendar/core';
 import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import bootstrap5Plugin from '@fullcalendar/bootstrap5';
+
 import 'bootstrap/dist/css/bootstrap.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
-import { ToolboxComponent, TooltipComponent, LegendComponent, GridComponent } from 'echarts/components';
-import { PieChart } from 'echarts/charts';
-import { LabelLayout } from 'echarts/features';
-import { CanvasRenderer } from 'echarts/renderers';
-import { BarChart, LineChart } from 'echarts/charts';
-import { UniversalTransition } from 'echarts/features';
-import { Calendar } from '@fullcalendar/core';
+
 export default {
   name: 'BranchSales',
-  components: {
-  },
+  component: {},
   data() {
     return {
       storeId: '',
@@ -82,11 +91,14 @@ export default {
       list5: [],
       years: [2020, 2021, 2022, 2023],
       months: [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12],
+      halves: ['상반기', '하반기'],
       selectYear: null,
       selectMonth: null,
       selectYear2: null,
+      selectHalf: '상반기',
       myChart: null,
       myChart2: null,
+      showDonutChart: true,
       calendarOptions: {
         plugins: [dayGridPlugin, interactionPlugin],
         initialView: 'dayGridMonth',
@@ -99,19 +111,12 @@ export default {
     };
   },
   created() {
+    this.storeId = sessionStorage.getItem('loginId');
     this.getSearchCriteria();
     this.monthlyNetsales = Array(12).fill(0);
-    echarts.use([
-      TooltipComponent,
-      LegendComponent,
-      PieChart,
-      CanvasRenderer,
-      LabelLayout,
-      ToolboxComponent,
-      GridComponent,
-      BarChart,
-      LineChart,
-      UniversalTransition
+    echarts.use ([ 
+      TooltipComponent, LegendComponent, PieChart, CanvasRenderer, LabelLayout,
+      ToolboxComponent, GridComponent, BarChart, UniversalTransition 
     ]);
   },
   mounted() {
@@ -120,9 +125,8 @@ export default {
     this.selectMonth = currentDate.getMonth();
     this.selectYear2 = currentDate.getFullYear();
     this.addDailySales();
-    this.myChart = echarts.init(document.getElementById('donutchart'));
-    this.myChart2 = echarts.init(document.getElementById('linechart'));
-    this.renderChart();
+    this.myChart = echarts.init(document.getElementById('donutChart'));
+    this.getNetsalesAnalysis();
     this.getYearlyNetsales();
   },
   methods: {
@@ -165,7 +169,7 @@ export default {
           console.error(error);
         });
     },
-    renderChart() {
+    getNetsalesAnalysis() {
       const storeId = this.storeId;
       const year = this.selectYear;
       const month = this.selectMonth;
@@ -193,12 +197,15 @@ export default {
               const totalNetsales = self.list4[0].MNETSALES;
               const formattedTotalNetsales = totalNetsales.toLocaleString();
               self.monthNetsales = formattedTotalNetsales;
+
+              self.showDonutChart = true;
+
               const option = {
                 tooltip: {
                   trigger: 'item',
                 },
                 legend: {
-                  top: '2%',
+                  top: '15%',
                   left: 'center',
                   selectedMode: false
                 },
@@ -214,6 +221,11 @@ export default {
                         return param.name + ' (' + param.percent * 2 + '%)';
                       }
                     },
+                    tooltip: {
+                          valueFormatter: function (value) {
+                            return value.toLocaleString() + ' 원';
+                          }
+                        },
                     data: [
                       {},
                       { value: totalPayroll, name: '인건비' },
@@ -241,7 +253,7 @@ export default {
               self.monthPayroll = 0;
               self.monthOrder = 0;
               self.monthNetsales = 0;
-              alert("선택하신 연도와 월에 해당하는 데이터가 없습니다.");
+              self.showDonutChart = false;
             }
           })
           .catch(error => {
@@ -249,94 +261,188 @@ export default {
           });
       }
     },
+    
     getYearlyNetsales() {
+      if (this.selectHalf === '상반기') {
+        this.firstHalf();
+      } else if (this.selectHalf === '하반기') {
+        this.secondHalf();
+      }
+    },
+    firstHalf() {
       const self = this;
       const storeId = this.storeId;
-      const year = this.selectYear2;
+      const year = this.selectYear
+
+      console.log(storeId + year);
+
       if (year) {
-        console.log(year);
         self.$axios
           .get(`http://localhost:8085/netsales/${storeId}/${year}`)
           .then(response => {
-            const data = response.data;
-            self.list5 = response.data.list;
-            console.log(data);
-            console.log(self.list4);
-            for (let i = 0; i < 12; i++) {
-              self['monthlyNetsales' + (i + 1)] = 0;
-            }
-            if (self.list5 && self.list5.length > 0) {
-              for (let i = 0; i < 12; i++) {
+            self.list = response.data.list;
+            console.log(self.list);
+
+            if (self.list && self.list.length > 0) {
+              for (let i = 0; i < 6; i++) {
                 const month = i + 1;
-                const item = self.list5.find(obj => obj.MONTH === month);
+                const item = self.list.find(obj => obj.MONTH === month);
+
                 if (item) {
                   const monthNetsales = item.MNETSALES;
-                  self['monthlyNetsales' + month] = monthNetsales;
-                  const option = {
+                  self['monthNetsales' + month] = monthNetsales;
+                } else {
+                  self['monthNetsales' + month] = 0;
+                }
+              }
+
+              const myChart2 = echarts.init(document.getElementById('barChart'));
+
+              const option = {
+                tooltip: {
+                  trigger: 'axis',
+                  axisPointer: {
+                    type: 'shadow'
+                  }
+                },
+                grid: {
+                  left: '3%',
+                  right: '4%',
+                  bottom: '3%',
+                  containLabel: true
+                },
+                xAxis: [
+                  {
+                    type: 'category',
+                    data: ['1월', '2월', '3월', '4월', '5월', '6월'],
+                    axisTick: {
+                      alignWithLabel: true
+                    }
+                  }
+                ],
+                yAxis: [
+                  {
+                    type: 'value',
+                    name: '', 
+                    axisLabel: {
+                      formatter: '{value} 원'
+                    }
+                  }
+                ],
+                series: [
+                  {
+                    name: '순매출',
+                    type: 'bar',
                     tooltip: {
-                      trigger: 'axis',
-                      axisPointer: {
-                        type: '',
-                        crossStyle: {
-                          color: '#999'
-                        }
-                      }
-                    },
-                    legend: {
-                      data: ['월별 순매출']
-                    },
-                    xAxis: [
-                      {
-                        type: 'category',
-                        data: [
-                          '1월', '2월', '3월', '4월', '5월', '6월', '7월', '8월', '9월', '10월', '11월', '12월'
-                        ]
-                      }
-                    ],
-                    yAxis: [
-                      {
-                        type: 'value',
-                        name: '',
-                        min: 0,
-                        max: 50000,
-                        interval: 10000,
-                        axisLabel: {
-                          formatter: '{value} 원'
-                        }
-                      }
-                    ],
-                    series: [
-                      {
-                        type: 'bar',
-                        tooltip: {
                           valueFormatter: function (value) {
                             return value.toLocaleString() + ' 원';
                           }
                         },
-                        data: [
-                          parseInt(self['monthlyNetsales1']),
-                          parseInt(self['monthlyNetsales2']),
-                          parseInt(self['monthlyNetsales3']),
-                          parseInt(self['monthlyNetsales4']),
-                          parseInt(self['monthlyNetsales5']),
-                          parseInt(self['monthlyNetsales6']),
-                          parseInt(self['monthlyNetsales7']),
-                          parseInt(self['monthlyNetsales8']),
-                          parseInt(self['monthlyNetsales9']),
-                          parseInt(self['monthlyNetsales10']),
-                          parseInt(self['monthlyNetsales11']),
-                          parseInt(self['monthlyNetsales12'])
-                        ]
-                      },
+                    barWidth: '60%',
+                    data: [
+                      parseInt(self['monthNetsales1']),
+                      parseInt(self['monthNetsales2']),
+                      parseInt(self['monthNetsales3']),
+                      parseInt(self['monthNetsales4']),
+                      parseInt(self['monthNetsales5']),
+                      parseInt(self['monthNetsales6'])
                     ]
-                  };
-                  self.myChart2.setOption(option);
+                  }
+                ]
+              };
+              myChart2.setOption(option);
+            } else {
+              // alert("선택하신 연도의 데이터가 없습니다.");
+            }
+          })
+          .catch(error => {
+            console.error(error);
+          });
+      }
+    },
+    secondHalf() {
+      const self = this;
+      const storeId = this.storeId;
+      const year = this.selectYear;
+
+      console.log(storeId + year);
+
+      if (year) {
+        self.$axios
+          .get(`http://localhost:8085/netsales/${storeId}/${year}`)
+          .then(response => {
+            self.list = response.data.list;
+            console.log(self.list);
+
+            if (self.list && self.list.length > 0) {
+              for (let i = 6; i < 12; i++) {
+                const month = i + 1;
+                const item = self.list.find(obj => obj.MONTH === month);
+
+                if (item) {
+                  const monthNetsales = item.MNETSALES;
+                  self['monthNetsales' + month] = monthNetsales;
                 } else {
-                  self['monthlyNetsales' + month] = 0;
+                  self['monthNetsales' + month] = 0;
                 }
               }
-            }
-            else {
+
+              const myChart2 = echarts.init(document.getElementById('barChart'));
+
+              const option = {
+                tooltip: {
+                  trigger: 'axis',
+                  axisPointer: {
+                    type: 'shadow'
+                  }
+                },
+                grid: {
+                  left: '3%',
+                  right: '4%',
+                  bottom: '3%',
+                  containLabel: true
+                },
+                xAxis: [
+                  {
+                    type: 'category',
+                    data: ['7월', '8월', '9월', '10월', '11월', '12월'],
+                    axisTick: {
+                      alignWithLabel: true
+                    }
+                  }
+                ],
+                yAxis: [
+                  {
+                    type: 'value',
+                    name: '', 
+                    axisLabel: {
+                      formatter: '{value} 원'
+                    }
+                  }
+                ],
+                series: [
+                  {
+                    name: '순매출',
+                    type: 'bar',
+                    tooltip: {
+                          valueFormatter: function (value) {
+                            return value.toLocaleString() + ' 원';
+                          }
+                        },
+                    barWidth: '60%',
+                    data: [
+                      parseInt(self['monthNetsales7']),
+                      parseInt(self['monthNetsales8']),
+                      parseInt(self['monthNetsales9']),
+                      parseInt(self['monthNetsales10']),
+                      parseInt(self['monthNetsales11']),
+                      parseInt(self['monthNetsales12'])
+                    ]
+                  }
+                ]
+              };
+              myChart2.setOption(option);
+            } else {
               alert("선택하신 연도의 데이터가 없습니다.");
             }
           })
@@ -344,21 +450,69 @@ export default {
             console.error(error);
           });
       }
-    }
+    },
+
   }
-}
+};
 </script>
+
 <style scoped>
+#branchSalesTitle {
+  font-size: 20px;
+  font-weight: bold;
+  padding-left: 3%;
+  padding-top: 1%;
+}
+
+#branchSalesContent {
+  padding-left: 3%;
+  padding-top: 1%;
+  display: flex;
+}
+
+#donutChart {
+  width: 500px;
+  height: 300px; 
+  margin-top: -40px; 
+  align-items: center; 
+  position: relative; 
+  z-index:1;
+}
+
+#barChart {
+  width: 450px;
+  height: 300px;
+  margin-top: -40px; 
+  align-items: center; 
+  position: relative; 
+  z-index:2;
+}
 .BranchSalesContent{
   margin-left: 50px;
+  margin-bottom: 50px;
 }
 #netsalesAnalysis {
   margin-left: 30px;
 }
+
 #yearlyNetsales {
   margin-left: 30px;
   margin-top: auto;
 }
+
+.btncolor:hover{
+  background-color: #FFC67B;
+  color:#303030;
+}
+.btncolor{
+    height: 38px;
+    color:#303030;
+    background-color: #bee96d;
+    font-weight: bolder ;
+}
+
+
+
 </style>
 
 <style>
@@ -382,6 +536,4 @@ export default {
 }
 
 </style>
-
-
 
