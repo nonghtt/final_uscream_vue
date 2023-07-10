@@ -25,7 +25,7 @@
         <div style="display: flex; flex-direction: column; align-items: center; justify-content: center; padding:10px">
           <h6 style="font-weight:bold; margin-top:10px">총매출 : {{ monthSales }} 원</h6>
           <div id="donutChart" v-if="showDonutChart"></div>
-          <div v-else>  <img src="/nodata.PNG"></div>
+          <div v-else><img src="/nodata.PNG"></div>
         </div>
       </div>
 
@@ -184,22 +184,26 @@ export default {
             self.list4 = response.data.list;
             console.log(data);
             console.log(self.list4);
+
+            self.showDonutChart = false;
+
             if (self.list4 && self.list4.length > 0) {
               const totalSales = self.list4[0].MSELLINGPRICE;
               const formattedTotalSales = totalSales.toLocaleString();
               self.monthSales = formattedTotalSales;
+            
               const totalPayroll = self.list4[0].MPSALARY;
               const formattedTotalPayroll = totalPayroll.toLocaleString();
               self.monthPayroll = formattedTotalPayroll;
+
               const totalOrder = self.list4[0].MORDERCOST;
               const formattedTotalOrder = totalOrder.toLocaleString();
               self.monthOrder = formattedTotalOrder;
+
               const totalNetsales = self.list4[0].MNETSALES;
               const formattedTotalNetsales = totalNetsales.toLocaleString();
               self.monthNetsales = formattedTotalNetsales;
-
-              self.showDonutChart = true;
-
+              
               const option = {
                 tooltip: {
                   trigger: 'item',
@@ -248,12 +252,12 @@ export default {
                 ]
               };
               self.myChart.setOption(option);
+              self.showDonutChart = true;
             } else {
               self.monthSales = 0;
               self.monthPayroll = 0;
               self.monthOrder = 0;
               self.monthNetsales = 0;
-              self.showDonutChart = false;
             }
           })
           .catch(error => {
@@ -270,13 +274,14 @@ export default {
       }
     },
     firstHalf() {
-      const self = this;
       const storeId = this.storeId;
-      const year = this.selectYear
+      const year = this.selectYear2
 
       console.log(storeId + year);
 
       if (year) {
+        const self = this;
+
         self.$axios
           .get(`http://localhost:8085/netsales/${storeId}/${year}`)
           .then(response => {
@@ -361,13 +366,14 @@ export default {
       }
     },
     secondHalf() {
-      const self = this;
       const storeId = this.storeId;
-      const year = this.selectYear;
+      const year = this.selectYear2;
 
       console.log(storeId + year);
 
       if (year) {
+        const self = this;
+
         self.$axios
           .get(`http://localhost:8085/netsales/${storeId}/${year}`)
           .then(response => {
