@@ -1,11 +1,9 @@
 <template>
-  <div class="about">
-    <h1>This is an about page</h1>
+  <div id="container">
 
-
+    <!-- 지도 테스트 -->
+    <!--
     <div class="test">
-
-            <!-- 지도 테스트 -->
       <li><router-link class="test" to="/latitude">지도테스트</router-link></li>
       <li><router-link class="test" to="/location">위도출력</router-link></li>
       <li><router-link class="test" to="/latitude">주소입력</router-link></li>
@@ -13,42 +11,48 @@
       <li><router-link class="test" to="/testComponent">아웃라인</router-link></li>
     </div>
 
-
     <div>
     <label class="custom-file-upload">
       <input type="file" @change="previewImage" />
       <span>파일 선택</span>
     </label>
     <img :src="previewImageUrl" v-if="previewImageUrl" />
-  </div>
-
+    </div>
+    -->
+    <div class="box" id="box1">
+      <IndexNotice />
+    </div>
+    <div class="box" id="box2">
+      <IndexOrder />
+    </div>
+    <div class="box" id="box3">
+      <IndexNetsales />
+    </div>
+    <div class="box" id="box4">
+      <IndexVoc />
+    </div>
 
   </div>
 </template>
-<style>
-.custom-file-upload {
-  display: inline-block;
-  padding: 10px 20px;
-  background-color: #f0f0f0;
-  color: #333;
-  border-radius: 4px;
-  cursor: pointer;
-}
 
-.custom-file-upload input[type="file"] {
-  display: none;
-}
 
-.custom-file-upload span {
-  margin-left: 5px;
-}
-</style>
 <script>
+import IndexNetsales from '@/components/index/IndexNetsales.vue';
+import IndexNotice from '@/components/index/IndexNotice.vue';
+import IndexOrder from '@/components/index/IndexOrder.vue';
+import IndexVoc from '@/components/index/IndexVoc.vue';
+
 export default {
   data() {
     return {
       previewImageUrl: null
     };
+  },
+  components: {
+    IndexNetsales,
+    IndexNotice,
+    IndexOrder,
+    IndexVoc
   },
   methods: {
     previewImage(event) {
@@ -66,3 +70,41 @@ export default {
   }
 };
 </script>
+
+<style scoped>
+.custom-file-upload {
+  display: inline-block;
+  padding: 10px 20px;
+  background-color: #f0f0f0;
+  color: #333;
+  border-radius: 4px;
+  cursor: pointer;
+}
+
+.custom-file-upload input[type="file"] {
+  display: none;
+}
+
+.custom-file-upload span {
+  margin-left: 5px;
+}
+
+.box {
+  margin: 15px 15px;
+  border: 4px solid #bee96d;
+  border-radius: 20px;
+  flex-basis: 45%;
+  height: 39vh;
+}
+
+#container {
+  margin-top: 10px;
+  margin-bottom: 10px;
+  justify-content: center;
+  display: flex;
+  flex-wrap: wrap;
+  overflow: hidden;
+}
+
+
+</style>
