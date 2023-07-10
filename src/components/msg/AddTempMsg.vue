@@ -1,5 +1,8 @@
 <template>
-    <div class="sidebar_container">
+    <div class="full_container">
+
+    
+    <div class="sidebar_container shadow">
         <SideBar />
     </div>
     <div class="container">
@@ -31,6 +34,7 @@
                 <td colspan="2"><textarea rows="20" cols="30" v-model="dto.content"></textarea></td>
             </tr>
         </table>
+    </div>
     </div>
 </template>
 <script>
@@ -65,11 +69,12 @@ export default {
         },
         async searchStoreId() {
             const self = this;
+
             const str_receiver = self.receiver.replace(/\s/g, '');
-            self.array = str_receiver.split(",")                 //array에는 manager 이름이 갯수만큼있다.   
-            self.searchResults=[];                               //storeid를 담을 배열변수
+            self.array = str_receiver.split(",")                   
+            self.searchResults=[];                               
             
-        
+           
                 for(var i=0;i<self.array.length;i++){
 
                    await self.$axios.get("http://localhost:8085/store/manager/" + self.array[i], { params: { name: self.array[i]} })
@@ -93,19 +98,21 @@ export default {
             this.alertname = [];                                    
             const name = [];                                                  
             
-            
+            self.searchResults.push(self.dto.receiver.storeid);
+
             for (var i = 0; i < self.searchResults.length; i++) {
 
                 let form = new FormData();
                 form.append('sender', sessionStorage.getItem("loginId"));
                 form.append('receiver', self.searchResults[i]);           
-                form.append('title', self.title);                  
-                form.append('content', self.content);              
+                form.append('title', self.dto.title);                  
+                form.append('content', self.dto.content);              
                 if (self.file) {
                     form.append('mfile', self.file);
                 }
                 await self.$axios.post("http://localhost:8085/msg", form, { headers: { "Content-Type": "multipart/form-data" } })
                 name[i] = self.searchResults[i];
+                await self.$axios.delete("http://localhost:8085/msg/del/"+self.dto.msgnum)
             }
 
             for (var j = 0; j < name.length; j++) {
@@ -137,13 +144,22 @@ export default {
 </script>
    
 <style scoped>
+body {
+  font-family:  'Noto Sans KR', sans-serif;
+  background-color: rgb(255, 255, 254);
+}
+
 .sidebar_container {
     display: inline-block;
-    width: 300px;
+    width: 220px;
     text-align: left;
-    border-right: 1px solid black;
-    background-color: whitesmoke;
+    border-right:  rgb(157, 157, 157);
+    background-color: rgb(255, 255, 254);
     height: 770px;
+}
+
+.full_container{
+    display: flex;
 }
 
 .topbar {

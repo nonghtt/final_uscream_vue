@@ -1,5 +1,6 @@
 <template>
-    <div class="sidebar_container">
+    <div class="full_container">
+    <div class="sidebar_container shadow">
 
         <SideBar />
     </div>
@@ -44,7 +45,7 @@
                     </td>
                     <td :class="{ 'bold': msg.readcheck === true }">{{ msg.receiver.managername }}</td>
                     <td v-on:click="detail(msg.msgnum)" :class="{ 'bold': msg.readcheck === true }" @mouseover="changeCursor">
-                        <span :class="['limited-title']">{{ truncateTitle(msg.title, 30) }}</span>
+                        <span :class="limited-title">{{ truncateTitle(msg.title, 30) }}</span>
                     </td>
                     <td :class="{ 'bold': msg.readcheck === true }">{{ msg.msgdate }}</td>
                 </tr>
@@ -59,6 +60,7 @@
             <button :disabled="currentPage === totalPages" @click="nextPage">다음</button>
         </div>
     </div>
+</div>
 </template>
     
 <script>
@@ -109,7 +111,8 @@ export default {
     },
     methods: {
         truncateTitle(title, maxLength) {
-                    if (title.length > maxLength) {
+            const self= this;
+                    if (self.title.length > maxLength) {
                         return title.substring(0, maxLength) + '...';
                     }
                     return title;
@@ -230,12 +233,22 @@ export default {
     
     
 <style scoped>
+
+body {
+  font-family:  'Noto Sans KR', sans-serif;
+  background-color: rgb(255, 255, 254);
+}
+
+.full_container{
+    display: flex;
+}
+
 .sidebar_container {
     display: inline-block;
     width: 220px;
     text-align: left;
-    border-right: 1px solid black;
-    background-color: whitesmoke;
+    border-right:  rgb(157, 157, 157);
+    background-color: rgb(255, 255, 254);
     height: 770px;
 }
 
@@ -420,8 +433,9 @@ td:nth-child(4) {
 
 .textbar {
     border-radius: 5px;
-    width: 250px;
+    width: 200px;
     border-color: #EAEAEA;
+    margin-right: 5px;
 }
 
 .textbar:hover {

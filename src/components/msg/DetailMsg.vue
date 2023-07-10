@@ -1,4 +1,5 @@
 <template>
+    <div class="full_container">
     <div class="sidebar_container">
         <SideBar />
     </div>
@@ -37,6 +38,7 @@
             </tr>
         </tabel>
 
+    </div>
     </div>
 </template>
     
@@ -109,6 +111,9 @@ export default {
     
     
 <style scoped>
+body {
+  font-family:  'Noto Sans KR', sans-serif;
+}
 .sidebar_container {
     display: inline-block;
     width: 300px;
@@ -118,7 +123,9 @@ export default {
     height: 770px;
 }
 
-
+.full_container{
+    display: flex;
+}
 
 .topbar {
     display: flex;
