@@ -1,40 +1,35 @@
 <template>
   <div class="box">
     <div id="searchform">
-      <div id="select">
-        <span>
-          <select v-model="selected" style="margin-right:10px;">
+      <div id="select" style="display:flex; margin-top:35px">
+          <select v-model="selected" class="form-select" style="margin-right:10px; width:auto">
             <option v-for="option in options" :key="option" :value="option">{{ option }}</option>
           </select>
-        </span>
-        <span>
-          <input v-model="searchKeyword" placeholder="검색하실 지점명을 입력하세요" style="margin-right:10px; width:600px">
-        </span>
-        <span>
-          <button @click="search">검색</button>
-        </span>
+          <input v-model="searchKeyword" class="form-control" type="text" placeholder="검색하실 지점명을 입력하세요" style="margin-right:10px; width:600px; text-align:left">
+          <button @click="search" class="btn btncolor" style="white-space: nowrap">검색</button>
       </div>
-      <br />
-      <div id="storeMonthlychart" style="width: 800px; height: 600px"></div>
+      <div id="storeMonthlychart" style="width: 800px; height: 600px; margin-top: 35px"></div>
     </div>
   </div>
 </template> 
-<script>
-import 'bootstrap/dist/css/bootstrap.css';
 
-import 'bootstrap-icons/font/bootstrap-icons.css';
+
+<script>
 import * as echarts from 'echarts/core';
 import { TitleComponent, ToolboxComponent, TooltipComponent, GridComponent, LegendComponent } from 'echarts/components';
 import { LineChart } from 'echarts/charts';
 import { UniversalTransition } from 'echarts/features';
 import { CanvasRenderer } from 'echarts/renderers';
 
+import 'bootstrap/dist/css/bootstrap.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 export default {
   name: 'HeadSalesDetail',
   components: {},
   data() {
     return {
-      selected: '',
+      selected: '본사',
       options: ['본사', '지점'],
       searchKeyword: '',
       list: [],
@@ -42,21 +37,22 @@ export default {
     };
   },
   created() {
-    echarts.use([
-      TitleComponent,
-      ToolboxComponent,
-      TooltipComponent,
-      GridComponent,
-      LegendComponent,
-      LineChart,
-      CanvasRenderer,
-      UniversalTransition
-    ]);
+    echarts.use(
+    [TitleComponent, 
+     ToolboxComponent, 
+     TooltipComponent, 
+     GridComponent, 
+     LegendComponent, 
+     LineChart, 
+     CanvasRenderer, 
+     UniversalTransition]
+    );
+    this.searchHead()
   },
   methods: {
     search() {
       if (this.selected === '본사') {
-        this.searchHead();
+        this.searchHead();     
       } else if (this.selected === '지점') {
         this.searchBranch();
       }
@@ -91,19 +87,24 @@ export default {
 
               const option = {
                 title: {
-                  text: '연도별 매출 추이'
+                  text: '연도별 매출'
                 },
                 tooltip: {
                   trigger: 'axis'
                 },
                 legend: {
-                  data: [2020, 2021, 2022, 2023]
+                  data: ['2020', '2021', '2022', '2023']
                 },
                 grid: {
                   left: '3%',
                   right: '4%',
                   bottom: '3%',
                   containLabel: true
+                },
+                toolbox: {
+                  feature: {
+                   saveAsImage: {}
+                  }
                 },
                 xAxis: {
                   type: 'category',
@@ -121,40 +122,59 @@ export default {
                 },
                 series: [
                   {
-                    name: 2020,
+                    name: '2020',
                     type: 'line',
                     data: [
                       self['storeMonthlySales20201'], self['storeMonthlySales20202'], self['storeMonthlySales20203'], self['storeMonthlySales20204'],
                       self['storeMonthlySales20205'], self['storeMonthlySales20206'], self['storeMonthlySales20207'], self['storeMonthlySales20208'],
                       self['storeMonthlySales20209'], self['storeMonthlySales202010'], self['storeMonthlySales202011'], self['storeMonthlySales202012']
-                    ]
+                    ],
+                    tooltip: {
+                          valueFormatter: function (value) {
+                            return value.toLocaleString() + ' 원';
+                          }
+                        },
                   },
                   {
-                    name: 2021,
+                    name: '2021',
                     type: 'line',
                     data: [
                       self['storeMonthlySales20211'], self['storeMonthlySales20212'], self['storeMonthlySales20213'], self['storeMonthlySales20214'],
                       self['storeMonthlySales20215'], self['storeMonthlySales20216'], self['storeMonthlySales20217'], self['storeMonthlySales20218'],
                       self['storeMonthlySales20219'], self['storeMonthlySales202110'], self['storeMonthlySales202111'], self['storeMonthlySales202112']
-                    ]
+                    ],
+                    tooltip: {
+                          valueFormatter: function (value) {
+                            return value.toLocaleString() + ' 원';
+                          }
+                        },
                   },
                   {
-                    name: 2022,
+                    name: '2022',
                     type: 'line',
                     data: [
                       self['storeMonthlySales20221'], self['storeMonthlySales20222'], self['storeMonthlySales20223'], self['storeMonthlySales20224'],
                       self['storeMonthlySales20225'], self['storeMonthlySales20226'], self['storeMonthlySales20227'], self['storeMonthlySales20228'],
                       self['storeMonthlySales20229'], self['storeMonthlySales202210'], self['storeMonthlySales202211'], self['storeMonthlySales202212']
-                    ]
+                    ],
+                    tooltip: {
+                          valueFormatter: function (value) {
+                            return value.toLocaleString() + ' 원';
+                          }
+                        },
                   },
                   {
-                    name: 2023,
+                    name: '2023',
                     type: 'line',
                     data: [
                       self['storeMonthlySales20231'], self['storeMonthlySales20232'], self['storeMonthlySales20233'], self['storeMonthlySales20234'],
-                      self['storeMonthlySales20235'], self['storeMonthlySales20236'], self['storeMonthlySales20237'], self['storeMonthlySales20238'],
-                      self['storeMonthlySales20239'], self['storeMonthlySales202310'], self['storeMonthlySales202311'], self['storeMonthlySales202312']
-                    ]
+                      self['storeMonthlySales20235'], self['storeMonthlySales20236'], self['storeMonthlySales20237']
+                    ],
+                    tooltip: {
+                          valueFormatter: function (value) {
+                            return value.toLocaleString() + ' 원';
+                          }
+                        },
                   }
                 ]
               };
@@ -204,7 +224,7 @@ export default {
                     trigger: 'axis'
                   },
                   legend: {
-                    data: [2020, 2021, 2022, 2023]
+                    data: ['2020', '2021', '2022', '2023']
                   },
                   grid: {
                     left: '3%',
@@ -228,7 +248,7 @@ export default {
                   },
                   series: [
                   {
-                    name: 2020,
+                    name: '2020',
                     type: 'line',
                     data: [
                       self['storeMonthlySales20201'], self['storeMonthlySales20202'], self['storeMonthlySales20203'], self['storeMonthlySales20204'],
@@ -237,7 +257,7 @@ export default {
                     ]
                   },
                   {
-                    name: 2021,
+                    name: '2021',
                     type: 'line',
                     data: [
                       self['storeMonthlySales20211'], self['storeMonthlySales20212'], self['storeMonthlySales20213'], self['storeMonthlySales20214'],
@@ -246,7 +266,7 @@ export default {
                     ]
                   },
                   {
-                    name: 2022,
+                    name: '2022',
                     type: 'line',
                     data: [
                       self['storeMonthlySales20221'], self['storeMonthlySales20222'], self['storeMonthlySales20223'], self['storeMonthlySales20224'],
@@ -255,7 +275,7 @@ export default {
                     ]
                   },
                   {
-                    name: 2023,
+                    name: '2023',
                     type: 'line',
                     data: [
                       self['storeMonthlySales20231'], self['storeMonthlySales20232'], self['storeMonthlySales20233'], self['storeMonthlySales20234'],
@@ -266,6 +286,8 @@ export default {
                 ]
               };
               myChart.setOption(option);
+
+              console.log('2020년 1월' + self['storeMonthlySales20201'])
 
               }
             } else {
@@ -286,6 +308,26 @@ export default {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+.btn {
+    text-decoration: none;
+    color: black
+}
+
+* {
+    text-align: center;
+}
+.btncolor:hover{
+  background-color: #FFC67B;
+  color:#595959
+}
+.btncolor{
+    
+    height: 38px;
+    color:#595959;
+    background-color: #bee96d;
+    font-weight: bolder ;
 }
 </style>
 
