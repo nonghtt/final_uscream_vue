@@ -1,11 +1,11 @@
 <template>
  
   <NavBar />
-  <div class="middlepage">
+  <!-- <div class="middlepage"> -->
   
 
     <router-view />
-  </div>
+  <!-- </div> -->
 
 
 

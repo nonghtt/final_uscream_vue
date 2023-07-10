@@ -6,17 +6,17 @@
     <div class="container">
         <div class="topbar">
             <span>
-                <h4> 받은 메일함 </h4>
+                <h10 class="head_text"> 받은 메일함 </h10>
             </span>
             <span>
-                <h4> {{ count }} / {{ countall }} </h4>
+                <h10> {{ count }} / {{ countall }} </h10>
             </span>
         </div>
         <div class="middlebar_container" style="border-bottom: 1px solid;">
             <div class="middlebar">
                 <input type="button" class="but f btncolor" value="메일 작성" v-on:click="addmsg()">
                 <input type="button" class="but btncolor" value="휴지통으로" v-on:click="delmsg()">
-                <input type="button" class="but btncolor" value="즐찾" v-on:click="marklist()">
+                <input type="button" class="but btncolor" value="즐겨찾기" v-on:click="marklist()">
                 <input type="button" class="but e btncolor" value="읽음" v-on:click="readlist()">
             </div>
             <div class="searchbar">
@@ -38,17 +38,18 @@
                         <img class="lcon" :src="readimg" v-if="msg.readcheck == 1" v-on:click="read(msg.msgnum)">
                         <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum)">
                     </td>
-                    <td :class="{ 'bold': msg.readcheck === true }">{{ msg.sender.managername }}</td>
-                    <td v-on:click="detail(msg.msgnum)" :class="{ 'bold': msg.readcheck === true }">{{ msg.title }}</td>
-                    <td :class="{ 'bold': msg.readcheck === true }">{{ msg.msgdate }}</td>
+                    <td :class="{ 'bold': msg.readcheck === true }">{{msg.sender.managername}}</td>
+                    <td v-on:click="detail(msg.msgnum)" :class="{ 'bold': msg.readcheck === true }" @mouseover="changeCursor">
+                        <span :class="['limited-title']">{{ truncateTitle(msg.title, 30) }}</span>
+                    </td>
+                    <td :class="{ 'bold': msg.readcheck === true }">{{msg.msgdate}}</td>
                 </tr>
             </table>
         </div>
         <div class="pagination">
             <button :disabled="currentPage === 1" @click="prevPage">이전</button>
             <div v-for="pageNumber in totalPages" :key="pageNumber">
-                <button :class="{ active: currentPage === pageNumber }" @click="goToPage(pageNumber)">{{ pageNumber
-                }}</button>
+                <button :class="{ active: currentPage === pageNumber }" @click="goToPage(pageNumber)">{{ pageNumber   }}</button>
             </div>
             <button :disabled="currentPage === totalPages" @click="nextPage">다음</button>
         </div>
@@ -67,6 +68,7 @@ export default {
             countall: 0,
             count: 0,
             id: sessionStorage.getItem("loginId"),
+            sender:'',
             markimg: require("../../assets/staron.png"),
             markimg2: require("../../assets/starnomal.png"),
             readimg: require("../../assets/msgnoread.png"),
@@ -76,7 +78,9 @@ export default {
             num: [],
             clickmsg: [],
             currentPage: 1,
-            pageSize: 11,
+            pageSize: 15,
+            title:'',
+            maxLength:30
         }
     },
     created: function () {
@@ -86,6 +90,7 @@ export default {
         self.$axios.get("http://localhost:8085/msg/" + id)
             .then(function (res) {
                 self.list = res.data.msglist;
+                console.log(self.list);
                 self.count = res.data.countByReadReceiveMsg;
                 self.countall = res.data.countAllByReadReceiveMsg;
             })
@@ -100,10 +105,20 @@ export default {
             const startIndex = (this.currentPage - 1) * this.pageSize;
             const endIndex = startIndex + this.pageSize;
             return this.list.slice(startIndex, endIndex);
-        },
+        }
     },
 
     methods: {
+        truncateTitle(title, maxLength) {
+                    if (title.length > maxLength) {
+                        return title.substring(0, maxLength) + '...';
+                    }
+                    return title;
+                },
+        changeCursor() {
+    
+    event.target.style.cursor = 'pointer';
+  },
         checklist() {
             this.checkedmsg = [];
             for (let i = 0; i < this.checked.length; i++) {
@@ -159,11 +174,16 @@ export default {
         addmsg() {
             this.$router.push({ name: 'AddMsg' });
         },
-        receivemsgsearch() {
+        async receivemsgsearch() {
             const self = this;
-            let sender = document.getElementById("searchbar").value;
             let receiver = self.id
-            self.$axios.get("http://localhost:8085/msg/receivemsg/" + sender + "/" + receiver)
+            
+            self.sender = document.getElementById("searchbar").value;
+            await self.$axios.get("http://localhost:8085/store/manager/"+ self.sender,{ params: { name: self.sender} })
+                        .then(res => {
+                           self.sender= res.data;
+                        })
+            self.$axios.get("http://localhost:8085/msg/receivemsg/" + self.sender + "/" + receiver)
                 .then(function (res) {
                     self.list = res.data.msglist;
                 })
@@ -186,9 +206,17 @@ export default {
   
  
 <style scoped>
+
+
+.limited-title {
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
 .sidebar_container {
     display: inline-block;
-    width: 300px;
+    width: 220px;
     text-align: left;
     border-right: 1px solid black;
     background-color: whitesmoke;
@@ -202,13 +230,16 @@ h3 {
 
 .container {
     margin: 5px 5px 5px 5px;
+    background-color: #fff;
 }
 
+.head_text{
+    font-weight: bold;
+}
 .topbar {
-    text-align: center;
+    text-align: left;
     margin-top: 2%;
     margin-bottom: 2%;
-
 }
 
 .middlebar_container {
@@ -294,22 +325,16 @@ table {
     border-radius: 6px;
 }
 
-th {
-    text-align: left;
-
-}
-
-th:nth-child(4) {
-    text-align: center;
-}
 
 tr {
     border-bottom: 1px solid rgba(0, 0, 0, .1);
+    height:35px;
 }
 
 td {
     padding-top: 7px;
     padding-bottom: 12px;
+    font-size:12.5px;
 }
 
 td:nth-child(1) {
@@ -338,8 +363,8 @@ td:nth-child(4) {
 
 
 .lcon {
-    width: 20px;
-    height: 30px;
+    width: 15px;
+    height: 20px;
     margin-left: 20px;
     margin-right: 8px;
 }
