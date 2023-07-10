@@ -64,10 +64,12 @@
   z-index:2;
   margin: 29px 14px 27px 27px;
 height:795px;
+width: 300px;
 background-color: #95d6b5;
 overflow-y: auto;
 overflow-x: hidden;
 }
+
 /* 통통튀는 글자 넣을 거임 */
 .logoplace{
 height:75px;
@@ -230,24 +232,14 @@ export default {
       address:'',
       storenamelist:[],       //검색창에 뜨는 지점명 리스트를 위한 변수
       placelist:[]
-    
     };
   },
   created: function() {
+    alert(1)
+    
       const self= this
-      self.$axios.get('http://localhost:8085/store').then(function(res){
-          // console.log(res.data.storelist);
+      self.$axios.get('http://localhost:8085/store/accounttype/2').then(function(res){
       self.storenamelist = res.data.storelist
-
-      // console.log(storenamelist)
-        //   for(let i=0; i<self.storenamelist.length; i++){
-        //   const prestorenamelist = self.storenamelist[i].storename
-         
-        // self.storenamelist.push(prestorenamelist)
-        // console.log(self.storename)
-        // }
-
-          // console.log(self.storename)
       })
 
      
@@ -283,6 +275,7 @@ export default {
       script.src =
         "//dapi.kakao.com/v2/maps/sdk.js?appkey=3ef0a8044022238ae7c9fb846ea37567&autoload=false";
       script.onload = () => window.kakao.maps.load(this.loadMap.bind(this));
+
       document.head.appendChild(script);
     },
     loadMap() {
@@ -366,6 +359,10 @@ export default {
         this.placelist = res.data.storelist
       })
     }
+
+
+
+
     
 }
 }

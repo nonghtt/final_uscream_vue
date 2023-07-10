@@ -2,6 +2,9 @@
     <div id="login" class="login">
       <!-- <div class="text_login">LOGIN</div> -->
 
+      <router-link class="logorouter" to="/location">로그인창 디자인 테스트</router-link>
+
+
 
       
       <div id="login_window">

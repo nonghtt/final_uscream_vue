@@ -17,8 +17,8 @@
         
        
         <div class="div_storeid">
-          <input class="input_storeid" type="text" v-model="storeid" required>
-          <label class="label_storeid">아이디</label>
+          <input class="input_storeid" type="text" v-model="storeid" required placeholder="아이디">
+          <!-- <label class="label_storeid">아이디</label> -->
           <span class="span_storeid"></span>
           </div>
        
@@ -33,10 +33,9 @@
             <div v-if="iddescription" class="iddescript_window">(ex) 지역코드 + 숫자 KG001</div>
 
 <div class="div_pwd">
-  <input class="input_pwd" type="password" v-model="password" required
-           @input="validationpassword">
-           <span v-if="passwordErrorText">{{ passwordErrorText }}</span>
-           <label class="label_pwd">비밀번호</label>  
+  <input class="input_pwd" type="password" @input="validationpassword" v-model="password"  placeholder="비밀번호">
+           <!-- <span v-if="passwordErrorText">{{ passwordErrorText }}</span> -->
+           <!-- <label class="label_pwd">비밀번호</label>   -->
           
 
            <input type="password" v-if="validationpassword()">
@@ -45,9 +44,6 @@
           </div>
 
 
-
-
-    
 <div class="image-container">   
 <i class="fa-solid fa-circle-question" 
         @mouseenter="showDescription = true"
@@ -58,8 +54,8 @@
 
 
 <div class="div_pwd_confirm">
-    <input class="input_pwd_confirm" type="password" @click="clean_input_pwd" v-model="pwd_confirm" required><br/>
-    <label class="label_pwd_confirm">비밀번호 확인</label>
+    <input class="input_pwd_confirm" type="password" @click="clean_input_pwd" v-model="pwd_confirm" placeholder="비밀번호 확인"><br/>
+    <!-- <label class="label_pwd_confirm">비밀번호 확인</label> -->
     <span class="span_pwd_confirm"></span>
 </div>
 <button v-on:click="pwdcheck">중복확인</button><br/>
@@ -69,8 +65,8 @@
 
        
              <div class="div_storename">
-                  <input class="input_storename" type="text" v-model="storename" required><br/>
-                  <label class="label_storename">지점명</label>
+                  <input class="input_storename" type="text" v-model="storename" required placeholder="지점이름"><br/>
+                  <!-- <label class="label_storename">지점명</label> -->
                   <span class="span_storename"></span>
             </div>
             <div class="example">(ex) 오리역점</div>
@@ -78,15 +74,15 @@
 
 
             <div class="div_managername">
-                <input class="input_managername" type="text" v-model="managername" required><br/>
-                <label class="label_managername">지점주 이름</label>
+                <input class="input_managername" type="text" v-model="managername" required placeholder="지점장 이름"><br/>
+                <!-- <label class="label_managername">지점주 이름</label> -->
                 <span class="span_managername"></span>
             </div>
 
 
             
 
-            <input class="select" name="type" type="radio" id="radio" v-model="accounttype" value="1" checked><label for="radio"><div id="text_float">본사</div></label>
+            <input class="select" name="type" type="radio" id="radio" v-model="accounttype" value="1" checked placeholder="본사 혹은 지점을 선택해주세요."><label for="radio"><div id="text_float">본사</div></label>
                   <input class="select" name="type" type="radio" id="radio2" v-model="accounttype" value="2" ><label for="radio2"><div class="text_branch">지점</div></label><br/> 
             
 
@@ -98,25 +94,20 @@
                   
           <div class="box2" id="div_outline">
 
-    
-        
-    
+            <div>
+ <!-- 지도 뜨는 곳 -->
+<AddressToLocation class="kakaomap" @sendposition = "showLocation" />
+
+    </div>   
                           <div>  
-                             <img :src="previewImageUrl" class="profile" 
-                              v-if="previewImageUrl" style="width:400px; height:400px;" /><br/>
-                              <label class="custom-file-upload" @change="previewImage">
-                               <span>파일 선택</span>
-                              <input type="file" @change="previewImage" id="simg" alt="../assets/1.png"/>
-                            
+                            <img :src="previewImageUrl" class="profile" id="simg"
+                              v-if="previewImageUrl" style="width:300px; height:300px;" /><br/>
+                              <label class="custom-file-upload" @change="previewImage"
+                              for="simg"><span>파일 선택</span>
                             </label>
+                            <input type="file" class="chooseimg" @change="previewImage" id="simg" alt="" accept="image/*"/>
                         </div>
   
-
-  <div>
- <!-- 지도 뜨는 곳 -->
-<AddressToLocation @sendposition = "showLocation" />
-
-    </div>
     </div>    
 <div> <button class="btn_join" v-on:click="join">가입하기</button></div></div>
 </div>
@@ -239,7 +230,8 @@ export default {
           },
       clean_input_id(){
           this.idmsg = ''
-        },   previewImage(event) {
+        },   
+      previewImage(event) {
       const file = event.target.files[0];
       const reader = new FileReader();
 
@@ -325,7 +317,9 @@ font-size:20px;
 font-weight:bold;
 }
 
-
+.kakaomap{
+  justify-content: center;
+}
 /* 파일추가 버튼 꾸미기 1 */
 .custom-file-upload {
   display: inline-block;
@@ -384,7 +378,10 @@ background-color: white;
     vertical-align: middle;
 }
 
-
+/* input 태그 숨기기 */
+.chooseimg{
+  visibility:hidden;
+}
 
 /* 스크롤바 없애기 */
 .join_window{
@@ -487,7 +484,7 @@ image-container{
     bottom: 40px;
     /* 커서올렸을때 글자가 변하는 색 >>>>> 나중에 상의해서 변경하는 */
     /* color: #666; */
-    color:#eb34a4;
+    color:#aaaaaa;
     font-weight: bold;
   }
   
@@ -521,7 +518,7 @@ image-container{
   
   .input_pwd::placeholder { color: #aaaaaa; }
   /* 입력되면 보이는 색깔 */
-  .input_pwd:focus { outline: none; color:#eb34a4}
+  .input_pwd:focus { outline: none; color:#aaaaaa}
   
   .span_pwd {
     display: block;
@@ -547,7 +544,7 @@ image-container{
   .input_pwd:focus ~ .label_pwd, .input_pwd:valid ~ .label_pwd {
     font-size: 16px;
     bottom: 40px;
-    color: #eb34a4;
+    color: #aaaaaa;
     font-weight: bold;
   }
   
@@ -609,7 +606,7 @@ image-container{
     bottom: 40px;
     /* 커서올렸을때 글자가 변하는 색 >>>>> 나중에 상의해서 변경하는 */
     /* color: #666; */
-    color:#eb34a4;
+    color:#aaaaaa;
     font-weight: bold;
   }
   
@@ -670,7 +667,7 @@ image-container{
     bottom: 40px;
     /* 커서올렸을때 글자가 변하는 색 >>>>> 나중에 상의해서 변경하는 */
     /* color: #666; */
-    color:#eb34a4;
+    color:#aaaaaa;
     font-weight: bold;
   }
   
@@ -732,7 +729,7 @@ image-container{
     bottom: 40px;
     /* 커서올렸을때 글자가 변하는 색 >>>>> 나중에 상의해서 변경하는 */
     /* color: #666; */
-    color:#eb34a4;
+    color:#aaaaaa;
     font-weight: bold;
   }
   

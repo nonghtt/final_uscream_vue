@@ -16,14 +16,17 @@ export default {
     },
     created:function(){
 
-        const self = this;
-        alert(1)
-        self.$axios.get('http://localhost:8085/store/').then(function(res){
-           let storelist = res.data.storelist
-           alert(2)
-           alert(storelist.storeid)
+const self= this
+self.$axios.push('/storeList')
 
-        })
+        // const self = this;
+        // alert(1)
+        // self.$axios.get('http://localhost:8085/store/').then(function(res){
+        //    let storelist = res.data.storelist
+        //    alert(2)
+        //    alert(storelist.storeid)
+
+        // })
 
     }   
 
