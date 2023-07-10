@@ -6,18 +6,18 @@
 
         <div class="topbar">
             <span>
-                <h4> 즐겨찾기 </h4>
+                <h10 class="head_text"> 즐겨찾기 </h10>
             </span>
             <span>
-                <h4> {{ count }} / {{ countall }} </h4>
+                <h10> {{ count }} / {{ countall }} </h10>
             </span>
         </div>
         <div class="middlebar_container" style="border-bottom: 1px solid;">
             <div class="middlebar">
-                <input type="button" value="메일 작성" v-on:click="addmsg()">
-                <input type="button" value="휴지통으로" v-on:click="delmsg(msg.num)">
-                <input type="button" value="즐찾" v-on:click="marklist()">
-                <input type="button" value="읽음" v-on:click="readlist()">
+                <input type="button"  class="but f btncolor" value="메일 작성" v-on:click="addmsg()">
+                <input type="button"  class="but btncolor" value="휴지통으로" v-on:click="delmsg(msg.num)">
+                <input type="button"  class="but btncolor" value="즐찾" v-on:click="marklist()">
+                <input type="button"  class="but e btncolor" value="읽음" v-on:click="readlist()">
             </div>
             <div class="searchbar">
                 <form>
@@ -36,7 +36,7 @@
                     <img class="lcon" :src="readimg" v-if="msg.readcheck == 1" v-on:click="read(msg.msgnum)">
                     <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum)">
                 </td>
-                <td>{{ msg.sender.storeid }}</td>
+                <td>{{ msg.sender.managername }}</td>
                 <td v-on:click="detail(msg.msgnum)">{{ msg.title }}</td>
                 <td>{{ msg.msgdate }}</td>
             </tr>
@@ -133,17 +133,16 @@ export default {
 }
 </script>
       
-     
+ 
 <style scoped>
 .sidebar_container {
     display: inline-block;
-    width: 300px;
+    width: 220px;
     text-align: left;
     border-right: 1px solid black;
     background-color: whitesmoke;
     height: 770px;
 }
-
 
 
 h3 {
@@ -152,22 +151,25 @@ h3 {
 
 .container {
     margin: 5px 5px 5px 5px;
+    background-color: #fff;
 }
 
+.head_text{
+    font-weight: bold;
+}
 .topbar {
-    text-align: center;
+    text-align: left;
     margin-top: 2%;
     margin-bottom: 2%;
-
 }
 
-/* middlebar_container{
-        
-        
-    } */
+.middlebar_container {
+    border-bottom: 1px solid black;
+}
+
 .middlebar {
     display: inline-block;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
 }
 
 .searchbar {
@@ -176,22 +178,84 @@ h3 {
     display: inline-block;
 }
 
+.null_div {
+    margin-top: 20px;
+    text-align: center;
+    font-size: 25px;
+}
+
+.scroll {
+    overflow: scroll;
+    height: 500px;
+    overflow-x: hidden;
+}
+
+.scroll::-webkit-scrollbar {
+    width: 10px;
+}
+
+.scroll::-webkit-scrollbar-track {
+    background-color: #a9abab;
+}
+
+.scroll::-webkit-scrollbar-thumb {
+    background-color: #03c75a;
+}
+
+
+.scroll::-webkit-scrollbar-thumb:hover {
+    background-color: #04ac4e;
+}
+
+.pagination {
+
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    text-align: center;
+    margin-top: 10px;
+}
+
+.pagination button {
+    margin: 0 5px;
+    padding: 5px 10px;
+    background-color: #03c75a;
+    color: #fefefe;
+    border: none;
+    border-radius: 5px;
+    font-weight: 550;
+}
+
+.pagination button.active {
+    background-color: #04ac4e;
+}
+
 .main {
     width: 100%;
     text-align: center;
+
 }
+
+/* .boldtext{
+    font-weight: bold;
+} */
 
 table {
     border-radius: 6px;
 }
 
+
 tr {
     border-bottom: 1px solid rgba(0, 0, 0, .1);
+    height:35px;
 }
 
 td {
     padding-top: 7px;
     padding-bottom: 12px;
+    font-size:12.5px;
 }
 
 td:nth-child(1) {
@@ -220,8 +284,8 @@ td:nth-child(4) {
 
 
 .lcon {
-    width: 20px;
-    height: 30px;
+    width: 15px;
+    height: 20px;
     margin-left: 20px;
     margin-right: 8px;
 }
@@ -229,5 +293,46 @@ td:nth-child(4) {
 .checkbox_icon {
     zoom: 1.5;
 }
-</style>
-      
+
+.btncolor:hover {
+    background-color: #04ac4e;
+    color: #fefefe;
+}
+
+.btncolor {
+    color: #fefefe;
+    background-color: #03c75a;
+    font-weight: 550;
+    padding: 5px 10px;
+    width: 100px;
+}
+
+.but {
+    border: none;
+    border-right: 2px solid rgba(0, 49, 9, 0.108);
+}
+
+.f {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
+}
+
+.e {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+.textbar {
+    border-radius: 5px;
+    width: 250px;
+    border-color: #EAEAEA;
+}
+
+.textbar:hover {
+    border-color: black;
+}
+
+.bold {
+    font-weight: bold;
+}</style>
+    

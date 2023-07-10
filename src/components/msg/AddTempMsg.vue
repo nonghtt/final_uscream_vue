@@ -10,7 +10,7 @@
             <input type="button" class="but f btncolor" value="작성하기" v-on:click="addmsg">
             <input type="button" class="but e btncolor" value="휴지통으로" v-on:click="delmsg(num)">
         </div>
-        <tabel>
+        <table>
             <tr>
                 <td>보내는 사람</td>
                 <td><input type="text" class="enter" v-model="dto.sender.storeid" readonly></td>
@@ -30,7 +30,7 @@
             <tr>
                 <td colspan="2"><textarea rows="20" cols="30" v-model="dto.content"></textarea></td>
             </tr>
-        </tabel>
+        </table>
     </div>
 </template>
 <script>
@@ -46,7 +46,9 @@ export default {
             file: '',
             dto: [],
             array: [],
-            alertname: []
+            alertname: [],
+            searchResults: [],
+            name:[]
         }
     },
     created: function () {
@@ -61,38 +63,64 @@ export default {
         fileUpload() {
             this.file = this.$refs.fileref.files[0];
         },
+        async searchStoreId() {
+            const self = this;
+            const str_receiver = self.receiver.replace(/\s/g, '');
+            self.array = str_receiver.split(",")                 //array에는 manager 이름이 갯수만큼있다.   
+            self.searchResults=[];                               //storeid를 담을 배열변수
+            
+        
+                for(var i=0;i<self.array.length;i++){
+
+                   await self.$axios.get("http://localhost:8085/store/manager/" + self.array[i], { params: { name: self.array[i]} })
+                        .then(res => {
+                           
+                            self.searchResults[i] = res.data; 
+
+                            if(res.data=='전송오류'){
+                                self.searchResults[i] = self.array[i]; 
+                            }
+                            
+                        })
+                        .catch(error => {
+                            console.error('검색 중 오류 발생:', error);
+                        });
+                } 
+
+        },
         async addmsg() {
             const self = this;
-            const str_receiver = self.dto.receiver.storeid.replace(/\s/g, '');
-            self.array = str_receiver.split(",")
-            this.alertname = [];
-            const name = [];
-            let num = self.num;
-            let form = new FormData();
-            for (let i = 0; i < this.array.length; i++) {
-                form.append('sender', self.dto.sender.storeid);
-                form.append('receiver', self.array[i]);
-                form.append('title', self.dto.title);
-                form.append('content', self.dto.content);
-                if (this.file) {
+            this.alertname = [];                                    
+            const name = [];                                                  
+            
+            
+            for (var i = 0; i < self.searchResults.length; i++) {
+
+                let form = new FormData();
+                form.append('sender', sessionStorage.getItem("loginId"));
+                form.append('receiver', self.searchResults[i]);           
+                form.append('title', self.title);                  
+                form.append('content', self.content);              
+                if (self.file) {
                     form.append('mfile', self.file);
                 }
-                self.$axios.post("http://localhost:8085/msg", form, { headers: { "Content-Type": "multipart/form-data" } })
-                name[i] = self.array[i];
-                self.$axios.delete("http://localhost:8085/msg/del/" + num)
+                await self.$axios.post("http://localhost:8085/msg", form, { headers: { "Content-Type": "multipart/form-data" } })
+                name[i] = self.searchResults[i];
             }
-            for (var j = 0; j < name.length; j++) {
 
-                const res = await self.$axios.get("http://localhost:8085/msg/search/" + name[j])
+            for (var j = 0; j < name.length; j++) {
+                const res = await self.$axios.get("http://localhost:8085/msg/search/" + name[j])    
+            
                 let dtoo = res.data.dto;
                 if (dtoo == null) {
                     self.alertname.push(name[j]);
                 }
             }
-            if (self.alertname != '') {
-                alert(self.alertname + "라는 사용자는 없는 사용자입니다.");
+            if (self.alertname !='') {
+
+                alert("["+self.alertname+"]"+ "  없는 사용자입니다.");  
             }
-            self.$router.push({ name: 'TempMsg' });
+            self.$router.push({ name: 'SendMsg' });
         },
         delmsg(num) {
             const self = this

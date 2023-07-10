@@ -7,10 +7,10 @@
 
         <div class="topbar">
             <span>
-                <h4> 휴지통 </h4>
+                <h10 class="head_text"> 휴지통 </h10>
             </span>
             <span>
-                <h4> {{ count }} / {{ countall }} </h4>
+                <h10> {{ count }} / {{ countall }} </h10>
             </span>
 
         </div>
@@ -18,14 +18,14 @@
             <div class="middlebar">
                 <input type="button" class="but f btncolor" value="메일 작성" v-on:click="addmsg()">
                 <input type="button" class="but btncolor" value="영구삭제" v-on:click="delmsg()">
-                <input type="button" class="but btncolor" value="즐찾" v-on:click="marklist()">
+                <input type="button" class="but btncolor" value="즐겨찾기" v-on:click="marklist()">
                 <input type="button" class="but btncolor" value="읽음" v-on:click="readlist()">
                 <input type="button" class="but e btncolor" value="비우기" v-on:click="delallmsg()">
             </div>
             <div class="searchbar">
                 <form>
-                    <input type="text" class="textbar" name="searchbar" placeholder="메일 검색" autocomplete="off">
-                    <input type="submit" class="but f e btncolor" value="검색">
+                    <input type="text" class="textbar" name="searchbar" id="searchbar" placeholder="제목으로 검색" autocomplete="off">
+                    <input type="button" class="but f e btncolor" value="검색" v-on:click="searchtitle()">
                 </form>
             </div>
         </div>
@@ -43,7 +43,9 @@
                         <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum)">
                     </td>
                     <td :class="{ 'bold': msg.readcheck === true }">{{ msg.receiver.managername }}</td>
-                    <td v-on:click="detail(msg.msgnum)" :class="{ 'bold': msg.readcheck === true }">{{ msg.title }}</td>
+                    <td v-on:click="detail(msg.msgnum)" :class="{ 'bold': msg.readcheck === true }" @mouseover="changeCursor">
+                        <span :class="['limited-title']">{{ truncateTitle(msg.title, 30) }}</span>
+                    </td>
                     <td :class="{ 'bold': msg.readcheck === true }">{{ msg.msgdate }}</td>
                 </tr>
             </table>
@@ -78,7 +80,11 @@ export default {
             num: [],
             clickmsg: [],
             currentPage: 1,
-            pageSize: 11,
+            pageSize: 15,
+            title:'',
+            maxLength:30,
+           
+            
         }
     },
     created: function () {
@@ -102,6 +108,12 @@ export default {
         },
     },
     methods: {
+        truncateTitle(title, maxLength) {
+                    if (title.length > maxLength) {
+                        return title.substring(0, maxLength) + '...';
+                    }
+                    return title;
+                },
         checklist() {
             this.checkedmsg = [];
             for (let i = 0; i < this.checked.length; i++) {
@@ -112,6 +124,10 @@ export default {
                 }
             }
         },
+        changeCursor() {
+    
+    event.target.style.cursor = 'pointer';
+  },
         marklist() {
 
             const self = this;
@@ -140,10 +156,13 @@ export default {
             window.location.reload();
         },
         delmsg() {
+            let result = confirm("정말로 삭제하시겠습니까?");
             const self = this
-            for (let i = 0; i < this.checkedmsg.length; i++) {
-                const num = this.checkedmsg[i].num;
-                self.$axios.delete("http://localhost:8085/msg/del/" + num)
+            if(result){
+                for (let i = 0; i < this.checkedmsg.length; i++) {
+                    const num = this.checkedmsg[i].num;
+                    self.$axios.delete("http://localhost:8085/msg/del/" + num)
+                }
             }
             window.location.reload();
             self.$router.push({ name: 'DelMsg' })
@@ -181,6 +200,20 @@ export default {
             }
             self.$router.push({ name: 'DelMsg' });
         },
+
+        searchtitle() {
+            const self = this;
+            self.title = document.getElementById("searchbar").value;
+            let receiver = sessionStorage.getItem("loginId"); 
+            let sender = sessionStorage.getItem("loginId");
+            console.log(receiver+"/"+sender);
+            self.$axios.get("http://localhost:8085/msg/del/search/"+sender+"/"+receiver+"/"+self.title)
+                .then(function (res) {
+                    self.list = res.data.msglist;
+                    console.log(self.list);
+                })
+        },
+
         prevPage() {
             this.currentPage--;
         },
@@ -196,11 +229,10 @@ export default {
 </script>
     
     
-    
 <style scoped>
 .sidebar_container {
     display: inline-block;
-    width: 300px;
+    width: 220px;
     text-align: left;
     border-right: 1px solid black;
     background-color: whitesmoke;
@@ -214,13 +246,17 @@ h3 {
 
 .container {
     margin: 5px 5px 5px 5px;
+    background-color: #fff;
+}
+
+.head_text{
+    font-weight: bold;
 }
 
 .topbar {
-    text-align: center;
+    text-align: left;
     margin-top: 2%;
     margin-bottom: 2%;
-
 }
 
 .middlebar_container {
@@ -306,22 +342,16 @@ table {
     border-radius: 6px;
 }
 
-th {
-    text-align: left;
-
-}
-
-th:nth-child(4) {
-    text-align: center;
-}
 
 tr {
     border-bottom: 1px solid rgba(0, 0, 0, .1);
+    height:35px;
 }
 
 td {
     padding-top: 7px;
     padding-bottom: 12px;
+    font-size:12.5px;
 }
 
 td:nth-child(1) {
@@ -350,8 +380,8 @@ td:nth-child(4) {
 
 
 .lcon {
-    width: 20px;
-    height: 30px;
+    width: 15px;
+    height: 20px;
     margin-left: 20px;
     margin-right: 8px;
 }
