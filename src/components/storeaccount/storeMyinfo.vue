@@ -22,37 +22,43 @@
   <br/><br/>   
         <div class="div_storeid">
             <input class="input_storeid" type="text" v-model="storeid"><br/>
-            <label class="label_storeid">storeid</label>
+            <label class="label_storeid">지점 아이디</label>
             <span class="span_storeid"></span>
         </div>        
-
 
         <!-- <button v-on:click="idcheck"></button></input><br/> -->
        
        <div class="div_storename">
         <input class="input_storename" type="text" v-model="storename">
-        <label class="label_storename">storename</label>
+        <label class="label_storename">지점이름</label>
         <span class="span_storename"></span>
         </div>
-       
+
+        
+                <div class="div_location">                
+                <input class="input_location" type="password" v-model="location">    
+                <label class="label_location">주소</label>
+                <span class="span_location"></span>
+               </div>
+
 
         <div class="div_pwd">
             <input class="input_pwd" type="password" v-model="pwd">    
-            <label class="label_pwd">pwd</label>
+            <label class="label_pwd">비밀번호</label>
             <span class="span_pwd"></span>
         </div>
         
         
         <div class="div_managername">
         <input class="input_managername" type="text" v-model="managername"><br/>
-        <label class="label_managername">managername</label>
+        <label class="label_managername">지점장 이름</label>
         <span class="span_managername"></span>
         </div>
         
         
         <div class="div_accounttype">
         <input class="input_accounttype" type="text" v-model="accounttype"><br/>
-        <label class="label_accounttype">accounttype</label>
+        <label class="label_accounttype">유형</label>
         <span class="span_accounttype"></span>
         </div>
 
@@ -61,28 +67,27 @@
             <!-- 오른쪽 컨테이너 -->
                     
             <div class="box2" id="div_outline">
-              <div class="div_location">
-                
-            <input class="input_location" type="password" v-model="location">    
-            <label class="label_location">location</label>
-            <span class="span_location"></span>
-            ↓지도들어갈꺼임↓ 
-        </div>
-
       
 
+              <img :src="url" style="width:100%; height:100%;" class="img_main">
 
-    <img src="../../assets/1.png" 
-              style="width:100%; height:100%;"
-              class="img_main">
-    </div>
+            
+
+
+
+         
+
+
+            </div>
 
         <br/><br/>
         <button class="btn_edit" v-on:click="edit">수정하기</button>
         &nbsp;<router-link to="/" class="btn_cancle">수정취소</router-link>
-    </div>
-    </div>
-
+    
+    
+      </div>
+  </div>
+ 
 
         <!-- <h3>kakao map configuration</h3>
        지도가 보여질 영역 -->
@@ -100,7 +105,12 @@ name:"StoreEdit",
             storename:'',
             pwd:'',
             managername:'',
-            accounttype: ''
+            accounttype: '',
+            // myinfo:require("'http://localhost:8085/store/img/store/'+storeid"),
+            x:0,
+            y:0,
+            url:'http://localhost:8085/store/img/storeid',
+            dto:{}
          }
      },
      created:function(){    //컴포넌트 실행될 때 한번 실행
@@ -110,12 +120,18 @@ name:"StoreEdit",
             self.$axios.get('http://localhost:8085/store/storeid/'+self.storeid)
             .then(function(res){
                 if(res.status == 200){
-                    let dto = res.data.dto
+                    let dto = res.data.storelist
                     if(dto!=null){
                         self.storeid = dto.storeid
                         self.storename = dto.storename
                         self.pwd = dto.pwd
                         self.managername = dto.managername
+                        self.x =dto.x
+                        self.x =dto.y
+                        self.simg=dto.simg
+                        self.url = 'http://localhost:8085/store/img/'+dto.storeid
+                        alert(self.url)
+                        // alert(self.storeid)
                         if(self.accounttype == 1){
                             self.accounttype = '본사';
                         }else if(self.accounttype == 2){
@@ -136,6 +152,8 @@ name:"StoreEdit",
             formdata.append('pwd',self.pwd)
             formdata.append('managername',self.managername)
             formdata.append('accounttype',self.accounttype)
+            formdata.append('x',self.x)
+            formdata.append('y',self)
             alert('수정하러 간다?'+self.pwd);
             alert(formdata);
             self.$axios.post("http://localhost:8085/store",formdata)
@@ -310,7 +328,7 @@ background-color: white;
   position: relative;
   width: 300px;
   margin-left: 50px;
-  margin-top: 100px;
+  margin-top: 75px;
 }
 
 .input_storename {

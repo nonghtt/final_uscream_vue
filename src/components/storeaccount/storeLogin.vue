@@ -3,12 +3,6 @@
       <!-- <div class="text_login">LOGIN</div> -->
 
 
-         
-            <!-- 지도 테스트 -->
-      <li><router-link class="test" to="/location">지도 API</router-link></li>
-     
-
-      
       
       <div id="login_window">
       <div class="brandname">USCREAM</div>
@@ -38,14 +32,6 @@
           <button class="btn_login" v-on:click="login">로그인하기</button>
           </div>
     </div>
-
-
-
-
-
-
-
-
   </template>
   
   <script>
@@ -115,6 +101,8 @@
   font-size:20px;
   width:300px;
   font-weight:bold;
+  border:none;
+  outline:none;
   }
   
   /* 로그인창 윈도우 위치조정 */
