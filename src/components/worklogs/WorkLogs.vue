@@ -53,21 +53,34 @@
                         <td>{{ wl.endtime }}</td>
                         <td>{{ wl.alltime }}시간</td>
                         <td>
-                            {{ wl.latetime }}분
-                            <span class="late" v-if="wl.latetime > 0">지각</span>
+                            <span v-if="wl.latetime > 0">
+                                {{ wl.latetime }}분
+                                <span class="late">지각</span>
+                            </span>
+                            <span v-if="wl.latetime < 0">
+                                {{ wl.latetime.toString().substring(1) }}분
+                                 <span class="exceed">초과</span>
+                            </span>
+                           
                         </td>
                     </tr>
                 </tbody>
             </table>
 
+            <!-- 페이징 -->
             <div class="pagination">
                 <button :disabled="currentPage === 1" @click="prevPage">이전</button>
-                <div v-for="pageNumber in totalPages" :key="pageNumber">
-                    <button :class="{ active: currentPage === pageNumber }" @click="goToPage(pageNumber)">{{ pageNumber
-                    }}</button>
+                
+                <div v-for="i in pagearray" :key="i">
+                    <button :class="{ active: currentPage === i }" @click="goToPage(i)">
+                        {{ i }}
+                    </button>
                 </div>
+                
                 <button :disabled="currentPage === totalPages" @click="nextPage">다음</button>
             </div>
+             <!-- 페이징 여기까지 -->
+
         </div>
     </div>
 </template>
@@ -89,8 +102,10 @@ export default {
             selectedEmp: 0,
             //  lookwltable : '지각만 보기',
             choiceNum: 0,
-            pageSize: 12,
-            currentPage: 1,
+            pageSize: 12,               // 페이징 : 한 페이지에 보여줄 글 개수
+            currentPage: 1,             // 페이징 : 현재 페이지
+            totalpages: 0,              // 페이징 : Math.ceil(this.list / this.pageSize) "전체 리스트"에서 "한 페이지에 보여줄 글 개수"를 나눈 값
+            pagearray: [1, 2, 3, 4, 5], // 페이징 : 숫자 버튼 5개 초기값
             calendarOptions: {
                 plugins: [dayGridPlugin, interactionPlugin, momentPlugin],
                 // timeGridPlugin
@@ -137,17 +152,18 @@ export default {
             .then(function (res) {
                 if (res.status == 200 & res.data.flag == true) {
                     self.empList = res.data.list
+
                 }
             })
 
         this.getWorkdLogsAllList();
 
     },
-    computed:{
-        totalPages() {
+    computed: {
+        totalPages() {  // 페이징
             return Math.ceil(this.list.length / this.pageSize);
         },
-        paginatedData() {
+        paginatedData() {   // 페이징
             const startIndex = (this.currentPage - 1) * this.pageSize;
             const endIndex = startIndex + this.pageSize;
             return this.list.slice(startIndex, endIndex);
@@ -162,6 +178,7 @@ export default {
                 .then(function (res) {
                     if (res.status == 200 & res.data.flag == true) {
                         const list = res.data.list;
+
                         if (self.choiceNum === 0) {
                             console.log("캘린더")
                             list.forEach(item => {
@@ -181,12 +198,14 @@ export default {
                                 if (item.latetime > 0) {
                                     event.title = event.title + " " + item.latetime + "분";
                                 }
-                               // console.log(event.title + " 지각시간은 ? " + item.latetime);
+                                // console.log(event.title + " 지각시간은 ? " + item.latetime);
                                 self.calendarOptions.events.push(event);
                             })
                         } else {
                             console.log("표")
                             self.list = self.chageTime(list);
+                            //console.log(self.list)
+                            self.totalpages = Math.ceil(self.list.length / self.pageSize);
                         }
 
 
@@ -233,6 +252,7 @@ export default {
                         } else {
                             //console.log("표")
                             self.list = self.chageTime(list);
+                            console.log(self.list)
                         }
                     } else {
                         console.log("에러 : " + res.status)
@@ -241,13 +261,11 @@ export default {
         },
         empChange() {
             const self = this;
+            self.pagearray=[1,2,3,4,5]
             let empNum = self.selectedEmp;
             if (empNum === 0) {
-
-                console.log("전체보기 ㅇㅇㅇㅇㅇㅇㅇㅇㅇ")
                 self.getWorkdLogsAllList();
             } else {
-                console.log("특정멤버로 보기")
                 self.getWorkLogs(empNum);
             }
         },
@@ -258,8 +276,25 @@ export default {
                 list[i].starttime = list[i].starttime.slice(11, 16)
                 list[i].endtime = list[i].endtime.slice(11, 16)
                 // console.log(list[i].alltime / 60)
+                //let alltime =  list[i].alltime
                 list[i].alltime = list[i].alltime / 60
+                
 
+                /*
+                // hour = 스케줄에 등록된 시간
+                let hour = (parseInt(list[i].endtime.slice(0,2))-parseInt(list[i].starttime.slice(0,2))) * 60;
+                let minute = parseInt(list[i].endtime.slice(3,5))-parseInt(list[i].starttime.slice(3,5));
+                if(minute != 0){
+                    hour += minute;
+                }
+
+                if(hour < alltime){
+                    console.log("초과근무함 :" + alltime);
+                    list[i].latetime = parseInt("-" + (alltime - hour));
+                }
+                //console.log(parseInt(list[i].endtime.slice(0,2))-parseInt(list[i].starttime.slice(0,2)))
+                //console.log(parseInt(list[i].endtime.slice(3,5))-parseInt(list[i].starttime.slice(3,5)))
+                */
             }
             return list
         },
@@ -301,16 +336,41 @@ export default {
                 self.getWorkLogs(empNum);
             }
         },
+        // 페이징 : "이전" 버튼 클릭
         prevPage() {
             this.currentPage--;
+            this.lookFivePage(this.currentPage)
         },
+        // 페이징 : "이후" 버튼 클릭
         nextPage() {
 
             this.currentPage++;
+            this.lookFivePage(this.currentPage)
         },
+        // 페이징 : 숫자 버튼 클릭
         goToPage(pageNumber) {
+            this.lookFivePage(pageNumber)
             this.currentPage = pageNumber;
         },
+        // 페이징 : 숫자 버튼 계산
+        lookFivePage(pageNumber){
+            if (pageNumber == 1 || pageNumber == 2) {   // 1,2페이지 클릭했을 때 1, 2, 3, 4, 5 뜨게 만들어주기
+                for (let i = 0; i < this.pagearray.length; i++) {
+                    this.pagearray[i] = i + 1;
+                }
+            } else if (pageNumber == this.totalpages || pageNumber == (this.totalpages - 1)) {  // 마지막이랑 마지막-1 페이지 클릭했을 때 
+                for (let i = 0; i < this.pagearray.length; i++) {
+                    this.pagearray[i] = this.totalpages - 4 + i;
+                }
+            } else{   // 그 중간의 것들 클릭
+                if (pageNumber > 3) {
+                    for (let i = 0; i < this.pagearray.length; i++) {
+                        this.pagearray[i] = pageNumber - 2 + i;
+                    }
+                }
+            }
+        }
+
         // lookWlLate(){
         //     const self = this;
         //     if(self.lookwltable === '지각만 보기'){
@@ -324,6 +384,16 @@ export default {
 </script>
 
 <style scoped>
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+.notosanskr * {
+ font-family: 'Noto Sans KR', sans-serif;
+}
+
+body {
+    font-family: 'Noto Sans KR';
+}
+
 h3 {
     text-align: center;
     margin-top: 30px;
@@ -337,7 +407,14 @@ h3 {
 }
 
 .late {
-    background-color: red;
+    background-color: #FF6347;
+    border-radius: 20px;
+    padding: 1px 3px;
+    color: white;
+}
+
+.exceed {
+    background-color: #1E90FF;
     border-radius: 20px;
     padding: 1px 3px;
     color: white;
@@ -389,7 +466,7 @@ h3 {
     align-items: center;
     text-align: center;
     margin-top: 10px;
-    margin-bottom : 50px;
+    margin-bottom: 50px;
 }
 
 .pagination button {
