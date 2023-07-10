@@ -73,7 +73,7 @@ export default {
             formData.append("storeid", this.storeid);
            // console.log(this.vocContent + this.title + this.category + this.storeid);
             this.$axios
-                .post("http://localhost:8085/vocs", formData, {
+                .post('http://localhost:8085/vocs', formData, {
                     headers: {
                         "Content-Type": "multipart/form-data"
                     }

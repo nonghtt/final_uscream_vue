@@ -58,17 +58,20 @@
                     </div>
                 </div>
                 <div class="row mt-3">
-                    <div class="col">
-                        <div class="row">
-                            <div class="col">
-                                <button class="btn btn-primary" @click="prevPage" :disabled="currentPage === 1">이전</button>
-                            </div>
-                            <div class="col text-end">
-                                <button class="btn btn-primary" @click="nextPage"
-                                    :disabled="currentPage === totalPages">다음</button>
-                            </div>
-                        </div>
-                    </div>
+                <div class="col">
+                    <ul class="pagination justify-content-center">
+                    <li class="page-item" v-for="page in totalPages" :key="page">
+                        <button
+                        class="page-link"
+                        :class="{ active: page === currentPage }"
+                        @click="changePage(page)"
+                        style="background: none; border: none; cursor: pointer; color: #000;"
+                        >
+                        {{ page }}
+                        </button>
+                    </li>
+                    </ul>
+                </div>
                 </div>
             </div>
         </div>
@@ -162,7 +165,6 @@ export default {
             } else if (this.schbox === "category" && this.categoryVal !== "") {
                 url += `/schctg/${this.categoryVal}`;
             }
-
             console.log(url);
 
             const self = this;
@@ -172,6 +174,10 @@ export default {
                 } else if (res.data.voc) {
                     self.voclist = [res.data.voc];
                 }
+                // 최신순으로 정렬
+                self.voclist.sort((a, b) => {
+                    return new Date(b.wdate) - new Date(a.wdate);
+                });
             });
         },
         getCategoryText(category) {
@@ -191,6 +197,9 @@ export default {
             if (this.currentPage < this.totalPages) {
                 this.currentPage++;
             }
+        },
+        changePage(page) {
+            this.currentPage = page;
         },
     },
 };
