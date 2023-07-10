@@ -11,12 +11,12 @@
                     </div>
                 </div>
                 <div style="height: 300px;">
-                <div class="mb-5">
-                    <label for="content" class="form-label" style="font-size: 16px; font-weight: bold; color: gray;">내용</label>
-                    <div ref="viewer"></div>
-                    <div class="underline-input">
+                    <div class="mb-5">
+                        <label for="content" class="form-label" style="font-size: 16px; font-weight: bold; color: gray;">내용</label>
+                        <div ref="viewer"></div>
+                        <div class="underline-input">
+                        </div>
                     </div>
-                </div>
                 </div>
                 <hr>
                 <div class="d-flex justify-content-end">
@@ -156,4 +156,5 @@ export default {
 
 textarea.form-control {
     height: 300px;
-}</style>
+}
+</style>

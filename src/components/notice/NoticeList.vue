@@ -51,17 +51,20 @@
                 </div>
                 <div class="row mt-3">
                     <div class="col">
-                        <div class="row">
-                            <div class="col">
-                                <button class="btn btn-primary" @click="prevPage" :disabled="currentPage === 1">이전</button>
-                            </div>
-                            <div class="col text-end">
-                                <button class="btn btn-primary" @click="nextPage"
-                                    :disabled="currentPage === totalPages">다음</button>
-                            </div>
-                        </div>
+                        <ul class="pagination justify-content-center">
+                        <li class="page-item" v-for="page in totalPages" :key="page">
+                            <button
+                            class="page-link"
+                            :class="{ active: page === currentPage }"
+                            @click="changePage(page)"
+                            style="background: none; border: none; cursor: pointer; color: #000;"
+                            >
+                            {{ page }}
+                            </button>
+                        </li>
+                        </ul>
                     </div>
-                </div>
+                    </div>
             </div>
         </div>
     </div>
@@ -139,21 +142,12 @@ export default {
                     case "noticenum":
                         url += `/schid/${this.schVal}`;
                         break;
-                    case "category":
-                        if (this.categoryVal !== "") {
-                            if (this.categoryVal === "1" || this.categoryVal === "2") {
-                                url += `/schctg/${this.categoryVal}`;
-                            }
-                        }
-                        break;
                     case "title":
                         url += `/schtit/${this.schVal}`;
                         break;
                     default:
                         break;
                 }
-            } else if (this.schbox === "category" && this.categoryVal !== "") {
-                url += `/schctg/${this.categoryVal}`;
             }
 
             console.log(url);
@@ -165,8 +159,14 @@ export default {
                 } else if (res.data.notice) {
                     self.noticelist = [res.data.notice];
                 }
+
+                // 최신순으로 정렬
+                self.noticelist.sort((a, b) => {
+                    return new Date(b.wdate) - new Date(a.wdate);
+                });
             });
         },
+
         prevPage() {
             if (this.currentPage > 1) {
                 this.currentPage--;

@@ -27,8 +27,6 @@
 import Editor from '@toast-ui/editor';
 import '@toast-ui/editor/dist/toastui-editor.css';
 
-
-
 export default {
     name: "NoticeWriter",
     data() {
@@ -60,9 +58,10 @@ export default {
             const formData = new FormData();
             formData.append("content", this.noticeContent);
             formData.append("title", this.title);
+            formData.append("storeid", this.storeid);
 
             this.$axios
-                .post("http://localhost:8085/notices", formData, {
+                .post('http://localhost:8085/notices', formData, {
                     headers: {
                         "Content-Type": "multipart/form-data"
                     }
