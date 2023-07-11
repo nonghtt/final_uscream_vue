@@ -14,8 +14,7 @@
         </div>
         <div class="middlebar_container" style="border-bottom: 1px solid;">
             <div class="middlebar">
-                <input type="button" class="but f btncolor" value="메일 작성" v-on:click="addmsg()">
-                <input type="button" class="but btncolor" value="휴지통으로" v-on:click="delmsg()">
+                <input type="button" class="but f btncolor" value="휴지통으로" v-on:click="delmsg()">
                 <input type="button" class="but btncolor" value="즐겨찾기" v-on:click="marklist()">
                 <input type="button" class="but e btncolor" value="읽음" v-on:click="readlist()">
             </div>

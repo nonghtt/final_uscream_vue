@@ -100,6 +100,14 @@ export default {
             
             self.searchResults.push(self.dto.receiver.storeid);
 
+            if(self.dto.title==''|| self.dto.receiver.storeid==''){
+                if(self.dto.title==''){
+                    alert("제목을 입력해주세요.");
+                }else{
+                    alert("받는 사람을 입력해주세요.")
+                }
+            }else{
+
             for (var i = 0; i < self.searchResults.length; i++) {
 
                 let form = new FormData();
@@ -128,6 +136,7 @@ export default {
                 alert("["+self.alertname+"]"+ "  없는 사용자입니다.");  
             }
             self.$router.push({ name: 'SendMsg' });
+        }
         },
         delmsg(num) {
             const self = this

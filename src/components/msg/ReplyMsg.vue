@@ -69,7 +69,15 @@ export default {
         
         async addmsg() {
             const self = this;
-                                                         
+                                    
+            if(self.dto.title==''|| self.dto.receiver.storeid==''){
+                if(self.dto.title==''){
+                    alert("제목을 입력해주세요.");
+                }else{
+                    alert("받는 사람을 입력해주세요.")
+                }
+            }else{
+
                 let form = new FormData();
                 form.append('sender', sessionStorage.getItem("loginId"));
                 form.append('receiver', self.dto.receiver.storeid);           
@@ -85,6 +93,7 @@ export default {
 
             
             self.$router.push({ name: 'SendMsg' });
+            }
         },
         tempmsg() {
             const self =this;

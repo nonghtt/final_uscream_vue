@@ -17,11 +17,10 @@
         </div>
         <div class="middlebar_container">
             <div class="middlebar">
-                <input type="button" class="but f btncolor" value="메일 작성" v-on:click="addmsg()">
-                <input type="button" class="but btncolor" value="영구삭제" v-on:click="delmsg()">
+                <input type="button" class="but f btncolor" value="영구삭제" v-on:click="delmsg()">
+                <input type="button" class="but btncolor" value="비우기" v-on:click="delallmsg()">
                 <input type="button" class="but btncolor" value="즐겨찾기" v-on:click="marklist()">
-                <input type="button" class="but btncolor" value="읽음" v-on:click="readlist()">
-                <input type="button" class="but e btncolor" value="비우기" v-on:click="delallmsg()">
+                <input type="button" class="but e btncolor" value="읽음" v-on:click="readlist()">
             </div>
             <div class="searchbar">
                 <form>
