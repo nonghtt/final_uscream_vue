@@ -1,43 +1,44 @@
 <template>
     <div class="full_container">
-    <div class="sidebar_container shadow">
-        <SideBar />
-    </div>
-    <div class="container">
-        <div class="topbar">
-            <p class="main">답장 작성</p>
+        <div class="sidebar_container shadow">
+            <SideBar />
         </div>
-        <div class="middlebar">
-            <input type="button" class="but f btncolor" value="작성하기" v-on:click="addmsg">
-            <input type="button" class="but e btncolor" value="임시보관" v-on:click="tempmsg">
+        <div class="container">
+            <div class="topbar">
+                <p class="main">답장 작성</p>
+            </div>
+            <div class="middlebar">
+                <input type="button" class="but f btncolor" value="작성하기" v-on:click="addmsg">
+                <input type="button" class="but e btncolor" value="임시보관" v-on:click="tempmsg">
+            </div>
+            <table>
+                <tr>
+                    <td>보내는 사람</td>
+                    <td><input type="text" class="enter" v-model="dto.sender.managername" readonly></td>
+                </tr>
+                <tr>
+                    <td>받는 사람</td>
+                    <td><input type="text" class="enter" v-model="dto.receiver.managername" readonly></td>
+                </tr>
+                <tr>
+                    <td>제목</td>
+                    <td><input type="text" class="enter" v-model="dto.title"></td>
+                </tr>
+                <tr>
+                    <td>첨부</td>
+                    <td><input type="file" id="file" class="enter" multiple='true' @change="fileUpload" ref="fileref"></td>
+                </tr>
+                <tr>
+                    <td colspan="2"><textarea rows="20" cols="30" v-model="content"></textarea></td>
+                </tr>
+            </table>
         </div>
-        <table>
-            <tr>
-                <td>보내는 사람</td>
-                <td><input type="text" class="enter" v-model="dto.sender.storeid" readonly></td>
-            </tr>
-            <tr>
-                <td>받는 사람</td>
-                <td><input type="text" class="enter" v-model="dto.receiver.storeid" readonly></td>
-            </tr>
-            <tr>
-                <td>제목</td>
-                <td><input type="text" class="enter" v-model="dto.title"></td>
-            </tr>
-            <tr>
-                <td>첨부</td>
-                <td><input type="file" id="file" class="enter" multiple='true' @change="fileUpload" ref="fileref"></td>
-            </tr>
-            <tr>
-                <td colspan="2"><textarea rows="20" cols="30" v-model="content"></textarea></td>
-            </tr>
-        </table>
-    </div>
     </div>
 </template>
     
 <script>
 import SideBar from '@/views/SideBar.vue'
+import moment from 'moment';
 export default {
     name: "ReplyMsg",
     components: { SideBar },
@@ -49,8 +50,8 @@ export default {
             dto: [],
             array: [],
             alertname: [],
-            name:[],
-            searchResults: []
+            name: '',
+            dateTime:''
         }
     },
     created: function () {
@@ -62,47 +63,47 @@ export default {
                 self.dto.title = "[Re: " + self.dto.title + " ]";
             })
     },
+    computed:{
+        currentTime() {
+         return moment().format('YY-MM-DD HH:mm');
+  }
+    },
+    mounted() {
+  this.dateTime = this.currentTime;
+},
+   
     methods: {
         fileUpload() {
             this.file = this.$refs.fileref.files[0];
         },
-        
+
         async addmsg() {
             const self = this;
-                                    
-            if(self.dto.title==''|| self.dto.receiver.storeid==''){
-                if(self.dto.title==''){
-                    alert("제목을 입력해주세요.");
-                }else{
-                    alert("받는 사람을 입력해주세요.")
-                }
-            }else{
-
-                let form = new FormData();
-                form.append('sender', sessionStorage.getItem("loginId"));
-                form.append('receiver', self.dto.receiver.storeid);           
-                form.append('title', self.dto.title);                  
-                form.append('content', self.content);              
-                if (self.file) {
-                    form.append('mfile', self.file);
-                }
-            
-                await self.$axios.post("http://localhost:8085/msg", form, { headers: { "Content-Type": "multipart/form-data" } })
-                
-            
 
             
-            self.$router.push({ name: 'SendMsg' });
+            let form = new FormData();
+            form.append('sender', sessionStorage.getItem("loginId"));
+            form.append('receiver', self.dto.receiver.storeid);
+            form.append('title', self.dto.title);
+            form.append('content', self.content);
+            form.append('msgdate', self.dateTime);
+            if (self.file) {
+                form.append('mfile', self.file);
             }
+            await self.$axios.post("http://localhost:8085/msg", form, { headers: { "Content-Type": "multipart/form-data" } })
+
+            self.$router.push({ name: 'SendMsg' });
+
         },
         tempmsg() {
-            const self =this;
+            const self = this;
             let form = new FormData();
 
             form.append('sender', sessionStorage.getItem("loginId"));
             form.append('receiver', self.dto.receiver.storeid);
             form.append('title', self.dto.title);
             form.append('content', self.content);
+            form.append('msgdate', self.dateTime);
             if (self.file) {
                 form.append('mfile', self.file);
             }
@@ -119,19 +120,20 @@ export default {
     
 <style scoped>
 body {
-  font-family:  'Noto Sans KR', sans-serif;
-  background-color: rgb(255, 255, 254);
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: rgb(255, 255, 254);
 }
+
 .sidebar_container {
     display: inline-block;
     width: 220px;
     text-align: left;
-    border-right:  rgb(157, 157, 157);
+    border-right: rgb(157, 157, 157);
     background-color: rgb(255, 255, 254);
     height: 770px;
 }
 
-.full_container{
+.full_container {
     display: flex;
 }
 
@@ -202,27 +204,32 @@ textarea {
     width: 100%;
 }
 
-.btncolor{
-    color:#fefefe;
-    background-color: #03c75a;
-    font-weight: 550 ;
-    padding : 5px 10px;
-    width : 100px;
+.btncolor:hover {
+    background-color: #04ac4e;
+    color: #fefefe;
 }
+
+.btncolor {
+    color: #fefefe;
+    background-color: #03c75a;
+    font-weight: 550;
+    padding: 5px 10px;
+    width: 100px;
+}
+
 .but {
-    border:none;
+    border: none;
     border-right: 2px solid rgba(0, 49, 9, 0.108);
 }
 
-.f{
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px; 
+.f {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 
-.e{
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px; 
+.e {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
-
 </style>
     
