@@ -58,20 +58,17 @@
                     </div>
                 </div>
                 <div class="row mt-3">
-                <div class="col">
-                    <ul class="pagination justify-content-center">
-                    <li class="page-item" v-for="page in totalPages" :key="page">
-                        <button
-                        class="page-link"
-                        :class="{ active: page === currentPage }"
-                        @click="changePage(page)"
-                        style="background: none; border: none; cursor: pointer; color: #000;"
-                        >
-                        {{ page }}
-                        </button>
-                    </li>
-                    </ul>
-                </div>
+                    <div class="col">
+                        <div class="row">
+                            <div class="col">
+                                <button class="btn btn-primary" @click="prevPage" :disabled="currentPage === 1">이전</button>
+                            </div>
+                            <div class="col text-end">
+                                <button class="btn btn-primary" @click="nextPage"
+                                    :disabled="currentPage === totalPages">다음</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -204,3 +201,22 @@ export default {
     },
 };
 </script>
+
+<style>
+.btncolor:hover {
+    background-color: #FFC67B;
+    color: #595959;
+}
+.btncolor {
+    color: #595959;
+    background-color: #bee96d;
+    font-weight: bolder;
+    margin-top: 5px;
+    margin-bottom: 5px;
+}
+
+.select-height,
+.input-height {
+  height: 38px; /* 원하는 높이 값으로 설정 */
+}
+</style>
