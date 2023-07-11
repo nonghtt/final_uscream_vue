@@ -19,7 +19,22 @@
                     </option>
                 </select>
                 <!-- <button @click="lookWlLate">{{ lookwltable }}</button> -->
+
+                <!-- 초과 근무 & 지각 근무 보기 -->
+                <select v-if="choiceNum === 1" class="form-select selectbox" v-model="selectedLateTime"
+                    @change="latetimeChange()">
+                    <option :key=0 :value=0>
+                        --전체 보기--
+                    </option>
+                    <option :key=1 :value=1>
+                        지각 근무만 보기
+                    </option>
+                    <option :key=2 :value=2>
+                        초과 근무만 보기
+                    </option>
+                </select>
             </div>
+
         </div>
 
         <!-- 캘린더 -->
@@ -41,7 +56,7 @@
                         <th scope="col">출근시간</th>
                         <th scope="col">퇴근시간</th>
                         <th scope="col">총 시간</th>
-                        <th scope="col">지각 시간 (분)</th>
+                        <th scope="col">시간 (분)</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -59,27 +74,29 @@
                             </span>
                             <span v-if="wl.latetime < 0">
                                 {{ wl.latetime.toString().substring(1) }}분
-                                 <span class="exceed">초과</span>
+                                <span class="exceed">초과</span>
                             </span>
-                           
+
                         </td>
                     </tr>
                 </tbody>
             </table>
 
             <!-- 페이징 -->
-            <div class="pagination">
+            <div class="pagination" v-if="totalpages > 0">
                 <button :disabled="currentPage === 1" @click="prevPage">이전</button>
-                
-                <div v-for="i in pagearray" :key="i">
-                    <button :class="{ active: currentPage === i }" @click="goToPage(i)">
-                        {{ i }}
+
+
+                <div v-for="(item,i) in pagearray" :key="i">
+                    <!-- 총 페이지의 개수 > index보다 클 경우에만 보여주기 총 페이지가 1이면 1만 보여주기 위해서 -->
+                    <button v-if="totalpages>i" :class="{ active: currentPage === item }" @click="goToPage(item)">
+                        {{ item }}
                     </button>
                 </div>
-                
+
                 <button :disabled="currentPage === totalPages" @click="nextPage">다음</button>
             </div>
-             <!-- 페이징 여기까지 -->
+            <!-- 페이징 여기까지 -->
 
         </div>
     </div>
@@ -106,6 +123,7 @@ export default {
             currentPage: 1,             // 페이징 : 현재 페이지
             totalpages: 0,              // 페이징 : Math.ceil(this.list / this.pageSize) "전체 리스트"에서 "한 페이지에 보여줄 글 개수"를 나눈 값
             pagearray: [1, 2, 3, 4, 5], // 페이징 : 숫자 버튼 5개 초기값
+            selectedLateTime: 0,
             calendarOptions: {
                 plugins: [dayGridPlugin, interactionPlugin, momentPlugin],
                 // timeGridPlugin
@@ -148,7 +166,7 @@ export default {
         const storeid = self.id;    // 현재 로그인 중인 아이디 
 
         // 직원 목록 불러오기 
-        self.$axios.get(`http://localhost:8085/emp/storeid/${storeid}`)
+        self.$axios.get(`http://localhost:8085/emp/name/storeid/${storeid}`)
             .then(function (res) {
                 if (res.status == 200 & res.data.flag == true) {
                     self.empList = res.data.list
@@ -206,6 +224,7 @@ export default {
                             self.list = self.chageTime(list);
                             //console.log(self.list)
                             self.totalpages = Math.ceil(self.list.length / self.pageSize);
+                            console.log("getWorkdLogsAllList :"+self.totalpages)
                         }
 
 
@@ -253,6 +272,8 @@ export default {
                             //console.log("표")
                             self.list = self.chageTime(list);
                             console.log(self.list)
+                            self.totalpages = Math.ceil(self.list.length / self.pageSize);
+                            console.log("getWorkLogs 총 페이지 : "+self.totalpages);
                         }
                     } else {
                         console.log("에러 : " + res.status)
@@ -261,7 +282,8 @@ export default {
         },
         empChange() {
             const self = this;
-            self.pagearray=[1,2,3,4,5]
+            self.selectedLateTime=0;
+            self.pagearray = [1, 2, 3, 4, 5]
             let empNum = self.selectedEmp;
             if (empNum === 0) {
                 self.getWorkdLogsAllList();
@@ -272,13 +294,17 @@ export default {
         // 시간 잘라주는 함수 : 원래는 2023-07-05T09:00:00 이렇게 보임 
         chageTime(list) {
             //.log(list)
+            const self =this;
+            
+            self.totalpages = Math.ceil(list.length / self.pageSize);
+            console.log("changeTime 총 페이지 : "+ self.totalpages);
             for (let i = 0; i < list.length; i++) {
                 list[i].starttime = list[i].starttime.slice(11, 16)
                 list[i].endtime = list[i].endtime.slice(11, 16)
                 // console.log(list[i].alltime / 60)
                 //let alltime =  list[i].alltime
                 list[i].alltime = list[i].alltime / 60
-                
+
 
                 /*
                 // hour = 스케줄에 등록된 시간
@@ -338,14 +364,17 @@ export default {
         },
         // 페이징 : "이전" 버튼 클릭
         prevPage() {
-            this.currentPage--;
-            this.lookFivePage(this.currentPage)
+            if(this.currentPage > 1){
+                this.currentPage--;
+                this.lookFivePage(this.currentPage)
+            }
         },
         // 페이징 : "이후" 버튼 클릭
         nextPage() {
-
-            this.currentPage++;
-            this.lookFivePage(this.currentPage)
+            if(this.currentPage < this.totalpages){
+                this.currentPage++;
+                this.lookFivePage(this.currentPage)
+            }
         },
         // 페이징 : 숫자 버튼 클릭
         goToPage(pageNumber) {
@@ -353,7 +382,7 @@ export default {
             this.currentPage = pageNumber;
         },
         // 페이징 : 숫자 버튼 계산
-        lookFivePage(pageNumber){
+        lookFivePage(pageNumber) {
             if (pageNumber == 1 || pageNumber == 2) {   // 1,2페이지 클릭했을 때 1, 2, 3, 4, 5 뜨게 만들어주기
                 for (let i = 0; i < this.pagearray.length; i++) {
                     this.pagearray[i] = i + 1;
@@ -362,23 +391,80 @@ export default {
                 for (let i = 0; i < this.pagearray.length; i++) {
                     this.pagearray[i] = this.totalpages - 4 + i;
                 }
-            } else{   // 그 중간의 것들 클릭
+            } else {   // 그 중간의 것들 클릭
                 if (pageNumber > 3) {
                     for (let i = 0; i < this.pagearray.length; i++) {
                         this.pagearray[i] = pageNumber - 2 + i;
                     }
                 }
             }
-        }
-
-        // lookWlLate(){
-        //     const self = this;
-        //     if(self.lookwltable === '지각만 보기'){
-        //         console.log("후하")
-        //     } else { // 전체보기 
-        //         console.log("후하")
-        //     }
-        // }
+        },
+        // 지각만 보기
+        latetimeChange() {
+            const self = this;
+            const time = self.selectedLateTime;
+            const emp = self.selectedEmp;
+            //console.log(time);
+           // console.log(emp);
+            // 0: 전체보기 
+            // 1: 지각만 보기
+            // 2: 초과만 보기
+            // if()
+            if (emp === 0 && time === 0) {
+                self.getWorkdLogsAllList();
+            } else if (emp === 0 && time === 1) {
+                self.lookLateTime()
+            } else if (emp === 0 && time === 2) {
+                self.lookOverTime()
+            } else if (emp != 0 && time === 1) {
+                self.lookLateTimeAndEmp(emp)
+            } else if (emp != 0 && time === 2) {
+                self.lookOverTimeAndEmp(emp)
+            }
+        },
+        // 지각 + 직원
+        lookLateTimeAndEmp(emp) {
+            const self = this;
+            self.$axios.get(`http://localhost:8085/worklogs/latetime/${emp}`)
+                .then(function (res) {
+                    console.log(res.data)
+                    if (res.status == 200 && res.data.flag == true) {
+                        self.list = self.chageTime(res.data.list);
+                    }
+                })
+        },
+        // 초과 + 직원
+        lookOverTimeAndEmp(emp) {
+            const self = this;
+            self.$axios.get(`http://localhost:8085/worklogs/overtime/${emp}`)
+                .then(function (res) {
+                    console.log(res.data)
+                    if (res.status == 200 && res.data.flag == true) {
+                        self.list = self.chageTime(res.data.list);
+                    }
+                })
+        },
+        // 초과
+        lookLateTime() {
+            const self = this;
+            self.$axios.get(`http://localhost:8085/worklogs/latetime/storeid/${self.id}`)
+                .then(function (res) {
+                    console.log(res.data)
+                    if (res.status == 200 && res.data.flag == true) {
+                        self.list = self.chageTime(res.data.list);
+                    }
+                })
+        },
+        lookOverTime() {
+            const self = this;
+            self.$axios.get(`http://localhost:8085/worklogs/overtime/storeid/${self.id}`)
+                .then(function (res) {
+                    console.log(res.data)
+                    if (res.status == 200 && res.data.flag == true) {
+                        self.list = self.chageTime(res.data.list);
+                    }
+                })
+        },
     }
 }
 </script>
@@ -387,7 +473,7 @@ export default {
 @import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
 
 .notosanskr * {
- font-family: 'Noto Sans KR', sans-serif;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
 body {
