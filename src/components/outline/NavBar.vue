@@ -127,6 +127,7 @@ export default {
         logout() {
             sessionStorage.removeItem('loginId')
             sessionStorage.removeItem('accounttype')
+            sessionStorage.removeItem('lastorder')
             location.href = '/';
             alert('로그아웃이 완료되었습니다.')
         },

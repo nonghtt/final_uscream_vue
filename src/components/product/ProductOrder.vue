@@ -19,7 +19,7 @@
                 <td>{{ product.productname }}</td>
                 <td class="table-default"><img v-bind:src="'http://localhost:8085/products/img/' + product.productnum"></td>
                 <td>{{ product.cost }}</td>
-                <td><input type="number" class="cnt" v-model="amount[index]" @change="multiplecost(product, index)"></td>
+                <td><input type="number" class="cnt" v-model="amount[index]" @change="multiplecost(product, index)" min="0"></td>
                 <td>{{ ordercost[index] }}</td>
             </tr>
 
@@ -80,6 +80,7 @@ export default {
             }
         },
         add() {
+            sessionStorage.setItem("lastorder",1)
             const self = this
             /* let formdata = new FormData(); */
             // formdata.append("dto", JSON.stringify(this.checkedproduct));
@@ -98,6 +99,7 @@ export default {
             .then(function(res){
                 alert(res.data.ordercnt+"개의 상품이 발주신청 되었습니다.")
                 router.push('OrderList')
+               
         })
     }
 }
