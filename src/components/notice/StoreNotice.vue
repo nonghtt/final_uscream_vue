@@ -10,19 +10,20 @@
                         <div class="underline"></div>
                     </div>
                 </div>
-                <div style="height: 300px;">
-                    <div class="mb-5">
-                        <label for="content" class="form-label" style="font-size: 16px; font-weight: bold; color: gray;">내용</label>
+                <div>
+                    <div class="mb-3">
+                        <label for="content" class="form-label"
+                            style="font-size: 16px; font-weight: bold; color: gray;">내용</label>
                         <div ref="viewer"></div>
                         <div class="underline-input">
                         </div>
                     </div>
                 </div>
-                <hr>
-                <div class="d-flex justify-content-end">
-                    <button v-if="accounttype === '2'" @click="movePage('/NoticeList')"
-                        class="btn btn-secondary btn-sm">목록</button>
-                </div>
+            </div>
+            <hr>
+            <div class="d-flex justify-content-end">
+                <button v-if="accounttype === '2'" @click="movePage('/NoticeList')"
+                    class="btn btncolor">목록</button>
             </div>
         </div>
     </div>
@@ -109,24 +110,24 @@ export default {
             });
         },
         saveChanges() {
-        const noticenum = this.noticenum;
-        const formData = new FormData();
-        formData.append('content', this.content);
-        formData.append('category', this.category);
-        formData.append('title', this.title);
+            const noticenum = this.noticenum;
+            const formData = new FormData();
+            formData.append('content', this.content);
+            formData.append('category', this.category);
+            formData.append('title', this.title);
 
-        axios
-            .put(`http://localhost:8085/notices/edit/${noticenum}`, formData)
-            .then(response => {
-                console.log(response.data);
-                // 저장 후 목록으로 이동하면서 새로고침되어 데이터가 갱신됨
-                this.$router.push('/NoticeList').catch(error => {
+            axios
+                .put(`http://localhost:8085/notices/edit/${noticenum}`, formData)
+                .then(response => {
+                    console.log(response.data);
+                    // 저장 후 목록으로 이동하면서 새로고침되어 데이터가 갱신됨
+                    this.$router.push('/NoticeList').catch(error => {
+                        console.error(error);
+                    });
+                })
+                .catch(error => {
                     console.error(error);
                 });
-            })
-            .catch(error => {
-                console.error(error);
-            });
         },
     },
 };
@@ -157,4 +158,19 @@ export default {
 textarea.form-control {
     height: 300px;
 }
+
+</style>
+
+<style scoped>
+.btncolor:hover{
+  background-color: #FFC67B;
+  color:#303030;
+}
+.btncolor{
+    height: 38px;
+    color:#303030;
+    background-color: #bee96d;
+    font-weight: bolder ;
+}
+
 </style>

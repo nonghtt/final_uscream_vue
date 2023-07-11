@@ -1,18 +1,18 @@
 <template>
-    <div class="container">
+    <div class="wrapper" style="padding: 40px;">
         <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span class="font-weight-bold">공지사항</span>
-                <button v-if="accounttype === '1'" class="btn btn-sm btncolor">
-                    <router-link v-if="accounttype === '1'" class="btn btn-sm"
+                <button v-if="accounttype === '1'" class="btn btncolor">
+                    <router-link v-if="accounttype === '1'" class="btn btncolor"
                         :to="{ path: '/NoticeWriter' }">등록</router-link>
                 </button>
             </div>
 
             <div class="card-body">
                 <div class="row mb-3">
-                    <div class="col">
-                        <select class="form-select" v-model="schbox">
+                    <div class="col-6">
+                        <select class="form-select" v-model="schbox" style="width: 40%; margin-left: 30px;">
                             <option value="" disabled selected>검색조건</option>
                             <option value="noticenum">글번호</option>
                             <option value="title">제목</option>
@@ -20,9 +20,9 @@
                     </div>
                     <div class="col">
                         <div class="input-group">
-                            <input v-model="schVal" type="text" class="form-control" placeholder="검색어"
+                            <input v-model="schVal" type="text" class="form-control " placeholder="검색어"
                                 @keypress.enter.prevent="getBoardList" />
-                            <button type="button" class="btn btn-primary btncolor" @click="getBoardList">검색</button>
+                            <button type="button" class="btn btncolor" @click="getBoardList">검색</button>
                         </div>
                     </div>
                 </div>
@@ -53,10 +53,10 @@
                     <div class="col">
                         <div class="row">
                             <div class="col">
-                                <button class="btn btn-primary" @click="prevPage" :disabled="currentPage === 1">이전</button>
+                                <button class="btn btncolor" @click="prevPage" :disabled="currentPage === 1">이전</button>
                             </div>
                             <div class="col text-end">
-                                <button class="btn btn-primary" @click="nextPage"
+                                <button class="btn btncolor" @click="nextPage"
                                     :disabled="currentPage === totalPages">다음</button>
                             </div>
                         </div>
@@ -64,7 +64,7 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div>    
 </template>
 
 <script>
@@ -115,7 +115,6 @@ export default {
             } else if (this.accounttype == 2) {
                 name = 'StoreNotice';
             }
-
             this.$router.push({
                 name,
                 query: {
@@ -146,9 +145,7 @@ export default {
                         break;
                 }
             }
-
             console.log(url);
-
             const self = this;
             self.$axios.get(url).then(function (res) {
                 if (res.data.list) {
@@ -156,7 +153,6 @@ export default {
                 } else if (res.data.notice) {
                     self.noticelist = [res.data.notice];
                 }
-
                 // 최신순으로 정렬
                 self.noticelist.sort((a, b) => {
                     return new Date(b.wdate) - new Date(a.wdate);
@@ -178,7 +174,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .btncolor:hover {
     background-color: #FFC67B;
     color: #595959;
@@ -190,5 +186,13 @@ export default {
     font-weight: bolder;
     margin-top: 5px;
     margin-bottom: 5px;
+}
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto; /* 가운데 정렬을 위한 설정 */
+}
+
+.form-control{
+    height : 80%;
 }
 </style>
