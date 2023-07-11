@@ -170,6 +170,7 @@ export default {
         });
     },
     getNetsalesAnalysis() {
+      this.showDonutChart = true;
       const storeId = this.storeId;
       const year = this.selectYear;
       const month = this.selectMonth;

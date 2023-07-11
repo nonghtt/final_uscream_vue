@@ -44,6 +44,7 @@
   
 <script>
 
+
 export default {
     name: "OrderDetail",
     data() {
@@ -114,6 +115,7 @@ export default {
                 let num = 1
                 self.$axios.patch('http://localhost:8085/orders/confirm/' + tempnum + '/' + num).then(function (res) {
                     console.log(res.status)
+                    
                 })
 
                 for (let j = 0; j < self.inventorylist.length; j++) {
@@ -124,15 +126,23 @@ export default {
                         })
                     }
                 }
-
+                   
             }
             for (let j = 0; j < self.uncheckedproduct.length; j++) {
                 let tempnum = self.uncheckedproduct[j].tempnum
                 let num = 2
                 self.$axios.patch('http://localhost:8085/orders/confirm/' + tempnum + '/' + num).then(function (res) {
                     console.log(res.status)
+
+                    
+                        
+                    
                 })
             }
+            setTimeout(()=>location.href="/orderlist",1000)
+            
+
+
         },
         updateAmount(order, index, value) {
             order.amount = value;
