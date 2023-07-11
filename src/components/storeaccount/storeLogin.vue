@@ -2,7 +2,6 @@
     <div id="login" class="login">
       <!-- <div class="text_login">LOGIN</div> -->
 
-      <router-link class="logorouter" to="/location">로그인창 디자인 테스트</router-link>
 
 
 
@@ -122,6 +121,7 @@
    color: #8eb443;
    font-size:30px;
    font-weight: bold;
+   text-shadow: 5px 5px rgb(236, 234, 234);
   }
   .title_login{
     background-color: #8eb443;

@@ -53,13 +53,14 @@
             </table>
         </div>
         <div class="pagination">
-            <button :disabled="currentPage === 1" @click="prevPage">이전</button>
-            <div v-for="pageNumber in totalPages" :key="pageNumber">
-                <button :class="{ active: currentPage === pageNumber }" @click="goToPage(pageNumber)">{{ pageNumber
-                }}</button>
+                <button :disabled="currentPage === 1" @click="prevPage">이전</button>
+                <div v-for="(item,i) in pagearray" :key="i">
+                    <button v-if="totalpages>i" :class="{ active: currentPage === item }" @click="goToPage(item)">
+                        {{ item }}
+                    </button>
+                </div>
+                <button :disabled="currentPage === totalPages" @click="nextPage">다음</button>
             </div>
-            <button :disabled="currentPage === totalPages" @click="nextPage">다음</button>
-        </div>
     </div>
 </div>
 </template>
@@ -87,8 +88,9 @@ export default {
             clickmsg: [],
             currentPage: 1,
             pageSize: 15,
-            title:'',
-            maxLength:30
+            title: '',
+            maxLength: 20,
+            pagearray: [1, 2, 3, 4, 5], 
         }
     },
     created: function () {
@@ -190,24 +192,37 @@ export default {
                     self.list = res.data.msglist;
                 })
         },
-        // detail(num) {
-        //     const self = this
-        //     self.$axios.patch("http://localhost:8085/msg/read/detail/check/" + num)
-        //     self.$router.push({ name: 'DetailMsg', query: { 'num': num } })
-        // },
-
-
-
-        prevPage() {
+          // 페이징 
+          prevPage() {
             this.currentPage--;
+            this.lookFivePage(this.currentPage)
         },
         nextPage() {
-
             this.currentPage++;
+            this.lookFivePage(this.currentPage)
         },
         goToPage(pageNumber) {
+            this.lookFivePage(pageNumber)
             this.currentPage = pageNumber;
         },
+
+        lookFivePage(pageNumber) {
+            if (pageNumber == 1 || pageNumber == 2) {   
+                for (let i = 0; i < this.pagearray.length; i++) {
+                    this.pagearray[i] = i + 1;
+                }
+            } else if (pageNumber == this.totalpages || pageNumber == (this.totalpages - 1)) {  
+                for (let i = 0; i < this.pagearray.length; i++) {
+                    this.pagearray[i] = this.totalpages - 4 + i;
+                }
+            } else {   
+                if (pageNumber > 3) {
+                    for (let i = 0; i < this.pagearray.length; i++) {
+                        this.pagearray[i] = pageNumber - 2 + i;
+                    }
+                }
+            }
+        }
     }
 }
 </script>
@@ -220,22 +235,21 @@ export default {
     
   
 <style scoped>
-
 body {
-  font-family:  'Noto Sans KR', sans-serif;
-  background-color: rgb(255, 255, 254);
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: rgb(255, 255, 254);
 }
 
-.full_container{
+
+.full_container {
     display: flex;
 }
-
 
 .sidebar_container {
     display: inline-block;
     width: 220px;
     text-align: left;
-    border-right:  rgb(157, 157, 157);
+    border-right: rgb(157, 157, 157);
     background-color: rgb(255, 255, 254);
     height: 770px;
 }
@@ -250,8 +264,7 @@ h3 {
     background-color: #fff;
 }
 
-
-.head_text{
+.head_text {
     font-weight: bold;
 }
 
@@ -347,13 +360,13 @@ table {
 
 tr {
     border-bottom: 1px solid rgba(0, 0, 0, .1);
-    height:35px;
+    height: 35px;
 }
 
 td {
     padding-top: 7px;
     padding-bottom: 12px;
-    font-size:12.5px;
+    font-size: 12.5px;
 }
 
 td:nth-child(1) {
@@ -433,4 +446,5 @@ td:nth-child(4) {
 
 .bold {
     font-weight: bold;
-}</style>
+}
+</style>
