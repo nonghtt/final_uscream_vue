@@ -33,7 +33,7 @@ export default {
         return {
             editor: null,
             title: "", // 입력된 제목을 담을 변수
-            noticeContent: "" // 입력된 공지사항 내용을 담을 변수
+            noticeContent:null// 입력된 공지사항 내용을 담을 변수
         };
     },
     mounted() {
@@ -55,6 +55,10 @@ export default {
             this.noticeContent = this.editor.getMarkdown();
         },
         saveNotice() {
+             if (!this.title || !this.noticeContent) {
+                alert("제목과 내용을 입력해주세요.");
+                return;
+            }
             const formData = new FormData();
             formData.append("content", this.noticeContent);
             formData.append("title", this.title);

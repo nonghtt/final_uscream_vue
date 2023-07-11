@@ -161,13 +161,14 @@ export default {
                 });
         },
         confirmHQ() {
+            console.log("click");
             const vocnum = this.$route.query.vocnum;
             axios
-                .get(`http://localhost:8085/vocs/schid/${vocnum}`)
+                .put(`http://localhost:8085/vocs/checkedit/${vocnum}`)
                 .then(response => {
-                    this.vocnum = response.data.voc.vocnum;
-                    this.content = response.data.voc.content;
-                    this.voccheck = response.data.voc.voccheck;
+                    if(response.status == 200){
+                        console.log(response.data)
+                    }
                 })
                 .catch(error => {
                     console.error(error);
