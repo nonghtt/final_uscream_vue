@@ -16,104 +16,127 @@
 
 
         
-
+<div class="box">
 <!-- 왼쪽 컨테이너 -->
-<div class="box1" id="div_outline">     
-  <br/><br/>   
-        <div class="div_storeid">
-            <input class="input_storeid" type="text" v-model="storeid"><br/>
-            <label class="label_storeid">지점 아이디</label>
-            <span class="span_storeid"></span>
-        </div>        
+      <div class="box1" id="div_outline">   
 
-        <!-- <button v-on:click="idcheck"></button></input><br/> -->
-       
-       <div class="div_storename">
-        <input class="input_storename" type="text" v-model="storename">
-        <label class="label_storename">지점이름</label>
-        <span class="span_storename"></span>
-        </div>
-
-        
-                <div class="div_location">                
-                <input class="input_location" type="password" v-model="location">    
-                <label class="label_location">주소</label>
-                <span class="span_location"></span>
-               </div>
+              <div class="div_storeid">
+                <div style="text-align:left; font-weight:bold;">아이디</div>
+                  <input class="input_storeid" type="text" v-model="storeid" readonly><br/>
+                  <!-- <label class="label_storeid"></label> -->
+                  <span class="span_storeid"></span>
+              </div>        
 
 
-        <div class="div_pwd">
-            <input class="input_pwd" type="password" v-model="pwd">    
-            <label class="label_pwd">비밀번호</label>
-            <span class="span_pwd"></span>
-        </div>
-        
-        
-        <div class="div_managername">
-        <input class="input_managername" type="text" v-model="managername"><br/>
-        <label class="label_managername">지점장 이름</label>
-        <span class="span_managername"></span>
-        </div>
-        
-        
+
+            <div class="div_pwd">
+              <div style="text-align:left; font-weight:bold;">비밀번호</div>
+                <input class="input_pwd" type="password" v-model="pwd">    
+                <!-- <label class="label_pwd">비밀번호</label> -->
+                <span class="span_pwd"></span>
+            </div>
+
+
+
         <div class="div_accounttype">
-        <input class="input_accounttype" type="text" v-model="accounttype"><br/>
-        <label class="label_accounttype">유형</label>
+          <div style="text-align:left; font-weight:bold;">유형</div>
+        <input class="input_accounttype" type="text" v-model="accounttype" readonly><br/>
+        <!-- <label class="label_accounttype">유형</label> -->
         <span class="span_accounttype"></span>
         </div>
 
-</div>
+        
+
+        <img :src="url" class="img_main"><br/>
+
+        <!-- <img :src="'http://localhost:8085/storeid/'+storeid" style="width:90%; height:300px;" class="img_main"><br/> -->
+      
+    </div>
+
 
             <!-- 오른쪽 컨테이너 -->
-                    
-            <div class="box2" id="div_outline">
-      
 
-              <img :src="url" style="width:100%; height:100%;" class="img_main">
+                 <div class="box2" id="div_outline">
+          
+                      <div class="div_storename">
+                        <div style="text-align:left; font-weight:bold;">지점 이름</div>
+                      <input class="input_storename" type="text" v-model="storename">
+                      <!-- <label class="label_storename">지점 이름</label> -->
+                      <span class="span_storename"></span>
+                      </div>
 
+        
+
+                      <div class="div_managername">
+                        <div style="text-align:left; font-weight:bold;">지점장 이름</div>
+                      <input class="input_managername" type="text" v-model="managername"><br/>
+                      <!-- <label class="label_managername">지점장 이름</label> -->
+                      <span class="span_managername"></span>
+                      </div>
+
+          
+
+                      <div class="div_location">
+                        <div style="text-align:left; font-weight:bold;">주소</div>                
+                      <input class="input_location" type="text" v-model="location" placeholder="x/y값 변환해서 띄우고 싶어" readonly>    
+                      <!-- <label class="label_location">주소</label> -->
+                      <span class="span_location"></span>
+                      </div>
+
+
+
+
+                      <div> <!-- 지도 뜨는 곳 --><kakaomapMyinfo class="kakaomap" @sendposition = "showLocation" /></div>   
+                 
+
+
+             </div>
+   </div>    
+     
+     
             
 
 
+            <button class="btn_edit" @click="edit">수정하기</button> &nbsp; &nbsp; &nbsp;
+             <button class="btn_cancle" @click="cancle">수정취소</button>
+   
+             
+</div>
 
-         
 
 
-            </div>
 
-        <br/><br/>
-        <button class="btn_edit" v-on:click="edit">수정하기</button>
-        &nbsp;<router-link to="/" class="btn_cancle">수정취소</router-link>
-    
-    
-      </div>
-  </div>
+</div>
+
  
 
-        <!-- <h3>kakao map configuration</h3>
-       지도가 보여질 영역 -->
-<!-- <div id="map" style="width:500px;height:400px;"></div> -->
-
+      
 
 </template>
 
 <script>
+import kakaomapMyinfo from "@/components/storeaccount/kakaomapMyinfo.vue";
 export default {
+  
 name:"StoreEdit",
+components:{kakaomapMyinfo},
     data(){
         return{
             storeid:'',
             storename:'',
             pwd:'',
             managername:'',
-            accounttype: '',
+            accounttype: 0,
             // myinfo:require("'http://localhost:8085/store/img/store/'+storeid"),
             x:0,
             y:0,
-            url:'http://localhost:8085/store/img/storeid'
-            // dto:{}
+            url:'http://localhost:8085/store/img/',
+            position:null,
+            marker:'',
+            simg:[]
          }
      },
-     created:function(){    //컴포넌트 실행될 때 한번 실행
+     created:function(){    //컴포넌트 실행될 때 한번 실행    
             this.storeid = sessionStorage.getItem('loginId')
             this.accounttype = sessionStorage.getItem('accounttype')
             const self = this;
@@ -127,10 +150,11 @@ name:"StoreEdit",
                         self.pwd = dto.pwd
                         self.managername = dto.managername
                         self.x =dto.x
-                        self.x =dto.y
-                        self.simg=dto.simg
+                        self.y =dto.y
+                        // self.simg=dto.simg
                         self.url = 'http://localhost:8085/store/img/'+dto.storeid
-                        // alert(self.storeid)
+                        console.log(self.url)
+
                         if(self.accounttype == 1){
                             self.accounttype = '본사';
                         }else if(self.accounttype == 2){
@@ -138,6 +162,23 @@ name:"StoreEdit",
                         }else{
                             self.accounttype = '지원하지 않는 유형입니다.';
                             }
+
+                       
+
+      const position = new window.kakao.maps.LatLng(self.x, self.y);
+
+      // alert(position)
+
+      self.map.setCenter(position);
+      self.map.setLevel(3);
+
+      self.marker = new window.kakao.maps.Marker({
+        position: position,
+      });
+
+      self.marker.setMap(self.map);
+     
+
                     }
                 }
             });
@@ -150,9 +191,17 @@ name:"StoreEdit",
             formdata.append('storename',self.storename)
             formdata.append('pwd',self.pwd)
             formdata.append('managername',self.managername)
+
+            if(self.accounttype ==='본사'){
+              self.accounttype = 1;
+            }else if(self.accounttype==='지점'){
+              self.accounttype = 2;
+            }            
             formdata.append('accounttype',self.accounttype)
-            formdata.append('x',self.x)
-            formdata.append('y',self)
+
+
+
+
             alert('수정하러 간다?'+self.pwd);
             alert(formdata);
             self.$axios.post("http://localhost:8085/store",formdata)
@@ -166,7 +215,44 @@ name:"StoreEdit",
                     alert('에러코드:' + res.status)
                 }
             });
-        }
+        },
+
+
+
+
+
+        loadScript() {
+      const script = document.createElement("script");
+      script.src =
+        "//dapi.kakao.com/v2/maps/sdk.js?appkey=3ef0a8044022238ae7c9fb846ea37567&autoload=false";
+      script.onload = () => window.kakao.maps.load(this.loadMap.bind(this));
+
+      document.head.appendChild(script);
+    },
+    loadMap() {
+      const container = document.getElementById("map");
+      const options = {
+        center: new window.kakao.maps.LatLng(37.3399, 127.109),
+        level: 4,
+      };
+
+      this.map = new window.kakao.maps.Map(container, options);
+      this.showMarker();
+    },
+    cancle(){
+      this.$router.push('/about')
+    }
+
+
+
+
+
+
+
+
+
+
+
      }
     }
 
@@ -190,22 +276,62 @@ z-index:6;
 }
 
 
-/* 버튼 색 바꾸기 */
-.btn_edit{
-background-color: rgb(128, 129, 128);
-border:0;
-color:white;
-border-radius: 10%;
-font-size:20px;
-font-weight:bold;
+
+.box{
+  display:flex;
 }
+.box1{
+  width:50%;
+}
+.box2{
+  width:50%;
+}
+
+
+/* 버튼 색 바꾸기 */
+.btn_edit:hover{
+  background-color: #FFC67B;
+  color:#595959
+}
+
+.btn_edit{
+  color:#595959;
+    background-color: #bee96d;
+    font-weight: bolder ;
+    border:0;
+    border-radius: 10%;
+    font-size:20px;
+    text-decoration: none;
+    font-weight:bold;
+    margin-top:37px;
+}
+.btn_cancle:hover{
+  background-color: #FFC67B;
+  color:#595959
+}
+.btn_cancle{
+  color:#595959;
+    background-color: #bee96d;
+    font-weight: bolder ;
+    border:0;
+    border-radius: 10%;
+    font-size:20px;
+    text-decoration: none;
+    font-weight:bold;
+}
+
+
+
+
+
 
 #div_outline {
     /* display: inline-block; */
-    float: left;
+    /* float: left; */
     line-height: 100%;
     text-align: center;
     font-size: 20px;
+
 }
 
 .brandname{
@@ -213,29 +339,25 @@ font-weight:bold;
    font-size:30px;
    font-weight: bold;
    vertical-align: center;
+   text-shadow: 5px 5px rgb(236, 234, 234);
   }
 
 .title_myinfo{
   background-color: #8eb443;
   color:white;
+  
 }
 
-.btn_cancle{
-    background-color: rgb(128, 129, 128);
-border:0;
-color:white;
-border-radius: 10%;
-font-size:20px;
-text-decoration: none;
-font-weight:bold;
-}
+
+
 
 /* 내정보(myinfo) 윈도우 위치조정하기 */
 .edit_window{
-width: 800px;height: 800px;border: 1px solid #dcdcdc;
+width: 800px;height: 800px;
+/* border: 1px solid #dcdcdc; */
 position: absolute; left: 50%; top: 55%; 
 transform: translate(-50%, -50%); text-align: center;
-border-radius: 15%;
+border-radius: 15px;
 box-shadow: 20px 20px 20px grey;
 overflow:auto;
 background-color: white;
@@ -263,7 +385,7 @@ background-color: white;
   position: relative;
   width: 300px;
   margin-left: 50px;
-  margin-top: 20px;
+  margin-top: 50px;
 }
 
 .input_storeid {
@@ -277,6 +399,12 @@ background-color: white;
   position: relative;
   background: none;
   z-index: 5;
+}
+.img_main{
+  margin-top:26px;
+  border-radius: 10px;
+  width:76%; 
+  height:300px;
 }
 
 /* .input_storeid::placeholder { color: #aaaaaa; } */
@@ -327,7 +455,7 @@ background-color: white;
   position: relative;
   width: 300px;
   margin-left: 50px;
-  margin-top: 75px;
+  margin-top: 50px;
 }
 
 .input_storename {
@@ -389,7 +517,7 @@ background-color: white;
   position: relative;
   width: 300px;
   margin-left: 50px;
-  margin-top: 100px;
+  margin-top: 50px;
 }
 
 .input_pwd {
@@ -451,7 +579,7 @@ background-color: white;
   position: relative;
   width: 300px;
   margin-left: 50px;
-  margin-top: 100px;
+  margin-top: 50px;
 }
 
 .input_managername {
@@ -514,7 +642,7 @@ background-color: white;
   position: relative;
   width: 300px;
   margin-left: 50px;
-  margin-top: 100px;
+  margin-top: 50px;
 }
 
 .input_accounttype {

@@ -47,18 +47,11 @@
             </div>
             <div class="pagination">
                 <button :disabled="currentPage === 1" @click="prevPage">이전</button>
-
-
-
-                <div v-for="i in pagearray" :key="i">
-                    <button :class="{ active: currentPage === i }" @click="goToPage(i)">
-                        {{ i }}
+                <div v-for="(item,i) in pagearray" :key="i">
+                    <button v-if="totalpages>i" :class="{ active: currentPage === item }" @click="goToPage(item)">
+                        {{ item }}
                     </button>
                 </div>
-
-
-
-
                 <button :disabled="currentPage === totalPages" @click="nextPage">다음</button>
             </div>
         </div>
@@ -224,15 +217,15 @@ export default {
         },
 
         lookFivePage(pageNumber) {
-            if (pageNumber == 1 || pageNumber == 2) {   // 1,2페이지 클릭했을 때 1, 2, 3, 4, 5 뜨게 만들어주기
+            if (pageNumber == 1 || pageNumber == 2) { 
                 for (let i = 0; i < this.pagearray.length; i++) {
                     this.pagearray[i] = i + 1;
                 }
-            } else if (pageNumber == this.totalpages || pageNumber == (this.totalpages - 1)) {  // 마지막이랑 마지막-1 페이지 클릭했을 때 
+            } else if (pageNumber == this.totalpages || pageNumber == (this.totalpages - 1)) {  
                 for (let i = 0; i < this.pagearray.length; i++) {
                     this.pagearray[i] = this.totalpages - 4 + i;
                 }
-            } else {   // 그 중간의 것들 클릭
+            } else {  
                 if (pageNumber > 3) {
                     for (let i = 0; i < this.pagearray.length; i++) {
                         this.pagearray[i] = pageNumber - 2 + i;

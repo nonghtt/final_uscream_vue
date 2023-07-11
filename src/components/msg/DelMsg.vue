@@ -23,10 +23,8 @@
                 <input type="button" class="but e btncolor" value="읽음" v-on:click="readlist()">
             </div>
             <div class="searchbar">
-                <form>
                     <input type="text" class="textbar" name="searchbar" id="searchbar" placeholder="제목으로 검색" autocomplete="off">
                     <input type="button" class="but f e btncolor" value="검색" v-on:click="searchtitle()">
-                </form>
             </div>
         </div>
         <div class="null_div" v-if="list == ''">메일이 없습니다.</div>
@@ -42,7 +40,15 @@
                         <img class="lcon" :src="readimg" v-if="msg.readcheck == 1" v-on:click="read(msg.msgnum)">
                         <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum)">
                     </td>
-                    <td :class="{ 'bold': msg.readcheck === true }">{{ msg.receiver.managername }}</td>
+                    <td :class="{'bold': msg.readcheck===true}">
+                        <span v-if="msg.real===false">
+                            {{ msg.sender.managername }}
+                        </span>
+                        <span v-else>
+                            {{ msg.receiver.managername }}
+                        </span>
+                    </td>
+
                     <td v-on:click="detail(msg.msgnum)" :class="{ 'bold': msg.readcheck === true }" @mouseover="changeCursor">
                         <span :class="limited-title">{{ truncateTitle(msg.title, 30) }}</span>
                     </td>
@@ -51,13 +57,14 @@
             </table>
         </div>
         <div class="pagination">
-            <button :disabled="currentPage === 1" @click="prevPage">이전</button>
-            <div v-for="pageNumber in totalPages" :key="pageNumber">
-                <button :class="{ active: currentPage === pageNumber }" @click="goToPage(pageNumber)">{{ pageNumber
-                }}</button>
+                <button :disabled="currentPage === 1" @click="prevPage">이전</button>
+                <div v-for="(item,i) in pagearray" :key="i">
+                    <button v-if="totalpages>i" :class="{ active: currentPage === item }" @click="goToPage(item)">
+                        {{ item }}
+                    </button>
+                </div>
+                <button :disabled="currentPage === totalPages" @click="nextPage">다음</button>
             </div>
-            <button :disabled="currentPage === totalPages" @click="nextPage">다음</button>
-        </div>
     </div>
 </div>
 </template>
@@ -82,8 +89,9 @@ export default {
             clickmsg: [],
             currentPage: 1,
             pageSize: 15,
-            title:'',
-            maxLength:30,
+            title: '',
+            maxLength: 20,
+            pagearray: [1, 2, 3, 4, 5], 
            
             
         }
@@ -206,39 +214,57 @@ export default {
         searchtitle() {
             const self = this;
             self.title = document.getElementById("searchbar").value;
-            let receiver = sessionStorage.getItem("loginId"); 
             let sender = sessionStorage.getItem("loginId");
-            console.log(receiver+"/"+sender);
+            let receiver = sessionStorage.getItem("loginId"); 
             self.$axios.get("http://localhost:8085/msg/del/search/"+sender+"/"+receiver+"/"+self.title)
                 .then(function (res) {
                     self.list = res.data.msglist;
-                    console.log(self.list);
                 })
         },
-
-        prevPage() {
+   // 페이징 
+   prevPage() {
             this.currentPage--;
+            this.lookFivePage(this.currentPage)
         },
         nextPage() {
-
             this.currentPage++;
+            this.lookFivePage(this.currentPage)
         },
         goToPage(pageNumber) {
+            this.lookFivePage(pageNumber)
             this.currentPage = pageNumber;
         },
+
+        lookFivePage(pageNumber) {
+            if (pageNumber == 1 || pageNumber == 2) { 
+                for (let i = 0; i < this.pagearray.length; i++) {
+                    this.pagearray[i] = i + 1;
+                }
+            } else if (pageNumber == this.totalpages || pageNumber == (this.totalpages - 1)) {  
+                for (let i = 0; i < this.pagearray.length; i++) {
+                    this.pagearray[i] = this.totalpages - 4 + i;
+                }
+            } else {  
+                if (pageNumber > 3) {
+                    for (let i = 0; i < this.pagearray.length; i++) {
+                        this.pagearray[i] = pageNumber - 2 + i;
+                    }
+                }
+            }
+        }
     }
 }
 </script>
     
-    
+   
 <style scoped>
-
 body {
-  font-family:  'Noto Sans KR', sans-serif;
-  background-color: rgb(255, 255, 254);
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: rgb(255, 255, 254);
 }
 
-.full_container{
+
+.full_container {
     display: flex;
 }
 
@@ -246,7 +272,7 @@ body {
     display: inline-block;
     width: 220px;
     text-align: left;
-    border-right:  rgb(157, 157, 157);
+    border-right: rgb(157, 157, 157);
     background-color: rgb(255, 255, 254);
     height: 770px;
 }
@@ -261,7 +287,7 @@ h3 {
     background-color: #fff;
 }
 
-.head_text{
+.head_text {
     font-weight: bold;
 }
 
@@ -357,13 +383,13 @@ table {
 
 tr {
     border-bottom: 1px solid rgba(0, 0, 0, .1);
-    height:35px;
+    height: 35px;
 }
 
 td {
     padding-top: 7px;
     padding-bottom: 12px;
-    font-size:12.5px;
+    font-size: 12.5px;
 }
 
 td:nth-child(1) {
@@ -443,4 +469,5 @@ td:nth-child(4) {
 
 .bold {
     font-weight: bold;
-}</style>
+}
+</style>

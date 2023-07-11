@@ -48,6 +48,7 @@
     
 <script>
 import SideBar from '@/views/SideBar.vue'
+import moment from 'moment';
 export default {
     name: "AddMsg",
     components: { SideBar },
@@ -78,11 +79,27 @@ export default {
             .then(function (res) {
                 self.sender = res.data.dto.managername;
             })
+
+            
+       
+
+
+        
+
     },
+    computed:{
+        currentTime() {
+         return moment().format('YY-MM-DD HH:mm');
+  }
+    },
+        
+    
     methods: {
         fileUpload() {
             this.file = this.$refs.fileref.files[0];
         },
+        
+
        async searchStoreId() {
             const self = this;
             const str_receiver = self.receiver.replace(/\s/g, '');
@@ -109,7 +126,7 @@ export default {
         async addmsg() {
             const self = this;
             this.alertname = [];                                    
-            const name = [];                                                  
+            const name = [];
        
             if(self.title==''||self.receiver==''){
                 if(self.title==''){
@@ -121,6 +138,7 @@ export default {
             else{
 
             for (var i = 0; i < self.searchResults.length; i++) {
+                
 
                 let form = new FormData();
                 form.append('sender', sessionStorage.getItem("loginId"));
@@ -130,6 +148,7 @@ export default {
                 if (self.file) {
                     form.append('mfile', self.file);
                 }
+                
                 await self.$axios.post("http://localhost:8085/msg", form, { headers: { "Content-Type": "multipart/form-data" } })
                 name[i] = self.searchResults[i];
             }
@@ -155,7 +174,7 @@ export default {
             const name = [];  
             let sender = sessionStorage.getItem("loginId");
 
-
+           
             
             
             if(self.title==''){
@@ -167,6 +186,7 @@ export default {
                 form.append('receiver', self.searchResults[i]);
                 form.append('title', self.title);
                 form.append('content', self.content);
+                
                 if (self.file) {
                     form.append('mfile', self.file);
                 }
@@ -284,6 +304,11 @@ textarea {
     width: 100%;
 }
 
+.btncolor:hover {
+    background-color: #04ac4e;
+    color: #fefefe;
+}
+
 .btncolor {
     color: #fefefe;
     background-color: #03c75a;
@@ -307,11 +332,5 @@ textarea {
     border-bottom-right-radius: 5px;
 }
 
-.search-results {
-    position: absolute;
-    background-color: white;
-    border: 1px solid #ccc;
-    padding: 5px;
-}
 </style>
     

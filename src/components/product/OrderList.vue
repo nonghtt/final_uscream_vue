@@ -19,7 +19,7 @@
             <tr v-for="(order, i) in orderlist" :key="i">
                 <td>{{ order.ORDERNUM }}</td>
                 <td>
-                    <div @click="detail(order.STORE, order.ORDERDATE)" style="margin-bottom: 0; background-color: none;">
+                    <div @click="detail(order.STORE, order.ORDERDATE)" style="margin-bottom: 0; background-color: none; cursor: pointer;">
                         {{ order.STORE }}의 {{ order.ORDERDATE }} 발주내역</div>
                 </td>
                 <td>{{ order.TOTALCOST }}원</td>
@@ -48,6 +48,7 @@ export default {
     name: "OrderList",
     data() {
         return {
+            lastorder:sessionStorage.getItem("lastorder"),
             orderlist: [],
             title: [],
             accounttype: sessionStorage.getItem("accounttype"),

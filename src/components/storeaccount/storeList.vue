@@ -25,17 +25,17 @@
              <i class="fa-solid fa-magnifying-glass fa-beat-fade fa-2xl" id="icon" @click="searchaddress"></i>
       
           <!-- 검색하면 뿌려지는 DIV -->
-          <div v-for="place in placelist" :key="place.storeid"><div class="list.storename">{{ place.store }}11</div></div>
+          <!-- <div v-for="place in storenamelist" :key="place.storeid"><div class="list.storename">{{ place.store }}</div></div> -->
 
           <!-- 페이지 onload되면서 전체 리스트 뿌리는 DIV -->
-          <div class="results" v-for="(storeinfo, i) in storenamelist" :key="storeinfo.storeid"  
-          @click="showbranchdetail(i)">
-          <button class="storelistbox"><div class="storename">{{ storeinfo.storename }}</div>
-                  <img img v-bind:src="'http://localhost:8085/store/img/' + storeinfo.storeid"
-                  class="storeimg">
-                </button>
-          </div>
+              <div class="results" v-for="(storeinfo, i) in storenamelist" :key="storeinfo.storeid" @click="showbranchdetail(i)">         
+                    <div class="storelistbox">
+                      <div class="storename" @click="searchaddress">{{ storeinfo.storename }}</div>
+                        <img img v-bind:src="'http://localhost:8085/store/img/' + storeinfo.storeid" class="storeimg">
+                    </div>
+              </div>
       </div>
+    
     <div id="map"></div>
 
   </div>
@@ -46,6 +46,151 @@
 
 
 
+
+
+<script>
+export default {
+  name: "LocationToAddress",
+  data() {
+    return {
+      markerimg:require("../../assets/marker2.png"),
+      latitude: [],
+      longitude: [],
+      map: null,
+      markers: [],
+      storelist: [],
+      storename:[],           //인포창(마우스오버하면 뜨는 지점정보)에 뜨는 지점명을 위한 변수
+      address:'',
+      storenamelist:[],       //검색창에 뜨는 지점명 리스트를 위한 변수
+      placelist:[]
+    };
+  },
+  created: function() {
+      const self= this
+      self.$axios.get('http://localhost:8085/store/accounttype/2').then(function(res){
+      self.storenamelist = res.data.storelist
+      })
+    if (window.kakao && window.kakao.maps) {
+      this.loadMap();
+    } else {
+      this.loadScript();
+    }
+    self.$axios
+      .get("http://localhost:8085/store")
+      .then(function (res) {
+        self.storelist = res.data.storelist;
+
+        for (let i = 0; i < self.storelist.length; i++) {
+          const prex = self.storelist[i].x;
+          // alert(self.storelist[10].x)
+          const prey = self.storelist[i].y;
+          const storename = self.storelist[i].storename;
+          
+          self.storename.push(storename);
+          self.latitude.push(prex);
+          self.longitude.push(prey);
+        }
+      })
+  },
+  mounted(){},
+  methods: {
+    loadScript() {
+      const script = document.createElement("script");
+      script.src =
+        "//dapi.kakao.com/v2/maps/sdk.js?appkey=3ef0a8044022238ae7c9fb846ea37567&autoload=false";
+      script.onload = () => window.kakao.maps.load(this.loadMap.bind(this));
+
+      document.head.appendChild(script);
+    },
+    loadMap() {
+      const container = document.getElementById("map");
+      const options = {
+        center: new window.kakao.maps.LatLng(37.3399, 127.109),
+        level: 4,
+      };
+
+      this.map = new window.kakao.maps.Map(container, options);
+      this.showMarker();
+    },
+    showMarker() {
+  var imageSrc = this.markerimg;
+
+  for (var i = 0; i < this.storelist.length; i++) {
+    let lat = this.storelist[i].x;
+    let lon = this.storelist[i].y;
+    let storename = this.storelist[i].storename;
+    let position = new window.kakao.maps.LatLng(lat, lon);
+    var imageSize = new window.kakao.maps.Size(50, 50);
+    var markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
+
+    var marker = new window.kakao.maps.Marker({
+      map: this.map,
+      position: position,
+      title: storename,
+      image: markerImage,
+      clickable: true
+    });
+
+    var iwContent = '<div style="padding:5px;">Hello World!</div>';
+    var iwRemoveable = true;
+
+    var infowindow = new window.kakao.maps.InfoWindow({
+      content: iwContent,
+      removable: iwRemoveable
+    });
+
+      window.kakao.maps.event.addListener(marker, 'click', function() {
+        infowindow.open(this.map, marker);
+    });
+  }
+},
+// 검색된 매장 목록에서 클릭을 통해 해당 지점으로 이동하기 
+    showbranchdetail(i){
+      let selectlatitude = null
+      let selectlongitude = null
+      // console.log(this.latitude)
+  selectlatitude = this.storenamelist[i].x
+  selectlongitude = this.storenamelist[i].y
+ 
+  alert(selectlatitude)
+  alert(selectlongitude)
+
+     const position = new window.kakao.maps.LatLng(selectlatitude,selectlongitude);
+     this.map.setCenter(position);
+            this.map.setLevel(5);
+
+   
+          // Custom marker image
+          const markerImage = new window.kakao.maps.MarkerImage(
+            // 마커이미지 변경필요
+              this.markerimg, // 강아지 모양 이미지 URL로 변경
+               new window.kakao.maps.Size(50, 50)
+            );
+
+
+            this.marker = new window.kakao.maps.Marker({
+              position: position,
+              image: markerImage // Custom marker image 설정
+            });
+
+            this.marker.setMap(this.map);    
+    },
+    // 키워드 검색으로 매장검색
+    searchaddress(){
+      const self =this;
+      self.$axios.get('http://localhost:8085/store/storename/'+self.address).then(function(res){
+        console.log(res.data.storelist)
+        self.storenamelist = res.data.storelist
+      })
+    }
+
+
+
+
+    
+}
+}
+</script>
 <style scoped>
 #map {
   position: fixed;
@@ -56,7 +201,7 @@
 .search-menubar{
   height:100px;
   display:flex;
-  background-color: #95d6b5;
+  background-color: #bee96d;
 }
 
 .searchbar{
@@ -65,7 +210,7 @@
   margin: 29px 14px 27px 27px;
 height:795px;
 width: 300px;
-background-color: #95d6b5;
+background-color: rgb(236 237 234 / 70%);
 overflow-y: auto;
 overflow-x: hidden;
 }
@@ -78,7 +223,7 @@ background-color: white;
 .textjump{
   width: 100%;  
   height: 75px;
-  background: #95d6b5;
+  background: #bee96d;
   -webkit-font-smoothing: antialiased;
   display: flex;
   justify-content: center;
@@ -141,11 +286,11 @@ h1 span:nth-child(8) { animation-delay: .7s; }
 .searchbar::-webkit-scrollbar {
     width: 10px;
     display: flex;
-    background-color: #95d6b5;
+    background-color: #bee96d;
   }
 /* 마우스 스크롤 디자인 (움직이는 부분)*/
   .searchbar::-webkit-scrollbar-thumb {
-    background-color:#95d6b5;
+    background-color:#bee96d;
     border-radius:20px;
     /* border-radius: 10px; */
     background-clip: padding-box;
@@ -180,7 +325,7 @@ h1 span:nth-child(8) { animation-delay: .7s; }
   z-index:5;
   position:absolute;
   top:119px;
-  left:260px;
+  left:247px;
 }
 .storeimg{
   position:absolute;
@@ -216,154 +361,3 @@ h1 span:nth-child(8) { animation-delay: .7s; }
 }
 
 </style>
-
-<script>
-export default {
-  name: "LocationToAddress",
-  data() {
-    return {
-      markerimg:require("../../assets/marker2.png"),
-      latitude: [],
-      longitude: [],
-      map: null,
-      markers: [],
-      storelist: [],
-      storename:[],           //인포창(마우스오버하면 뜨는 지점정보)에 뜨는 지점명을 위한 변수
-      address:'',
-      storenamelist:[],       //검색창에 뜨는 지점명 리스트를 위한 변수
-      placelist:[]
-    };
-  },
-  created: function() {
-    alert(1)
-    
-      const self= this
-      self.$axios.get('http://localhost:8085/store/accounttype/2').then(function(res){
-      self.storenamelist = res.data.storelist
-      })
-
-     
-
-
-    if (window.kakao && window.kakao.maps) {
-      this.loadMap();
-    } else {
-      this.loadScript();
-    }
-
-    self.$axios
-      .get("http://localhost:8085/store")
-      .then(function (res) {
-        self.storelist = res.data.storelist;
-
-        for (let i = 0; i < self.storelist.length; i++) {
-          const prex = self.storelist[i].x;
-          const prey = self.storelist[i].y;
-          const storename = self.storelist[i].storename;
-          
-          self.storename.push(storename);
-          self.latitude.push(prex);
-          self.longitude.push(prey);
-        }
-      })
-
-  },
-  mounted(){},
-  methods: {
-    loadScript() {
-      const script = document.createElement("script");
-      script.src =
-        "//dapi.kakao.com/v2/maps/sdk.js?appkey=3ef0a8044022238ae7c9fb846ea37567&autoload=false";
-      script.onload = () => window.kakao.maps.load(this.loadMap.bind(this));
-
-      document.head.appendChild(script);
-    },
-    loadMap() {
-      const container = document.getElementById("map");
-      const options = {
-        center: new window.kakao.maps.LatLng(37.3399, 127.109),
-        level: 4,
-      };
-
-      this.map = new window.kakao.maps.Map(container, options);
-      this.showMarker();
-    },
-    showMarker() {
-  var imageSrc = this.markerimg;
-
-  for (var i = 0; i < this.storelist.length; i++) {
-    let lat = this.storelist[i].x;
-    let lon = this.storelist[i].y;
-    let storename = this.storelist[i].storename;
-    let position = new window.kakao.maps.LatLng(lat, lon);
-    var imageSize = new window.kakao.maps.Size(50, 50);
-    var markerImage = new window.kakao.maps.MarkerImage(imageSrc, imageSize);
-
-    var marker = new window.kakao.maps.Marker({
-      map: this.map,
-      position: position,
-      title: storename,
-      image: markerImage,
-      clickable: true
-    });
-
-    var iwContent = '<div style="padding:5px;">Hello World!</div>';
-    var iwRemoveable = true;
-
-    var infowindow = new window.kakao.maps.InfoWindow({
-      content: iwContent,
-      removable: iwRemoveable
-    });
-
-      window.kakao.maps.event.addListener(marker, 'click', function() {
-        infowindow.open(this.map, marker);
-    });
-  }
-},
-    showbranchdetail(i){
-      let selectlatitude = null
-  let selectlongitude = null
-      console.log(i)
-  selectlatitude = this.latitude[i]
-  selectlongitude = this.longitude[i]
- 
-
-     const position = new window.kakao.maps.LatLng(selectlatitude,selectlongitude);
-     this.map.setCenter(position);
-            this.map.setLevel(5);
-
-   
-          // Custom marker image
-          const markerImage = new window.kakao.maps.MarkerImage(
-            // 마커이미지 변경필요
-              this.markerimg, // 강아지 모양 이미지 URL로 변경
-               new window.kakao.maps.Size(50, 50)
-            );
-
-
-            this.marker = new window.kakao.maps.Marker({
-              position: position,
-              image: markerImage // Custom marker image 설정
-            });
-
-            this.marker.setMap(this.map);
-
-      
-    },
-    
-    searchaddress(){
-      alert(1)
-      const self =this;
-      self.$axios.get('http://localhost:8085/store/storename/'+self.address).then(function(res){
-        console.log(res.data.storelist)
-        this.placelist = res.data.storelist
-      })
-    }
-
-
-
-
-    
-}
-}
-</script>

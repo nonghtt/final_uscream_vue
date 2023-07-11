@@ -1,39 +1,40 @@
 <template>
     <div id="container">
-        <h2>발주?</h2>
+        <h3>발주?</h3>
+        <div style="width: 100%;height: 230px;  " v-if="orderlist != null">
+            <table class="table table-light table-striped table-bordered">
+                <tr>
+                    <th>발주번호</th>
+                    <th>제목</th>
+                    <th>발주 총액</th>
+                    <th>신청날짜</th>
+                    <th>처리 여부</th>
+                </tr>
+                <tr v-for="(order, i) in orderlist" :key="i">
+                    <td>{{ order.ORDERNUM }}</td>
+                    <td>
+                        <div @click="detail(order.STORE, order.ORDERDATE)"
+                            style="margin-bottom: 0; background-color: none; cursor: pointer;">
+                            {{ order.STORE }}의 {{ order.ORDERDATE }} 발주내역</div>
+                    </td>
+                    <td>{{ order.TOTALCOST }}원</td>
 
-        <div v-if="accounttype == 1" class="content">
-            본사
-            오늘 밤이 어제보다 더워
-            딴 사람은 몰라도
-            네가 잠들 리는 없어
-            그 머릿속에 지금 누가 있어
-            그게 나일 수 있는
-            그런 방법은 없어?
-            하루가 끝나갈 때쯤
-            우연히 내 얼굴이 떠오른다거나
-            (할지도) 별것도 아닌 이유로
-            갑자기 내가 궁금할 수 있지
-            예를 들게 그럼 봐봐
-        </div>
 
-        <div v-if="accounttype == 2" class="content">
-            지점
-            오늘 밤이 어제보다 더워
-            딴 사람은 몰라도
-            네가 잠들 리는 없어
-            그 머릿속에 지금 누가 있어
-            그게 나일 수 있는
-            그런 방법은 없어?
-            하루가 끝나갈 때쯤
-            우연히 내 얼굴이 떠오른다거나
-            (할지도) 별것도 아닌 이유로
-            갑자기 내가 궁금할 수 있지
-            예를 들게 그럼 봐봐
+
+                    <td>{{ order.ORDERDATE }}</td>
+                    <td>{{ order.STATUS }}</td>
+                    <!--  <td v-if="order.CHECKCONFIRM == 0">승인 대기중</td>
+                <td v-if="order.CHECKCONFIRM != 0">승인 완료</td> -->
+
+                </tr>
+            </table>
+
+            <!-- 라우터 링크 넣어주세요~! -->
+            <button class="btn " id="btncolor">더보기</button>
         </div>
-        
-        <!-- 라우터 링크 넣어주세요~! -->
-        <button class="btn" id="btncolor">더보기</button>
+        <div v-else>
+            발주중인 상품이 없습니다
+        </div>
     </div>
 </template>
 
@@ -44,10 +45,24 @@ export default {
         return {
             id: sessionStorage.getItem("loginId"),
             accounttype: sessionStorage.getItem("accounttype"),
-            list: [],
+            orderlist: [],
         }
     },
+    created: function () {
+        const self = this
+        if (self.accounttype == 1) {
+            self.$axios.get("http://localhost:8085/orders/notconfirm").then(function (res) {
+                self.orderlist = res.data.orderlist
+                console.log(self.list)
+            })
+        } else {
+            self.$axios.get("http://localhost:8085/orders/notconfirm/" + self.id).then(function (res) {
+                self.orderlist = res.data.orderlist
+                console.log(self.list)
+            })
+        }
 
+    }
 }
 </script>
 
@@ -56,14 +71,16 @@ export default {
     margin: 10px 10px;
     text-align: center;
     overflow: hidden;
-     /* 이 위는 바꾸지 마세요~ */
+    
+    
+    /* 이 위는 바꾸지 마세요~ */
 }
 
-.content{
-    margin-top:5px;
+.content {
+    margin-top: 5px;
     overflow: auto;
     max-height: 12em;
-     /* 이 위는 바꾸지 마세요~ */
+    /* 이 위는 바꾸지 마세요~ */
 }
 
 #btncolor:hover {
@@ -72,7 +89,7 @@ export default {
 }
 
 #btncolor {
-    margin-top:5px;
+    margin-top: 5px;
     color: #595959;
     background-color: #bee96d;
     font-weight: bolder;

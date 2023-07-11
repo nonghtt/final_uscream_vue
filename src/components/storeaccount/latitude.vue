@@ -14,17 +14,19 @@
 
 <style scoped>
 #map {
-  width: 90%;
+  width: 80%;
+  left:70px;
   height: 300px;
   display: flex;
   justify-content: center;
   align-content: center;
   border-radius: 30px;
     margin-top: 25px;
+    margin-bottom: 25px;
 }
 .inputsearch{
   text-align: center;
-  width:97%;
+  width:80%;
   height: 70px;
   border-radius: 10px;
   border:none;
@@ -44,8 +46,8 @@
   height:100px;
   z-index:5;
   position:absolute;
-  top:108px;
-  left:672px;
+  top:462px;
+  left:597px;
   border:none;
   z-index:100;
 }

@@ -1,115 +1,119 @@
 <template lang="">
-    <div id="join" class="join">
 
   <div class="join_window">
-              <div style="height:30px;">
+    <div class="brandname">USCREAM</div>
+            
           
-                <div style='width:80px;float: right;'><input type='button' name='btn' value='X'
-                  @click="cancle()"></div>
-              </div>
+                <div style='width:80px;float: right;'></div>
+             
               
         <div class="title_join" role="alert" style="font-size:25px; font-weight:bold;">
         JOIN</div>
 
 
-        <!-- 왼쪽 컨테이너 -->
+        <!-- 컨테이너 -->
        <div class="box1" id="div_outline">
         
-       
-        <div class="div_storeid">
-          <input class="input_storeid" type="text" v-model="storeid" required placeholder="아이디">
-          <!-- <label class="label_storeid">아이디</label> -->
-          <span class="span_storeid"></span>
-          </div>
-       
-          <div class="descript">
-            <i class="fa-solid fa-circle-question"
-                @mouseenter="iddescription=true"
-                @mouseleave="iddescription=false"></i></div>
-            <button v-on:click="idcheck">중복체크</button><br/>
-            {{idmsg}}
-       
+       <div class="c1">
 
-            <div v-if="iddescription" class="iddescript_window">(ex) 지역코드 + 숫자 KG001</div>
+                            <div class="c2" >
+                            
 
-<div class="div_pwd">
-  <input class="input_pwd" type="password" @input="validationpassword" v-model="password"  placeholder="비밀번호">
-           <!-- <span v-if="passwordErrorText">{{ passwordErrorText }}</span> -->
-           <!-- <label class="label_pwd">비밀번호</label>   -->
-          
+                            <div class="div_storeid">
+                             <div style="text-align:left"><span style="color:red;">*</span>아이디  
+                                          <i class="fa-solid fa-circle-question"
+                                                @mouseenter="iddescription=true"
+                                                @mouseleave="iddescription=false"></i>
+                                          <span><button v-on:click="idcheck" style="">중복체크</button></span></div>
+                              <input class="input_storeid" type="text" v-model="storeid" required placeholder="아이디">
+                              <!-- <label class="label_storeid">아이디</label> -->
+                              <span class="span_storeid"></span>
+                              {{idmsg}} 
+                            </div>
+                          
+                           
+                             
+                              
+                          
 
-           <input type="password" v-if="validationpassword()">
+                                <div v-if="iddescription" class="iddescript_window">(ex) 지역코드 + 숫자 KG001</div>
 
-<div v-else>{{pwdmsg}}</div>
-          </div>
+                          <div class="div_pwd">
+                            <div  style="text-align:left"><span style="color:red;">*</span>비밀번호</div>
+                                      <input class="input_pwd" type="password" @input="validationpassword" v-model="password"  placeholder="비밀번호">
+                                    <!-- <span v-if="passwordErrorText">{{ passwordErrorText }}</span> -->
+                                    <!-- <label class="label_pwd">비밀번호</label>   -->
+                              
 
+                                    <input type="password" v-if="validationpassword()">
 
-<div class="image-container">   
-<i class="fa-solid fa-circle-question" 
-        @mouseenter="showDescription = true"
-        @mouseleave="showDescription = false"></i>
-</div>
-
-<!-- <span class="span_pwd"></span> -->
-
-
-<div class="div_pwd_confirm">
-    <input class="input_pwd_confirm" type="password" @click="clean_input_pwd" v-model="pwd_confirm" placeholder="비밀번호 확인"><br/>
-    <!-- <label class="label_pwd_confirm">비밀번호 확인</label> -->
-    <span class="span_pwd_confirm"></span>
-</div>
-<button v-on:click="pwdcheck">중복확인</button><br/>
-{{pwdmsg}}
+                              <div v-else>{{pwdmsg}}</div>
+                              </div>
 
 
+                                      <div class="div_pwd_confirm">
+                                        <div  style="text-align:left"><span style="color:red;">*</span>비밀번호 확인 <span style="margin:0 auto;"><button v-on:click="pwdcheck">중복확인</button></span></div>
+                                          <input class="input_pwd_confirm" type="password" @click="clean_input_pwd" v-model="pwd_confirm" placeholder="비밀번호 확인"><br/>
+                                          <!-- <label class="label_pwd_confirm">비밀번호 확인</label> -->
+                                          <span class="span_pwd_confirm"></span>
+                                      </div>
+                                   <br/>
+                                    {{pwdmsg}}
 
-       
-             <div class="div_storename">
-                  <input class="input_storename" type="text" v-model="storename" required placeholder="지점이름"><br/>
-                  <!-- <label class="label_storename">지점명</label> -->
-                  <span class="span_storename"></span>
-            </div>
-            <div class="example">(ex) 오리역점</div>
+        </div>
+                <div class="c3">
+
+                        <div class="div_storename">
+                          <div  style="text-align:left"><span style="color:red;">*</span>지점 이름</div>
+                              <input class="input_storename" type="text" v-model="storename" required placeholder="지점이름"><br/>
+                              <!-- <label class="label_storename">지점명</label> -->
+                              <span class="span_storename"></span>
+                        </div>
+            <!-- <div class="example">(ex) 오리역점</div> -->
         
 
 
-            <div class="div_managername">
-                <input class="input_managername" type="text" v-model="managername" required placeholder="지점장 이름"><br/>
-                <!-- <label class="label_managername">지점주 이름</label> -->
-                <span class="span_managername"></span>
-            </div>
+                        <div class="div_managername">
+                          <div  style="text-align:left"><span style="color:red;">*</span>지점장 이름</div>
+                            <input class="input_managername" type="text" v-model="managername" required placeholder="지점장 이름"><br/>
+                            <!-- <label class="label_managername">지점주 이름</label> -->
+                            <span class="span_managername"></span>
+                        </div>
 
+                        
+                        <div class="div_type">
+                          <div class="type" style="text-align:left; padding-left: 50px;" ><span style="color:red;">*</span>유형</div>
+                        <input class="select" name="type" type="radio" id="radio" v-model="accounttype" value="1" checked><label for="radio"><div id="text_float">본사</div></label>
+                        <span style="width:300px;"></span>
+                        &nbsp;&nbsp;
+                        <input class="select" name="type" type="radio" id="radio" v-model="accounttype" value="1" ><label for="radio2"><div id="text_float">지점</div></label>
+                        </div>
+               
+               
+                      </div>
 
+        </div>           
+
+                       
             
 
-            <input class="select" name="type" type="radio" id="radio" v-model="accounttype" value="1" checked placeholder="본사 혹은 지점을 선택해주세요."><label for="radio"><div id="text_float">본사</div></label>
-                  <input class="select" name="type" type="radio" id="radio2" v-model="accounttype" value="2" ><label for="radio2"><div class="text_branch">지점</div></label><br/> 
-            
+                  <div> <!-- 지도 뜨는 곳 --><AddressToLocation class="kakaomap" @sendposition = "showLocation" /></div>   
 
 
-  </div>
-          
-
-          <!-- 오른쪽 컨테이너 -->
-                  
-          <div class="box2" id="div_outline">
-
-            <div>
- <!-- 지도 뜨는 곳 -->
-<AddressToLocation class="kakaomap" @sendposition = "showLocation" />
-
-    </div>   
-                          <div>  
-                            <img :src="previewImageUrl" class="profile" id="simg"
-                              v-if="previewImageUrl" style="width:300px; height:300px;" /><br/>
-                              <label class="custom-file-upload" @change="previewImage"
-                              for="simg"><span>파일 선택</span>
-                            </label>
+                         <div style="width:80%; height:300px; margin: 0 auto;">  
+                            <label class="custom-file-upload" @change="previewImage" for="simg">
+                                <img :src="previewImageUrl" class="profile" v-if="previewImageUrl" style="width:80%; height:300px;" @change="previewImage"/><br/>
+                                  </label>
                             <input type="file" class="chooseimg" @change="previewImage" id="simg" alt="" accept="image/*"/>
                         </div>
-  
-    </div>    
-<div> <button class="btn_join" v-on:click="join">가입하기</button></div></div>
+
+
+  <br/>                      
+<br/>
+                        <button class="btn_join" v-on:click="join">가입하기</button>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<button class="btn_cancle" v-on:click="cancle">가입취소</button>
+          </div>
+ 
+          
 </div>
 </template>
 
@@ -127,7 +131,7 @@ export default {
              y:0,
             storeid:'',
             storename:'',
-            pwd:'',
+            password:'',
             managername:'',
             accounttype:0,
             location: [],
@@ -139,14 +143,13 @@ export default {
             marker: null,
             latitude: 0,
             longtide: 0,
-            password: '',
            passwordError: '',
            iddescription:'',
            showDescription: false,
            pwd_confirm:'',
            text_pwd_validation:'',
            passwordErrorText:'',
-           initialImageUrl:require('../../assets/storeimg.png')
+           initialImageUrl:require('../../assets/1.png')
           }
         },
         created:function(){
@@ -154,24 +157,32 @@ export default {
         },
     methods :{
       join(){
+    
         const self = this;
         let formdata = new FormData();
         formdata.append('storeid',self.storeid);
         formdata.append('storename',self.storename);
-        formdata.append('pwd',self.pwd);
+        formdata.append('pwd',self.password);
         formdata.append('managername',self.managername);
         formdata.append('accounttype',self.accounttype);
         formdata.append('x',self.x);
         formdata.append('y',self.y);
         const simg = document.getElementById('simg');
         // formdata.append('simg', simg.files[0]);
-     
-        if (simg.files[0]) {
-              formdata.append('simg', simg.files[0]);
-                }
+  
+        // if (simg.files[0]) {
+          // console.log(simg.files[0]);
+
+        formdata.append('simg', simg.files[0]);
+
+
+                alert(3)
         self.$axios.post('http://localhost:8085/store', formdata,  {headers : { "Content-Type": "multipart/form-data" }}).then(function(res){
          if(res.status==200){
-            alert(1)
+            alert(4)
+
+                     
+
 
             if(self.accounttype ==2){
               alert(self.storename+", 개정생성이 완료되었습니다.")
@@ -185,9 +196,7 @@ export default {
                 form.append("storeid",self.storeid)
                 form.append("amount",0)
                 self.$axios.post('http://localhost:8085/inventorys',form).then(function(res2){
-                  console.log(res2.data.inventory)
-
-                 
+                  console.log(res2.data.inventory)                
                 })
               }
 
@@ -216,7 +225,7 @@ export default {
           alert('에러코드:'+res.status)
         }
       }); 
-   },
+     },
         pwdcheck(){
             if(this.password == null){
               alert('비밀번호를 입력하세요')
@@ -281,7 +290,7 @@ export default {
       console.log(this.y)
     },
     cancle(){
-      this.$router.push('/storeList');
+      this.$router.push('/about');
     }
 
   }
@@ -307,15 +316,33 @@ border-radius: 10%;
 color:white;
 }
 
-/* 버튼 색 바꾸기 */
+/* 가입버튼 색 바꾸기 */
 .btn_join{
-    background-color: rgb(128, 129, 128);
-border:0;
-color:white;
-border-radius: 10%;
-font-size:20px;
-font-weight:bold;
+    color:#595959;
+    background-color: #bee96d;
+    font-weight: bolder ;
+    border:0;
+    border-radius: 10%;
+    font-size:20px;
+    font-weight:bold;
 }
+.btn_join:hover{
+  background-color: #FFC67B;
+  color:#595959
+}
+
+/* 취소버튼 색 바꾸기 */
+.btn_cancle{
+  color:#595959;
+    background-color: #bee96d;
+    font-weight: bolder ;
+}
+
+.btn_cancle:hover{
+  background-color: #FFC67B;
+  color:#595959
+}
+
 
 .kakaomap{
   justify-content: center;
@@ -339,9 +366,16 @@ font-weight:bold;
 }
 
 
+
+.brandname{
+  color: #8eb443;
+   font-size:30px;
+   font-weight: bold;
+   text-shadow: 5px 5px rgb(236, 234, 234);
+}
 /* 회원가입 윈도우 위치 조정 */
 .join_window{
-width: 750px;height: 750px;border: 1px solid #dcdcdc;
+width: 750px;height: 700px;border: 1px solid #dcdcdc;
 position: absolute; left: 50%; top: 55%; 
 transform: translate(-50%, -50%); text-align: center;
 border-radius: 15px;
@@ -358,7 +392,7 @@ background-color: white;
 
 #div_outline {
     /* display: inline-block; */
-    float: left;
+    /* float: left; */
     line-height: 100%;
     text-align: center;
     font-size: 20px;
@@ -366,23 +400,26 @@ background-color: white;
 
 .box1 {
     /* background-color: #50e04a; */
-    width:50%;
+    width:100%;
     height:100%;
 
 }
 
-.box2 {
+/* .box2 { */
     /* background-color: #64acff; */
-    width:50%;
+    /* width:50%;
     height:100%;
-    vertical-align: middle;
-}
+    vertical-align: middle; */
+/* } */
 
 /* input 태그 숨기기 */
 .chooseimg{
   visibility:hidden;
 }
 
+.div_type{
+  margin-top:50px;
+}
 /* 스크롤바 없애기 */
 .join_window{
    -ms-overflow-style: none;
@@ -418,7 +455,7 @@ position: relative;
 
 .iddescript_window{
   z-index:3;
-  background-color: antiquewhite;
+  /* background-color: antiquewhite; */
 }
 
 /* 비밀번호 유효성검사 확인 창 */
@@ -503,6 +540,11 @@ image-container{
     margin-top: 50px;
   }
   
+
+
+  
+
+
   .input_pwd {
     font-size: 15px;
     color: #222222;
@@ -516,6 +558,8 @@ image-container{
     z-index:5;
   }
   
+
+
   .input_pwd::placeholder { color: #aaaaaa; }
   /* 입력되면 보이는 색깔 */
   .input_pwd:focus { outline: none; color:#aaaaaa}
@@ -531,7 +575,7 @@ image-container{
     border-radius: 2px;
     transition: 0.5s;
   }
-  
+
   .label_pwd {
     position: absolute;
     color: #aaa;
@@ -574,6 +618,7 @@ image-container{
     position: relative;
     background: none;
     z-index:5;
+    
   }
   
   /* .input_storename::placeholder { color: #aaaaaa; } */
@@ -740,9 +785,13 @@ image-container{
 
 
   .div_map{
-    margin-top: 25px;
+    margin-top: 50px;
     padding-right: 10px;
   }
 
   
+
+  .c1{
+    display:flex;
+  }
 </style>

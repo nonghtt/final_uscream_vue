@@ -87,9 +87,9 @@
                 <button :disabled="currentPage === 1" @click="prevPage">이전</button>
 
 
-                <div v-for="(item,i) in pagearray" :key="i">
+                <div v-for="(item, i) in pagearray" :key="i">
                     <!-- 총 페이지의 개수 > index보다 클 경우에만 보여주기 총 페이지가 1이면 1만 보여주기 위해서 -->
-                    <button v-if="totalpages>i" :class="{ active: currentPage === item }" @click="goToPage(item)">
+                    <button v-if="totalpages > i" :class="{ active: currentPage === item }" @click="goToPage(item)">
                         {{ item }}
                     </button>
                 </div>
@@ -98,6 +98,25 @@
             </div>
             <!-- 페이징 여기까지 -->
 
+        </div>
+
+        <!-- 삭제 Modal : 컬러 블록 선택했을 때 보이는 모달 -->
+        <div class="modal fade" id="scModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal-dialog modal-dialog-centered">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">하이</h1>
+                        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                    </div>
+                    <div class="modal-body">
+                        <div>하이</div>
+                        <div>시간 - 시간</div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btncolor" data-bs-dismiss="modal" @click="delsc">삭제</button>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -108,6 +127,8 @@ import dayGridPlugin from '@fullcalendar/daygrid';
 import interactionPlugin from '@fullcalendar/interaction';
 //import timeGridPlugin from '@fullcalendar/timegrid';
 import momentPlugin from '@fullcalendar/moment';
+
+import { Modal } from 'bootstrap';
 
 export default {
     name: 'WorkLogs',
@@ -124,6 +145,12 @@ export default {
             totalpages: 0,              // 페이징 : Math.ceil(this.list / this.pageSize) "전체 리스트"에서 "한 페이지에 보여줄 글 개수"를 나눈 값
             pagearray: [1, 2, 3, 4, 5], // 페이징 : 숫자 버튼 5개 초기값
             selectedLateTime: 0,
+            modaltitle : '',
+            modaldate : '',
+            modalstarttime : 0,
+            modalendtime : 0,
+            modalalltime : 0,
+            modallatetime : 0,
             calendarOptions: {
                 plugins: [dayGridPlugin, interactionPlugin, momentPlugin],
                 // timeGridPlugin
@@ -224,7 +251,7 @@ export default {
                             self.list = self.chageTime(list);
                             //console.log(self.list)
                             self.totalpages = Math.ceil(self.list.length / self.pageSize);
-                            console.log("getWorkdLogsAllList :"+self.totalpages)
+                            console.log("getWorkdLogsAllList :" + self.totalpages)
                         }
 
 
@@ -273,7 +300,7 @@ export default {
                             self.list = self.chageTime(list);
                             console.log(self.list)
                             self.totalpages = Math.ceil(self.list.length / self.pageSize);
-                            console.log("getWorkLogs 총 페이지 : "+self.totalpages);
+                            console.log("getWorkLogs 총 페이지 : " + self.totalpages);
                         }
                     } else {
                         console.log("에러 : " + res.status)
@@ -282,7 +309,7 @@ export default {
         },
         empChange() {
             const self = this;
-            self.selectedLateTime=0;
+            self.selectedLateTime = 0;
             self.pagearray = [1, 2, 3, 4, 5]
             let empNum = self.selectedEmp;
             if (empNum === 0) {
@@ -294,10 +321,10 @@ export default {
         // 시간 잘라주는 함수 : 원래는 2023-07-05T09:00:00 이렇게 보임 
         chageTime(list) {
             //.log(list)
-            const self =this;
-            
+            const self = this;
+
             self.totalpages = Math.ceil(list.length / self.pageSize);
-            console.log("changeTime 총 페이지 : "+ self.totalpages);
+            console.log("changeTime 총 페이지 : " + self.totalpages);
             for (let i = 0; i < list.length; i++) {
                 list[i].starttime = list[i].starttime.slice(11, 16)
                 list[i].endtime = list[i].endtime.slice(11, 16)
@@ -326,7 +353,30 @@ export default {
         },
         // 등록된 스케줄을 눌렀을 때
         workDayClick(info) {
+            /*
+            const self = this;
             console.log(info)
+            console.log("emp name : " + info.event._def.title)
+
+            console.log(info.event._instance.range.start)
+            console.log(info.event._instance.range.start)
+            console.log(info.event._instance.range)
+
+            const startDate = new Date(info.event._instance.range.start);
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+
+            let startTime = JSON.stringify(info.event._instance.range.start).slice(12, 17)
+            startTime = startTime.replace(/^0/, '').replace(/:/g, '시 ').replace(/$/, '분');
+            // /^0/ → 첫 문자가 0 이라면, /:/g → 모든 문자에 :가 있다면, /$/ → 마지막에 추가.
+            let endTime = JSON.stringify(info.event._instance.range.end).slice(12, 17)
+            endTime = endTime.replace(/^0/, '').replace(/:/g, '시 ').replace(/$/, '분');
+
+            let date = `${startDate.toLocaleDateString('ko-KR', options)}`;
+            */
+            const modal = document.getElementById('scModal');
+            console.log(info)
+            let myModal = new Modal(modal)
+            myModal.show();
         },
         workDayEdit(info) {
             console.log(info)
@@ -364,14 +414,14 @@ export default {
         },
         // 페이징 : "이전" 버튼 클릭
         prevPage() {
-            if(this.currentPage > 1){
+            if (this.currentPage > 1) {
                 this.currentPage--;
                 this.lookFivePage(this.currentPage)
             }
         },
         // 페이징 : "이후" 버튼 클릭
         nextPage() {
-            if(this.currentPage < this.totalpages){
+            if (this.currentPage < this.totalpages) {
                 this.currentPage++;
                 this.lookFivePage(this.currentPage)
             }
@@ -405,7 +455,7 @@ export default {
             const time = self.selectedLateTime;
             const emp = self.selectedEmp;
             //console.log(time);
-           // console.log(emp);
+            // console.log(emp);
             // 0: 전체보기 
             // 1: 지각만 보기
             // 2: 초과만 보기

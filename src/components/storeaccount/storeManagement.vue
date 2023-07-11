@@ -1,9 +1,15 @@
 <template lang="">
+
+
+
     <div>
-        가나다라마바사<br/><br/><br/>
 
-        전체매장 리스트 뿌리고 정보 다뿌리는거?
+        <th>매장아이디</th><th>매장이름</th><th>지점장 이름</th><th></th>
 
+
+     <tr v-for="store in storelist" :key="store">
+        <td>{{store.storeid}}</td><td>{{store.storename}}</td><td>{{store.managername}}</td><td></td>
+     </tr>
 
     </div>
 </template>
@@ -11,22 +17,19 @@
 export default {
     data() {
         return{
-
+            storelist:[]
         }
     },
     created:function(){
 
 const self= this
-self.$axios.push('/storeList')
+        self.$axios.get('http://localhost:8085/store/accounttype/2').then(function(res){
+          
+            self.storelist = res.data.storelist
+           
+           
 
-        // const self = this;
-        // alert(1)
-        // self.$axios.get('http://localhost:8085/store/').then(function(res){
-        //    let storelist = res.data.storelist
-        //    alert(2)
-        //    alert(storelist.storeid)
-
-        // })
+        })
 
     }   
 

@@ -16,11 +16,11 @@
         <table>
             <tr>
                 <td>보내는 사람</td>
-                <td><input type="text" class="enter" v-model="dto.sender.storeid" readonly></td>
+                <td><input type="text" class="enter" v-model="dto.sender.managername" readonly></td>
             </tr>
             <tr>
                 <td>받는 사람</td>
-                <td><input type="text" class="enter" v-model="dto.receiver.storeid"></td>
+                <td><input type="text" class="enter" v-model="dto.receiver.managername"></td>
             </tr>
             <tr>
                 <td>제목</td>
@@ -39,6 +39,7 @@
 </template>
 <script>
 import SideBar from '@/views/SideBar.vue'
+import moment from 'moment';
 export default {
     name: "AddTempMsg",
     components: { SideBar },
@@ -52,7 +53,8 @@ export default {
             array: [],
             alertname: [],
             searchResults: [],
-            name:[]
+            name:[],
+            dateTime:''
         }
     },
     created: function () {
@@ -63,13 +65,20 @@ export default {
                 self.dto = res.data.msgdto;
             })
     },
+    computed:{
+        currentTime() {
+         return moment().format('YY-MM-DD HH:mm');
+  }
+    },
+    mounted() {
+  this.dateTime = this.currentTime;
+},
     methods: {
         fileUpload() {
             this.file = this.$refs.fileref.files[0];
         },
         async searchStoreId() {
             const self = this;
-
             const str_receiver = self.receiver.replace(/\s/g, '');
             self.array = str_receiver.split(",")                   
             self.searchResults=[];                               
@@ -114,7 +123,8 @@ export default {
                 form.append('sender', sessionStorage.getItem("loginId"));
                 form.append('receiver', self.searchResults[i]);           
                 form.append('title', self.dto.title);                  
-                form.append('content', self.dto.content);              
+                form.append('content', self.dto.content);
+                form.append('msgdate', self.dateTime);              
                 if (self.file) {
                     form.append('mfile', self.file);
                 }
@@ -232,27 +242,32 @@ textarea {
     width: 100%;
 }
 
-.btncolor{
-    color:#fefefe;
-    background-color: #03c75a;
-    font-weight: 550 ;
-    padding : 5px 10px;
-    width : 100px;
+.btncolor:hover {
+    background-color: #04ac4e;
+    color: #fefefe;
 }
+
+.btncolor {
+    color: #fefefe;
+    background-color: #03c75a;
+    font-weight: 550;
+    padding: 5px 10px;
+    width: 100px;
+}
+
 .but {
-    border:none;
+    border: none;
     border-right: 2px solid rgba(0, 49, 9, 0.108);
 }
 
-.f{
-  border-top-left-radius: 5px;
-  border-bottom-left-radius: 5px; 
+.f {
+    border-top-left-radius: 5px;
+    border-bottom-left-radius: 5px;
 }
 
-.e{
-  border-top-right-radius: 5px;
-  border-bottom-right-radius: 5px; 
+.e {
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
 }
-
 </style>
    

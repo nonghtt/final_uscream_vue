@@ -37,6 +37,7 @@
           </div>
         </div>
 
+
       </div>
       <!-- END SIGN UP -->
       <!-- SIGN IN -->
@@ -138,6 +139,7 @@ export default {
       }
     }
   }
+
 
 </script>
 
@@ -431,6 +433,7 @@ body {
     z-index: 0;
     transform: none;
     right: 0;
+
   }
 
   /* .logincontainer.sign-in .col.sign-up {

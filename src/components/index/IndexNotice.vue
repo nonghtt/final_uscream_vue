@@ -1,71 +1,120 @@
 <template>
     <div id="container">
-        <h2>공지사항</h2>
-
-        <div v-if="accounttype == 1" class="content">
-            본사
-            오늘 밤이 어제보다 더워
-            딴 사람은 몰라도
-            네가 잠들 리는 없어
-            그 머릿속에 지금 누가 있어
-            그게 나일 수 있는
-            그런 방법은 없어?
-            하루가 끝나갈 때쯤
-            우연히 내 얼굴이 떠오른다거나
-            (할지도) 별것도 아닌 이유로
-            갑자기 내가 궁금할 수 있지
-            예를 들게 그럼 봐봐
+        <h3>공지사항</h3>
+        <div style="width: 100%">
+            <div>
+                <div class="container" style="padding: 24px;">
+                    <table class="table">
+                        <thead>
+                            <tr>
+                                <th style="text-align: center;">글번호</th>
+                                <th style="text-align: center;">제목</th>
+                                <th style="text-align: center;">조회수</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="item in noticelist" :key="item.noticenum" style="cursor: pointer;">
+                                <td class="text-center">{{ item.noticenum }}</td>
+                                <td class="text-center">{{ item.title }}</td>
+                                <td class="text-center">{{ item.cnt }}</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+            <!-- 라우터 링크 넣어주세요~! -->
+            <button class="btn" id="btncolor" @click="movePage('/NoticeList')"> 더보기 </button>
         </div>
-
-        <div v-if="accounttype == 2" class="content"> 
-            지점
-            오늘 밤이 어제보다 더워
-            딴 사람은 몰라도
-            네가 잠들 리는 없어
-            그 머릿속에 지금 누가 있어
-            그게 나일 수 있는
-            그런 방법은 없어?
-            하루가 끝나갈 때쯤
-            우연히 내 얼굴이 떠오른다거나
-            (할지도) 별것도 아닌 이유로
-            갑자기 내가 궁금할 수 있지
-            예를 들게 그럼 봐봐
-        </div>
-
-         <!-- 라우터 링크 넣어주세요~! -->
-        <button class="btn" id="btncolor">더보기</button>
     </div>
 </template>
 
 <script>
-export default{
-    name:'IndexNotice',
-    data(){
+export default {
+    name: 'IndexNotice',
+    data() {
         return {
-            id : sessionStorage.getItem("loginId"),
-            accounttype : sessionStorage.getItem("accounttype"),
-            list : [],
+            id: sessionStorage.getItem("loginId"),
+            accounttype: sessionStorage.getItem("accounttype"),
+            noticelist: [],
         }
     },
-    created:function(){
-        console.log(this.accounttype)
-    }
-}
+    created: function () {
+        const self = this;
+        self.$axios.get("http://localhost:8085/notices/three").then(function (res) {
+            if (res.data.list) {
+                
+                //self.noticelist = res.data.list;
+                //console.log(self.noticelist)
+
+                let list = res.data.list;
+                for(let i=0;i<list.length;i++){
+                    if(list[i].title.length>40){
+                        list[i].title = list[i].title.slice(0, 40) + ' ··· ';
+                    }
+                }
+
+                self.noticelist = list;
+            } else if (res.data.notice) {
+                self.noticelist = [res.data.notice];
+            }
+        });
+
+    },
+    methods: {
+        formatDate(dateString) {
+            const formattedDate = dateString.substring(0, 10);
+            return formattedDate;
+        },
+        getBoardList() {
+            console.log(this.schbox, this.schVal);
+            let url = "http://localhost:8085/notices/three";
+
+            if (this.schbox && this.schVal) {
+                switch (this.schbox) {
+                    case "noticenum":
+                        url += `/schid/${this.schVal}`;
+                        break;
+                    case "title":
+                        url += `/schtit/${this.schVal}`;
+                        break;
+                    default:
+                        break;
+                }
+            }
+            console.log(url);
+            const self = this;
+            self.$axios.get(url).then(function (res) {
+                if (res.data.list) {
+                    self.noticelist = res.data.list;
+                } else if (res.data.notice) {
+                    self.noticelist = [res.data.notice];
+                }
+                // 최신순으로 정렬
+                self.noticelist.sort((a, b) => {
+                    return new Date(b.wdate) - new Date(a.wdate);
+                });
+            });
+        },
+        movePage(url) {
+            this.$router.push(url);
+        },
+    },
+};
 </script>
 
 <style scoped>
-#container {    
+#container {
     margin: 10px 10px;
     text-align: center;
     overflow: hidden;
     /* 이 위는 바꾸지 마세요~ */
 }
 
-.content{
-    margin-top:5px;
+.content {
+    margin-top: 5px;
     overflow: auto;
     max-height: 12em;
-     /* 이 위는 바꾸지 마세요~ */
+    /* 이 위는 바꾸지 마세요~ */
 }
 
 #btncolor:hover {
@@ -74,7 +123,7 @@ export default{
 }
 
 #btncolor {
-    margin-top:5px;
+    margin-top: 5px;
     color: #595959;
     background-color: #bee96d;
     font-weight: bolder;
