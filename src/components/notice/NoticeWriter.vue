@@ -11,11 +11,11 @@
                 <input type="text" id="title" v-model="title">
             </div>
             <div ref="editor"></div>
-            <button type="button" class="btn btn-primary mr-2" style="background-color: #8eb443; border-color:#8eb443;"
+            <button type="button" class="btn btncolor" style="background-color: #8eb443; border-color:#8eb443;"
                 @click="goToNoticeList">
                 목록
             </button>
-            <button type="button" class="btn btn-primary savebtn" style="background-color: #8eb443; border-color:#8eb443;"
+            <button type="button" class="btn btncolor" style="background-color: #8eb443; border-color:#8eb443;"
                 @click="saveNotice">
                 저장
             </button>
@@ -90,3 +90,17 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.btncolor:hover {
+    background-color: #FFC67B;
+    color: #303030;
+}
+
+.btncolor {
+    height: 38px;
+    color: #303030;
+    background-color: #bee96d;
+    font-weight: bolder;
+}
+</style>
