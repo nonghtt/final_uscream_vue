@@ -87,8 +87,7 @@ export default {
             const self = this;
             const str_receiver = self.receiver.replace(/\s/g, '');
             self.array = str_receiver.split(",")                 //array에는 manager 이름이 갯수만큼있다.   
-            self.searchResults=[];                               //storeid를 담을 배열변수
-            
+            self.searchResults=[];                               //storeid를 담을 배열변수 
         
                 for(var i=0;i<self.array.length;i++){
 
@@ -96,7 +95,6 @@ export default {
                         .then(res => {
                            
                             self.searchResults[i] = res.data; 
-
                             if(res.data=='전송오류'){
                                 self.searchResults[i] = self.array[i]; 
                             }
@@ -112,15 +110,23 @@ export default {
             const self = this;
             this.alertname = [];                                    
             const name = [];                                                  
-            
-            
+       
+            if(self.title==''||self.receiver==''){
+                if(self.title==''){
+                    alert("제목을 입력하세요.")
+                }else{
+                    alert("받는 사람을 입력해주세요")
+                }
+            }
+            else{
+
             for (var i = 0; i < self.searchResults.length; i++) {
 
                 let form = new FormData();
                 form.append('sender', sessionStorage.getItem("loginId"));
                 form.append('receiver', self.searchResults[i]);           
                 form.append('title', self.title);                  
-                form.append('content', self.content);              
+                form.append('content', self.content);            
                 if (self.file) {
                     form.append('mfile', self.file);
                 }
@@ -141,19 +147,21 @@ export default {
                 alert("["+self.alertname+"]"+ "  없는 사용자입니다.");  
             }
             self.$router.push({ name: 'SendMsg' });
+        }
         },
-
-
-
-
         async tempmsg() {
             const self = this;
             this.alertname = [];                                    
             const name = [];  
             let sender = sessionStorage.getItem("loginId");
 
-            for (let i=0;i<self.searchResults.length;i++) {
 
+            
+            
+            if(self.title==''){
+                    alert("제목을 입력하세요.")
+            }else{
+            for (let i=0;i<self.searchResults.length;i++) {
                 let form = new FormData();
                 form.append('sender', sender);
                 form.append('receiver', self.searchResults[i]);
@@ -162,7 +170,8 @@ export default {
                 if (self.file) {
                     form.append('mfile', self.file);
                 }
-              await self.$axios.post("http://localhost:8085/msg/temp", form, { headers: { "Content-Type": "multipart/form-data" } })
+              await self.$axios.post("http://localhost:8085/msg/temp", form, { headers: { "Content-Type": "multipart/form-data"}})
+
             }
             for (var j = 0; j < name.length; j++) {
                 const res = await self.$axios.get("http://localhost:8085/msg/search/" + name[j])    
@@ -175,16 +184,13 @@ export default {
                 alert("["+self.alertname+"]"+ "  없는 사용자입니다.");  
             }
             self.$router.push({ name: 'ReceiveMsg' });
+        }
         },
 
-        // selectStoreId(storeid) {
-        //     const self = this;
-        //     self.receiver = storeid;
-        //     self.searchResults = [];
-        // }
-
+      
+        }
     }
-}
+
 </script>
     
     

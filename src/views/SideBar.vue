@@ -2,21 +2,21 @@
     <div class="Sidebar">
 
 
-        <div class="div_but">
-            <input type="button" class="but f e btncolor" value="메일 작성" v-on:click="addmsg()">
-
-        </div>
         <div class="head_ul">
             <div class="readmsg">
-                <div class="bold">읽지 않은 메일</div>
-                <div class="head_number">{{ read }}</div>
+                <div class="bold line ">읽지 않은 메일</div>
+                <div class="head_number line">{{ read }}</div>
             </div>
             <div class="markmsg" v-on:click="markmsg()" @mouseover="changeCursor">
                 <div class="bold">즐겨 찾기</div>
                 <div class="head_number">{{ mark }}</div>
             </div>
         </div>
+        
+        <div class="div_but">
+            <input type="button" class="but f e btncolor" value="메일 작성" v-on:click="addmsg()">
 
+        </div>
         <div class="menu_bar">
 
    
@@ -151,11 +151,15 @@ body {
     margin-right: 3px;
 }
 
+.line{
+    border-right: 3px solid rgba(0, 38, 7, 0.108);
+}
 .head_ul {
-    margin-top: 30px;
-    margin-bottom: 15px;
+    margin-top: 20px;
+    margin-bottom: 12px;
     display: flex;
     font-size: 12px;
+    
 }
 
 .head_number{
@@ -213,9 +217,11 @@ ul {
 
 
 .div_but{
-    margin-top: 20px;
-    margin-bottom: 10px;
+    margin-top: 2px;
+    margin-bottom: 23px;
     text-align: center;
+    margin-right:11px;
+    margin-left: 10px;
 }
 
 .btncolor:hover {
@@ -228,7 +234,7 @@ ul {
     background-color: #03c75a;
     font-weight: 550;
     padding: 5px 10px;
-    width: 100px;
+    width: 180px;
 }
 
 .but {

@@ -1,59 +1,68 @@
 <template>
     <div class="full_container">
-    <div class="sidebar_container shadow">
-        <SideBar />
+        <div class="sidebar_container shadow">
+            <SideBar />
+        </div>
+        <div class="container">
+            <div class="topbar">
+                <span>
+                    <h10 class="head_text"> 받은 메일함 </h10>
+                </span>
+                <span>
+                    <h10> {{ count }} / {{ countall }} </h10>
+                </span>
+            </div>
+            <div class="middlebar_container" style="border-bottom: 1px solid;">
+                <div class="middlebar">
+                    <input type="button" class="but f btncolor" value="휴지통으로" v-on:click="delmsg()">
+                    <input type="button" class="but btncolor" value="즐겨찾기" v-on:click="marklist()">
+                    <input type="button" class="but e btncolor" value="읽음" v-on:click="readlist()">
+                </div>
+                <div class="searchbar">
+                    <input type="text" class="textbar" name="searchbar" id="searchbar" placeholder="보낸 사람으로 메일 검색"
+                        autocomplete="off">
+                    <input type="button" class="but f e btncolor" value="검색" v-on:click="receivemsgsearch()">
+                </div>
+            </div>
+            <div class="null_div" v-if="list == ''">메일이 없습니다.</div>
+            <div class="scroll">
+                <table v-if="paginatedData.length > 0" class="main">
+                    <tr v-for="(msg, index) in paginatedData" :key="index">
+                        <td class="check">
+                            <input type="checkbox" class="checkbox_icon" v-model="checked[index]"
+                                @change="checklist(msg.msgnum)">
+                            <img class="lcon" :src="markimg" v-if="msg.mark == 1" v-on:click="mark(msg.msgnum)">
+                            <img class="lcon" :src="markimg2" v-else v-on:click="mark(msg.msgnum)">
+                            <img class="lcon" :src="readimg" v-if="msg.readcheck == 1" v-on:click="read(msg.msgnum)">
+                            <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum)">
+                        </td>
+                        <td :class="{ 'bold': msg.readcheck === true }">{{ msg.sender.managername }}</td>
+                        <td v-on:click="detail(msg.msgnum)" :class="{ 'bold': msg.readcheck === true }"
+                            @mouseover="changeCursor">
+                            <span :class="['limited-title']">{{ truncateTitle(msg.title, 20) }}</span>
+                        </td>
+                        <td :class="{ 'bold': msg.readcheck === true }">{{ msg.msgdate }}</td>
+                    </tr>
+                </table>
+            </div>
+            <div class="pagination">
+                <button :disabled="currentPage === 1" @click="prevPage">이전</button>
+
+
+
+                <div v-for="i in pagearray" :key="i">
+                    <button :class="{ active: currentPage === i }" @click="goToPage(i)">
+                        {{ i }}
+                    </button>
+                </div>
+
+
+
+
+                <button :disabled="currentPage === totalPages" @click="nextPage">다음</button>
+            </div>
+        </div>
     </div>
-    <div class="container">
-        <div class="topbar">
-            <span>
-                <h10 class="head_text"> 받은 메일함 </h10>
-            </span>
-            <span>
-                <h10> {{ count }} / {{ countall }} </h10>
-            </span>
-        </div>
-        <div class="middlebar_container" style="border-bottom: 1px solid;">
-            <div class="middlebar">
-                <input type="button" class="but f btncolor" value="메일 작성" v-on:click="addmsg()">
-                <input type="button" class="but btncolor" value="휴지통으로" v-on:click="delmsg()">
-                <input type="button" class="but btncolor" value="즐겨찾기" v-on:click="marklist()">
-                <input type="button" class="but e btncolor" value="읽음" v-on:click="readlist()">
-            </div>
-            <div class="searchbar">
-                <input type="text" class="textbar" name="searchbar" id="searchbar" placeholder="보낸 사람으로 메일 검색"
-                    autocomplete="off">
-                <input type="button" class="but f e btncolor" value="검색" v-on:click="receivemsgsearch()">
-            </div>
-        </div>
-        <div class="null_div" v-if="list == ''">메일이 없습니다.</div>
-        <div class="scroll">
-            <table v-if="paginatedData.length > 0" class="main">
-                <tr v-for="(msg, index) in paginatedData" :key="index">
-                    <td class="check">
-                        <input type="checkbox" class="checkbox_icon" v-model="checked[index]"
-                            @change="checklist(msg.msgnum)">
-                        <img class="lcon" :src="markimg" v-if="msg.mark == 1" v-on:click="mark(msg.msgnum)">
-                        <img class="lcon" :src="markimg2" v-else v-on:click="mark(msg.msgnum)">
-                        <img class="lcon" :src="readimg" v-if="msg.readcheck == 1" v-on:click="read(msg.msgnum)">
-                        <img class="lcon" :src="readimg2" v-else v-on:click="read(msg.msgnum)">
-                    </td>
-                    <td :class="{ 'bold': msg.readcheck === true }">{{msg.sender.managername}}</td>
-                    <td v-on:click="detail(msg.msgnum)" :class="{ 'bold': msg.readcheck === true }" @mouseover="changeCursor">
-                        <span :class="['limited-title']">{{ truncateTitle(msg.title, 20) }}</span>
-                    </td>
-                    <td :class="{ 'bold': msg.readcheck === true }">{{msg.msgdate}}</td>
-                </tr>
-            </table>
-        </div>
-        <div class="pagination">
-            <button :disabled="currentPage === 1" @click="prevPage">이전</button>
-            <div v-for="pageNumber in totalPages" :key="pageNumber">
-                <button :class="{ active: currentPage === pageNumber }" @click="goToPage(pageNumber)">{{ pageNumber   }}</button>
-            </div>
-            <button :disabled="currentPage === totalPages" @click="nextPage">다음</button>
-        </div>
-    </div>
-</div>
 </template>
   
 <script>
@@ -68,7 +77,7 @@ export default {
             countall: 0,
             count: 0,
             id: sessionStorage.getItem("loginId"),
-            sender:'',
+            sender: '',
             markimg: require("../../assets/staron.png"),
             markimg2: require("../../assets/starnomal.png"),
             readimg: require("../../assets/msgnoread.png"),
@@ -79,8 +88,9 @@ export default {
             clickmsg: [],
             currentPage: 1,
             pageSize: 15,
-            title:'',
-            maxLength:20
+            title: '',
+            maxLength: 20,
+            pagearray: [1, 2, 3, 4, 5], 
         }
     },
     created: function () {
@@ -108,16 +118,20 @@ export default {
     },
 
     methods: {
+        // 제목 ...으로 자르기 메서드
         truncateTitle(title, maxLength) {
-                    if (title.length > maxLength) {
-                        return title.substring(0, maxLength) + '...';
-                    }
-                    return title;
-                },
+            if (title.length > maxLength) {
+                return title.substring(0, maxLength) + '...';
+            }
+            return title;
+        },
+        // div에 마우스오버하면 클릭 버튼으로 
         changeCursor() {
-    
-    event.target.style.cursor = 'pointer';
-  },
+
+            event.target.style.cursor = 'pointer';
+        },
+
+        //체크박스 배열에 담는 메서드
         checklist() {
             this.checkedmsg = [];
             for (let i = 0; i < this.checked.length; i++) {
@@ -128,6 +142,7 @@ export default {
                 }
             }
         },
+        // 체크 박스로 즐찾
         marklist() {
 
             const self = this;
@@ -138,11 +153,13 @@ export default {
             }
             window.location.reload();
         },
+        // 그냥 즐찾
         mark(num) {
             const self = this
             self.$axios.patch("http://localhost:8085/msg/mark/check/" + num)
             window.location.reload();
         },
+        // 체크 박스로 읽음 
         readlist() {
             const self = this;
             for (let i = 0; i < this.checkedmsg.length; i++) {
@@ -151,11 +168,13 @@ export default {
             }
             window.location.reload();
         },
+        // 그냥 읽음
         read(num) {
             const self = this
             self.$axios.patch("http://localhost:8085/msg/read/check/" + num)
             window.location.reload();
         },
+        // 휴지통으로 
         delmsg() {
             const self = this
             for (let i = 0; i < this.checkedmsg.length; i++) {
@@ -164,55 +183,77 @@ export default {
             }
             self.$router.push({ name: 'DelMsg' })
         },
-
+        // 상세 페이지
         detail(num) {
             const self = this
             self.$axios.patch("http://localhost:8085/msg/read/detail/check/" + num)
             self.$router.push({ name: 'DetailMsg', query: { 'num': num } })
         },
+        // 글 작성 페이지로 이동
         addmsg() {
             this.$router.push({ name: 'AddMsg' });
         },
+        // 받은 메시지 페이지에서 보낸 사람으로 검색하는 메서드 
         async receivemsgsearch() {
             const self = this;
             let receiver = self.id
-            
+
             self.sender = document.getElementById("searchbar").value;
-            await self.$axios.get("http://localhost:8085/store/manager/"+ self.sender,{ params: { name: self.sender} })
-                        .then(res => {
-                           self.sender= res.data;
-                        })
+            await self.$axios.get("http://localhost:8085/store/manager/" + self.sender, { params: { name: self.sender } })
+                .then(res => {
+                    self.sender = res.data;
+                })
             self.$axios.get("http://localhost:8085/msg/receivemsg/" + self.sender + "/" + receiver)
                 .then(function (res) {
                     self.list = res.data.msglist;
                 })
         },
+
+        // 페이징 
         prevPage() {
             this.currentPage--;
+            this.lookFivePage(this.currentPage)
         },
         nextPage() {
-
             this.currentPage++;
+            this.lookFivePage(this.currentPage)
         },
         goToPage(pageNumber) {
+            this.lookFivePage(pageNumber)
             this.currentPage = pageNumber;
         },
 
-    }
+        lookFivePage(pageNumber) {
+            if (pageNumber == 1 || pageNumber == 2) {   // 1,2페이지 클릭했을 때 1, 2, 3, 4, 5 뜨게 만들어주기
+                for (let i = 0; i < this.pagearray.length; i++) {
+                    this.pagearray[i] = i + 1;
+                }
+            } else if (pageNumber == this.totalpages || pageNumber == (this.totalpages - 1)) {  // 마지막이랑 마지막-1 페이지 클릭했을 때 
+                for (let i = 0; i < this.pagearray.length; i++) {
+                    this.pagearray[i] = this.totalpages - 4 + i;
+                }
+            } else {   // 그 중간의 것들 클릭
+                if (pageNumber > 3) {
+                    for (let i = 0; i < this.pagearray.length; i++) {
+                        this.pagearray[i] = pageNumber - 2 + i;
+                    }
+                }
+            }
+        }
 
+    }
 }
 </script>
   
  
 <style scoped>
-
 body {
-  font-family:  'Noto Sans KR', sans-serif;
-  background-color: rgb(255, 255, 254);
+    font-family: 'Noto Sans KR', sans-serif;
+    background-color: rgb(255, 255, 254);
 }
 
 
-.full_container{
+.full_container {
     display: flex;
 }
 
@@ -220,7 +261,7 @@ body {
     display: inline-block;
     width: 220px;
     text-align: left;
-    border-right:  rgb(157, 157, 157);
+    border-right: rgb(157, 157, 157);
     background-color: rgb(255, 255, 254);
     height: 770px;
 }
@@ -235,9 +276,10 @@ h3 {
     background-color: #fff;
 }
 
-.head_text{
+.head_text {
     font-weight: bold;
 }
+
 .topbar {
     text-align: left;
     margin-top: 2%;
@@ -330,13 +372,13 @@ table {
 
 tr {
     border-bottom: 1px solid rgba(0, 0, 0, .1);
-    height:35px;
+    height: 35px;
 }
 
 td {
     padding-top: 7px;
     padding-bottom: 12px;
-    font-size:12.5px;
+    font-size: 12.5px;
 }
 
 td:nth-child(1) {
@@ -416,5 +458,6 @@ td:nth-child(4) {
 
 .bold {
     font-weight: bold;
-}</style>
+}
+</style>
   
