@@ -3,66 +3,15 @@
         <h2>매출</h2>
 
         <div v-if="accounttype == 1" class="content"> 
-            본사
-            오늘 밤이 어제보다 더워
-            딴 사람은 몰라도
-            네가 잠들 리는 없어
-            그 머릿속에 지금 누가 있어
-            그게 나일 수 있는
-            그런 방법은 없어?
-            하루가 끝나갈 때쯤
-            우연히 내 얼굴이 떠오른다거나
-            (할지도) 별것도 아닌 이유로
-            갑자기 내가 궁금할 수 있지
-            예를 들게 그럼 봐봐
+            <div id="HQchart"></div>
+
+
+            
         </div>
 
         <div v-if="accounttype == 2" class="content"> 
-            지점
-            오늘 밤이 어제보다 더워
-            딴 사람은 몰라도
-            네가 잠들 리는 없어
-            그 머릿속에 지금 누가 있어
-            그게 나일 수 있는
-            그런 방법은 없어?
-            하루가 끝나갈 때쯤
-            우연히 내 얼굴이 떠오른다거나
-            (할지도) 별것도 아닌 이유로
-            갑자기 내가 궁금할 수 있지
-            예를 들게 그럼 봐봐
-            오늘 밤이 어제보다 더워
-            딴 사람은 몰라도
-            네가 잠들 리는 없어
-            그 머릿속에 지금 누가 있어
-            그게 나일 수 있는
-            그런 방법은 없어?
-            하루가 끝나갈 때쯤
-            우연히 내 얼굴이 떠오른다거나
-            (할지도) 별것도 아닌 이유로
-            갑자기 내가 궁금할 수 있지
-            예를 들게 그럼 봐봐
-            오늘 밤이 어제보다 더워
-            딴 사람은 몰라도
-            네가 잠들 리는 없어
-            그 머릿속에 지금 누가 있어
-            그게 나일 수 있는
-            그런 방법은 없어?
-            하루가 끝나갈 때쯤
-            우연히 내 얼굴이 떠오른다거나
-            (할지도) 별것도 아닌 이유로
-            갑자기 내가 궁금할 수 있지
-            예를 들게 그럼 봐봐
-            오늘 밤이 어제보다 더워
-            딴 사람은 몰라도
-            네가 잠들 리는 없어
-            그 머릿속에 지금 누가 있어
-            그게 나일 수 있는
-            그런 방법은 없어?
-            하루가 끝나갈 때쯤
-            우연히 내 얼굴이 떠오른다거나
-            (할지도) 별것도 아닌 이유로
-            갑자기 내가 궁금할 수 있지
-            예를 들게 그럼 봐봐
+            <div id="StoreChart"></div>
+            
         </div>
 
          <!-- 라우터 링크 넣어주세요~! -->
@@ -71,6 +20,11 @@
 </template>
 
 <script>
+import * as echarts from 'echarts/core';
+import { GridComponent } from 'echarts/components';
+import { BarChart } from 'echarts/charts';
+import { CanvasRenderer } from 'echarts/renderers';
+
 export default {
     name: 'IndexNetsales',
     data() {
@@ -81,9 +35,104 @@ export default {
         }
     },
     created: function () {
-        console.log(this.accounttype)
+        console.log(this.accounttype);
+        echarts.use([GridComponent, BarChart, CanvasRenderer]);
+        this.type();
+    },
+    mounted () {
+        const currentDate = new Date();
+        this.year = currentDate.getFullYear();
+        this.month = currentDate.getMonth();
+    },
+    methods: {
+      type () {
+        if (this.accounttype === "1") {
+            this.getHQchart();
+        } else if (this.accounttype === "2") {
+            this.getHQchart();
+        }
+      },
+      getHQchart() {
+        const self = this;
+
+        self.$axios.get(`http://localhost:8085/selling/dailysales`)
+            .then(response => {
+            self.list = response.data;
+
+            console.log(self.list);
+
+            const day = new Date(); // 현재 날짜 추출
+
+            for (let i = 4; i >= 0; i--) {  // 오늘부터 5일전 날짜까지 추출
+                const sellingdate = new Date(day.getTime() - i * 24 * 60 * 60 * 1000);
+                self[sellingdate + '-' + i + 'day'] = sellingdate;
+
+                console.log(sellingdate);
+                
+                const item = self.list.find(obj => {
+                    const itemDate = new Date(obj.SELLINGDATE);
+                    return itemDate.toDateString() === sellingdate.toDateString();
+                })
+   
+
+                if (item) {
+                    const totalprice = item.TOTALPRICE;
+                    self[sellingdate + totalprice] = totalprice;
+                    self.sellingdate = totalprice;
+                    console.log(self[sellingdate + '-' + i + 'day']);
+                }
+            }
+
+        
+
+            const myChart = echarts.init(document.getElementById('HQchart'));
+
+            const option = {
+                xAxis: {
+                type: 'category',
+                data: [
+                    new Date(day.getTime() - 4 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+                    new Date(day.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+                    new Date(day.getTime() - 2 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+                    new Date(day.getTime() - 1 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10),
+                    new Date(day).toISOString().slice(0, 10)
+                ]
+                },
+                yAxis: {
+                type: 'value'
+                },
+                series: [
+                {
+                    data: [
+                    self[new Date(day.getTime() - 4 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10) + 'sales'],
+                    self[new Date(day.getTime() - 3 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10) + 'sales'],
+                    self[new Date(day.getTime() - 2 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10) + 'sales'],
+                    self[new Date(day.getTime() - 1 * 24 * 60 * 60 * 1000).toISOString().slice(0, 10) + 'sales'],
+                    self[new Date(day).toISOString().slice(0, 10) + 'sales']
+                    ],
+                    tooltip: {
+                          valueFormatter: function (value) {
+                            return value.toLocaleString() + ' 원';
+                          }
+                        },
+                    type: 'bar',
+                    showBackground: true,
+                    backgroundStyle: {
+                    color: 'rgba(180, 180, 180, 0.2)'
+                    }
+                }
+                ]
+            };
+
+            myChart.setOption(option);
+            })
+            .catch(error => {
+            console.error(error);
+            });
+        }
     }
 }
+
 </script>
 
 <style scoped>
@@ -113,5 +162,10 @@ export default {
     font-weight: bolder;
     border: none;
     padding: 5px 10px;
+}
+
+#HQchart {
+    width:400px;
+    height:300px;
 }
 </style>
