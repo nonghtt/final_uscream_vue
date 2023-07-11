@@ -171,10 +171,13 @@ export default {
                         console.log("basicschedule 수정");
                         console.log(res.status)
                         console.log(res.data)
-                        self.bsEmp = false;
-                        self.empEmpty = true;
+                        //self.bsEmp = false;
+                        //self.empEmpty = true;
                     })
             }
+            self.bsEmp = false;
+            self.empEmpty = true;
+            self.schedule = [];
         },
         // 기본 스케줄 삭제 -> 캘린더 변경 X
         delBasicSchedule() {
