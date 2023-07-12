@@ -34,7 +34,7 @@
                         <ul class="dropdown-menu">
                             <li><router-link class="menu" to="/storeJoin">지점등록</router-link></li>
                             <li><router-link class="menu" to="/storeList">지점현황</router-link></li>
-                            <li><router-link class="menu" to="/storeManagement">지점관리</router-link></li>
+
                         </ul>
                     </li>
                     <li v-if="accounttype == 2" class="nav-item">

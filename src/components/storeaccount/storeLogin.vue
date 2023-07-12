@@ -143,7 +143,7 @@ export default {
 
 </script>
 
-<style> 
+<style scoped> 
 :root {
   --primary-color: #bee96d;
   --secondary-color: #bee96d;

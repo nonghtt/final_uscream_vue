@@ -86,11 +86,11 @@ export default {
             checked: [],
             num: [],
             clickmsg: [],
-            currentPage: 1,
-            pageSize: 15,
             title: '',
-            maxLength: 20,
-            pagearray: [1, 2, 3, 4, 5], 
+            pageSize: 12,              
+            currentPage: 1,            
+            totalpages: 0,             
+            pagearray: [1, 2, 3, 4, 5]  
         }
     },
     created: function () {
@@ -101,6 +101,7 @@ export default {
                 self.list = res.data.msglist;
                 self.count = res.data.countByReadTempMsg;
                 self.countall = res.data.countAllByTempMsg;
+                self.totalpages=Math.ceil(self.list.length / self.pageSize)
             })
     },
     computed: {
@@ -207,19 +208,19 @@ export default {
         },
 
         lookFivePage(pageNumber) {
-            if (pageNumber == 1 || pageNumber == 2) {   
-                for (let i = 0; i < this.pagearray.length; i++) {
-                    this.pagearray[i] = i + 1;
-                }
-            } else if (pageNumber == this.totalpages || pageNumber == (this.totalpages - 1)) {  
-                for (let i = 0; i < this.pagearray.length; i++) {
-                    this.pagearray[i] = this.totalpages - 4 + i;
-                }
-            } else {   
-                if (pageNumber > 3) {
-                    for (let i = 0; i < this.pagearray.length; i++) {
-                        this.pagearray[i] = pageNumber - 2 + i;
-                    }
+            const halfPageArraySize = Math.floor(this.pagearray.length / 2);
+            const firstPage = Math.max(pageNumber - halfPageArraySize, 1);
+            const lastPage = Math.min(pageNumber + halfPageArraySize, this.totalpages);
+
+            for (let i = 0; i < this.pagearray.length; i++) {
+                this.pagearray[i] = firstPage + i;
+            }
+
+            if (lastPage - firstPage + 1 < this.pagearray.length) {
+                const diff = this.pagearray.length - (lastPage - firstPage + 1);
+                const startIndex = Math.max(firstPage - diff, 1);
+                for (let i = 0; i < diff; i++) {
+                    this.pagearray[i] = startIndex + i;
                 }
             }
         }
