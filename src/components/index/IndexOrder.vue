@@ -1,8 +1,8 @@
 <template>
     <div id="container">
-        <h3>발주?</h3>
+        <h4>발주</h4>
         <div style="width: 100%;height: 230px;  " v-if="orderlist != null">
-            <table class="table table-light table-striped table-bordered">
+            <table class="table table-light table-striped table-bordered" v-if="orderlist != null">
                 <tr>
                     <th>발주번호</th>
                     <th>제목</th>
@@ -29,8 +29,9 @@
                 </tr>
             </table>
 
-            <!-- 라우터 링크 넣어주세요~! -->
+            <router-link to="/orderlist">
             <button class="btn " id="btncolor">더보기</button>
+        </router-link>
         </div>
         <div v-else>
             발주중인 상품이 없습니다
@@ -53,12 +54,12 @@ export default {
         if (self.accounttype == 1) {
             self.$axios.get("http://localhost:8085/orders/notconfirm").then(function (res) {
                 self.orderlist = res.data.orderlist
-                console.log(self.list)
+                console.log(self.orderlist)
             })
         } else {
             self.$axios.get("http://localhost:8085/orders/notconfirm/" + self.id).then(function (res) {
                 self.orderlist = res.data.orderlist
-                console.log(self.list)
+                console.log(self.orderlist)
             })
         }
 

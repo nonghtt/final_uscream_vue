@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h3>{{storeid  }} 재고 현황</h3>
+        <h3 style="text-align: start;margin: 20px 0 20px 0;">{{storeid }} 재고 현황</h3>
         <table class="table table-light table-striped table-bordered">
             <tr>
                 <th>제품 번호</th>
