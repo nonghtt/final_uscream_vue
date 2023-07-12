@@ -6,7 +6,7 @@
                     style="font-size: 18px; font-weight: bold; color: gray; padding-top: 63px; padding-left: 180px;">제목</label>
                 <div class="underline-input">
                     <input type="text" id="title" class="form-control" v-model="title" :readonly="!canEdit">
-                    <div class="underline"></div>
+                    <hr>
                 </div>
             </div>
             <div class="flex-grow-1 overflow-auto" style="display: flex; flex-direction: column; align-items: center;">

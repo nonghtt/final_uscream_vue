@@ -1,20 +1,25 @@
 <template>
-    <div class="container">
+    <div class="wrapper" style="padding: 40px;">
         <div class="card">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-weight: bold; font-size: 20px;">고객의소리</span>
             </div>
             <div class="schbox">
-                <label for="category">분류</label>
+                <label for="category" class="form-label"
+                            style="font-size: 16px; font-weight: bold; color: gray; padding-top: 17px; padding-left: 20px;">분류</label>
                 <select id="category" v-model="category">
                     <option value="1">칭찬</option>
                     <option value="2">불만</option>
                 </select>
             </div>
             
-            <div>
-                <label for="title">제목</label>
-                <input type="text" id="title" v-model="title">
+            <div class="mb-5">
+                <label for="title" class="form-label"
+                    style="font-size: 16px; font-weight: bold; color: gray; padding-top: 17px; padding-left: 20px;">제목</label>
+                <div class="underline-input">
+                    <input type="text" id="title" class="form-control" v-model="title">
+                    <div class="underline"></div>
+                </div>
             </div>
             <div ref="editor"></div>
         </div>
@@ -121,5 +126,11 @@ export default {
 .savebtn:hover {
     background-color: #FFC67B;
     color: #595959;
+}
+
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    /* 가운데 정렬을 위한 설정 */
 }
 </style>
