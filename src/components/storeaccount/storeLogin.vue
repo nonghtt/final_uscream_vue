@@ -2,24 +2,24 @@
 <template>
   <div :class="logincontainerClasses " class="logincontainer" id="logincontainer">
     <!-- FORM SECTION -->
-    <div class="row">
+    <div class="loginrow">
       <!-- SIGN UP -->
       <div class="col align-items-center flex-col sign-up">
-        <div class="form-wrapper align-items-center">
+        <div class="loginform-wrapper align-items-center">
           <div class="form sign-up">
-            <div class="input-group">
+            <div class="logininput-group">
               <i class='bx bxs-user'></i>
               <input type="text" placeholder="Username">
             </div>
-            <div class="input-group">
+            <div class="logininput-group">
               <i class='bx bx-mail-send'></i>
               <input type="email" placeholder="Email">
             </div>
-            <div class="input-group">
+            <div class="logininput-group">
               <i class='bx bxs-lock-alt'></i>
               <input type="password" placeholder="Password">
             </div>
-            <div class="input-group">
+            <div class="logininput-group">
               <i class='bx bxs-lock-alt'></i>
               <input type="password" placeholder="Confirm password">
             </div>
@@ -30,7 +30,7 @@
               <span>
                 Already have an account?
               </span>
-              <b onclick="toggle()" class="pointer">
+              <b onclick="toggle()" class="loginpointer">
                 Sign in here
               </b>
             </p>
@@ -42,13 +42,13 @@
       <!-- END SIGN UP -->
       <!-- SIGN IN -->
       <div class="col align-items-center flex-col sign-in">
-        <div class="form-wrapper align-items-center"  style="margin-bottom:5%; margin-left:-10%">
+        <div class="loginform-wrapper align-items-center"  style="margin-bottom:5%; margin-left:-10%">
           <div class="form sign-in">
-            <div class="input-group">
+            <div class="logininput-group">
               <i class='bx bxs-user'></i>
               <input type="text" placeholder="Login ID" v-model="storeid" required>
             </div>
-            <div class="input-group">
+            <div class="logininput-group">
               <i class='bx bxs-lock-alt'></i>
               <input type="password" placeholder="Password" v-model="pwd" required>
             </div>
@@ -58,7 +58,7 @@
 
           </div>
         </div>
-        <div class="form-wrapper">
+        <div class="loginform-wrapper">
 
         </div>
       </div>
@@ -66,7 +66,7 @@
     </div>
     <!-- END FORM SECTION -->
     <!-- CONTENT SECTION -->
-    <div class="row content-row">
+    <div class="loginrow content-loginrow">
       <!-- SIGN IN CONTENT -->
       <div class="col align-items-center flex-col" style="margin-bottom:5%; margin-left:8%">
         <div class="text sign-in">
@@ -170,7 +170,7 @@ export default {
 html,
 body {
   height: 100vh;
-  overflow: hidden;
+  /* overflow: hidden; */
 }
 
 .logincontainer {
@@ -179,7 +179,7 @@ body {
   overflow: hidden;
 }
 
-.row {
+.loginrow {
   display: flex;
   flex-wrap: wrap;
   height: 100vh;
@@ -196,7 +196,7 @@ body {
   text-align: center;
 }
 
-.form-wrapper {
+.loginform-wrapper {
   width: 100%;
   max-width: 28rem;
 }
@@ -212,13 +212,13 @@ body {
   transition-delay: 1s;
 }
 
-.input-group {
+.logininput-group {
   position: relative;
   width: 100%;
   margin: 1rem 0;
 }
 
-.input-group i {
+.logininput-group i {
   position: absolute;
   top: 50%;
   left: 1rem;
@@ -227,7 +227,7 @@ body {
   color: var(--gray-2);
 }
 
-.input-group input {
+.logininput-group input {
   width: 100%;
   padding: 1rem 3rem;
   font-size: 1rem;
@@ -237,7 +237,7 @@ body {
   outline: none;
 }
 
-.input-group input:focus {
+.logininput-group input:focus {
   border: 0.125rem solid var(--primary-color);
 }
 
@@ -325,7 +325,7 @@ body {
   background-color: var(--insta-color);
 }
 
-.pointer {
+.loginpointer {
   cursor: pointer;
 }
 
@@ -338,7 +338,7 @@ body {
   transform: scale(1);
 }
 
-.content-row {
+.content-loginrow {
   position: absolute;
   top: 0;
   left: 0;
@@ -450,11 +450,11 @@ body {
     max-width: 100%;
   } */
 
-  .content-row {
+  .content-loginrow {
     align-items: flex-start !important;
   }
 
-  .content-row .col {
+  .content-loginrow .col {
     transform: translateY(0);
     background-color: unset;
   }
@@ -470,7 +470,7 @@ body {
     transition: 1s ease-in-out;
   }
 
-  .row {
+  .loginrow {
     align-items: flex-end;
     justify-content: flex-end;
   }

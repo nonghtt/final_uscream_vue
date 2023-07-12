@@ -1,15 +1,15 @@
 <template>
-  <div id="headSalesTitle" style="text-align:left">매출 조회</div>
+  <H3 id="headSalesTitle" style="text-align:left">매출 조회</H3>
 
   <div id="headSalesContent">
 
-    <div id="dailySales" style="width:700px"></div>
+    <div id="dailySales" style="width:700px; height:500px"></div>
 
     <div style="display:flex; flex-direction:column; padding-left:20px">
       <div style="margin-bottom: 4px; display:flex; justify-content:flex-end"><router-link to="/headsalesDetail"><button class="btn btncolor">연도별 매출 상세</button></router-link></div>
 
       <div id="rankChart"
-        style="border: 1px solid lightgray; width:700px; height: 550px; padding:1%; position:relative; margin-top:20px">
+        style="border: 1px solid lightgray; width:700px; height: 520px; padding:1%; position:relative; margin-top:9px">
         <div style="display:flex; align-items:center; justify-content:space-between; padding:10px">
           <div style="font-size:16px; font-weight:bold">일간 지점 매출 TOP5</div>
           <div style="display:flex">
@@ -23,8 +23,8 @@
           </div>
         </div>
         <div style="display: flex; flex-direction:column; align-items:center; justify-content:center">
-        <div id="ranking5Chart" v-if="showRankingChart"></div>
-        <div v-else><img src="/nodata2.PNG"></div>
+        <div id="ranking5Chart" v-show="showRankingChart == true"></div>
+        <div v-show="showRankingChart == false"><img src="/nodata2.PNG"></div>
       </div>
     </div>
     </div>
@@ -125,6 +125,7 @@ export default {
         });
     },
     getDailyRank5() {
+      this.showRankingChart = true;
       const year = this.selectYear;
       const month = this.selectMonth;
 
@@ -138,6 +139,8 @@ export default {
           .then(response => {
             self.list2 = response.data.list;
             console.log("self.list2: " + self.list2);
+
+            self.showRankingChart = false;
 
             if (self.list2 && self.list2.length > 0) {
               for (let i = 0; i < 5; i++) {
@@ -158,8 +161,6 @@ export default {
                   console.log("지점명: " + self[rank + 'rankStore'], "매출금액: " + self[rank + 'rankSales']);
 
                   const myChart = echarts.init(document.getElementById('ranking5Chart'));
-                  
-                  self.showRankingChart = true;
                   
                   const option = {
                     tooltip: {
@@ -203,18 +204,17 @@ export default {
                           }
                         },
                         data: [
-                          { value: self['1rankSales'], itemStyle: { color: '#ff0000' } },
-                          { value: self['2rankSales'], itemStyle: { color: '#6799FF' } },
-                          { value: self['3rankSales'], itemStyle: { color: '#D1B2FF' } },
-                          { value: self['4rankSales'], itemStyle: { color: '#86E57F' } },
-                          { value: self['5rankSales'], itemStyle: { color: '#3DB7CC' } }
+                          { value: self['1rankSales'], itemStyle: { color: '#79bd9a' } },
+                          { value: self['2rankSales'], itemStyle: { color: '#f2e9e1' } },
+                          { value: self['3rankSales'], itemStyle: { color: '#FAECC5' } },
+                          { value: self['4rankSales'], itemStyle: { color: '#FFC19E' } },
+                          { value: self['5rankSales'], itemStyle: { color: '#F15F5F' } }
                         ]
                       }
                     ]
                   };
                   myChart.setOption(option);
-                } else {
-                  self.showRankingChart = false;
+                  self.showRankingChart = true;
                 }
               }
             }
@@ -228,9 +228,20 @@ export default {
 }
 
 
+
 </script>
 
 <style scoped>
+/* @font-face {
+  font-family: 'NotoSansKR-Regular';
+  src: url('../font/NotoSansKR-Regular.otf') format('opentype');
+} */
+
+/* body {
+  font-family: 'NotoSansKR-Regular', sans-serif;
+}
+ */
+
 #headSalesTitle {
   font-size: 20px;
   font-weight: bold;
@@ -242,23 +253,56 @@ export default {
   padding-left: 3%;
   padding-top: 1%;
   display: flex;
+  overflow: auto;
+  font-family: 'NotoSansKR-Regular', sans-serif;
 }
 
 #ranking5Chart {
-  width: 650px;
-  height: 460px;
+  width: 700px;
+  height: 400px;
 }
 
 .btncolor:hover {
   background-color: #FFC67B;
-  color: #303030;
+  color: #595959;
 }
 
 .btncolor {
   height: 38px;
-  color: #303030;
+  color: #595959;
   background-color: #bee96d;
   font-weight: bolder;
 }
+
+.form-select {
+  height: fit-content;
+  margin-top: 7px;
+}
+
+#headSalesTitle {
+  font-family: 'NotoSansKR-Thin';
+}
+
+</style>
+
+
+<style>
+/* @font-face {
+  font-family: 'NotoSansKR-Thin';
+  src: url('../assets/fonts/NotoSansKR-Thin.otf') format('opentype');
+} */
+/* 
+.app {
+  font-family: 'MyFont', sans-serif;
+} */
+
+.fc-event-title {
+  font-family: 'NotoSansKR-Thin';
+  font-weight: lighter;
+
+}
+
+
+
 
 </style>

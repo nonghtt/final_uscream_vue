@@ -1,10 +1,10 @@
 <template>
-  <div id="branchSalesTitle" style="text-align:left">매출 조회</div>
+  <H3 id="branchSalesTitle" style="text-align:left">매출 조회</H3>
 
   <div id="branchSalesContent">
 
     <!-- 일별 매출 표시 캘린더 -->
-    <div id="dailySales" style="width:750px"></div>
+    <div id="dailySales" style="width:700px;"></div>
 
     <div style="display:flex; flex-direction:column; justify-content:space-between; padding-left:20px">
       <!-- 순매출 분석 차트 -->
@@ -104,7 +104,7 @@ export default {
         initialView: 'dayGridMonth',
         views: {
           dayGridMonth: {
-            titleFormat: 'YYYY[년] M[월]'
+          titleFormat: 'YYYY[년] M[월]'
           },
         },
       }
@@ -333,7 +333,8 @@ export default {
                     name: '', 
                     axisLabel: {
                       formatter: '{value} 원'
-                    }
+                    },
+                    interval: 2000000
                   }
                 ],
                 series: [
@@ -426,7 +427,8 @@ export default {
                     name: '', 
                     axisLabel: {
                       formatter: '{value} 원'
-                    }
+                    },
+                    interval: 2000000
                   }
                 ],
                 series: [
@@ -451,8 +453,6 @@ export default {
                 ]
               };
               myChart2.setOption(option);
-            } else {
-              alert("선택하신 연도의 데이터가 없습니다.");
             }
           })
           .catch(error => {
@@ -477,6 +477,7 @@ export default {
   padding-left: 3%;
   padding-top: 1%;
   display: flex;
+  overflow: auto;
 }
 
 #donutChart {
@@ -499,6 +500,7 @@ export default {
 .BranchSalesContent{
   margin-left: 50px;
   margin-bottom: 50px;
+  overflow: auto;
 }
 #netsalesAnalysis {
   margin-left: 30px;
@@ -541,7 +543,15 @@ export default {
   color: grey;
   text-align: center;
   font-weight:normal;
+}
 
+.fc-prev-button, .fc-next-button, .fc-today-button{
+  border : 1px solid white !important;
+}
+
+.form-select {
+  height: fit-content;
+  margin-top: 7px;
 }
 
 </style>

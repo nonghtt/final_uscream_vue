@@ -1,6 +1,6 @@
 <template>
     <div id="container">
-        <h3 style="z-index=1">매출</h3>
+        <h4 style="z-index=1">매출</h4>
 
         <div v-if="accounttype == 1" class="content" style="z-index=2">
             <div id="HQchart"></div>
@@ -11,15 +11,25 @@
         </div>
 
         <!-- 라우터 링크 넣어주세요~! -->
-        <button class="btn" id="btncolor" style="z-index=3">더보기</button>
+
+        <router-link v-if="accounttype == 1" to="/headsales">
+        <button class="btn" id="btncolor" style="z-index=3">더보기</button></router-link>
+
+        <router-link v-if="accounttype == 2" to="/branchsales">
+        <button class="btn" id="btncolor" style="z-index=3">더보기</button></router-link>
+
     </div>
 </template>
 
 <script>
 import * as echarts from 'echarts/core';
-import { GridComponent } from 'echarts/components';
+import { TooltipComponent, GridComponent } from 'echarts/components';
 import { BarChart } from 'echarts/charts';
 import { CanvasRenderer } from 'echarts/renderers';
+import { ToolboxComponent, LegendComponent } from 'echarts/components';
+import { PieChart } from 'echarts/charts';
+import { LabelLayout } from 'echarts/features';
+import { UniversalTransition } from 'echarts/features';
 
 export default {
     name: 'IndexNetsales',
@@ -33,7 +43,10 @@ export default {
     },
     created: function () {
         console.log(this.accounttype);
-        echarts.use([GridComponent, BarChart, CanvasRenderer]);
+        echarts.use ([ 
+          TooltipComponent, LegendComponent, PieChart, CanvasRenderer, LabelLayout,
+          ToolboxComponent, GridComponent, BarChart, UniversalTransition 
+        ]);
         this.type();
     },
     mounted() {
@@ -79,32 +92,52 @@ export default {
             const myChart = echarts.init(document.getElementById('HQchart'));
 
             const option = {
-                xAxis: {
-                type: 'category',
-                data: [
-                    self['salesDay-1'],
-                    self['salesDay-2'],
-                    self['salesDay-3']
-                ]
+                tooltip: {
+                  trigger: 'axis',
+                  axisPointer: {
+                    type: 'shadow'
+                  }
                 },
-                yAxis: {
-                type: 'value',
-                interval: 2500000
+                grid: {
+                  left: '3%',
+                  right: '4%',
+                  bottom: '3%',
+                  containLabel: true
                 },
+                xAxis: [
+                  {
+                   type: 'category',
+                   data: [self['salesDay-1'], self['salesDay-2'], self['salesDay-3']]
+                  }
+                ],
+                yAxis: [
+                  {
+                   type: 'value',
+                   interval: 2500000,
+                   axisLabel: {
+                      formatter: '{value} 원'
+                    }
+                  }
+                ],
                 series: [
                 {
-                    data: [
-                    self['salesDay-1sales'],
-                    self['salesDay-2sales'],
-                    self['salesDay-3sales']
-                    ],
                     type: 'bar',
-                    barWidth: '20%',
+                    barWidth: '50%',
+                    data: [
+                        { value: self['salesDay-1sales'], itemStyle: { color: '#cbe86b' } },
+                        { value: self['salesDay-2sales'], itemStyle: { color: '#f2e9e1' } },
+                        { value: self['salesDay-3sales'], itemStyle: { color: '#79bd9a' } }
+                    ],
+                    tooltip: {
+                          valueFormatter: function (value) {
+                            return value.toLocaleString() + ' 원';
+                          }
+                        },
                     showBackground: true,
                     backgroundStyle: {
                     color: 'rgba(180, 180, 180, 0.2)'
                     }
-                }
+                  }
                 ]
             };
 
@@ -153,37 +186,52 @@ export default {
             const myChart = echarts.init(document.getElementById('storeChart'));
 
             const option = {
-                xAxis: {
-                type: 'category',
-                data: [
-                    self['salesDay-1'],
-                    self['salesDay-2'],
-                    self['salesDay-3']
-                ]
+                tooltip: {
+                  trigger: 'axis',
+                  axisPointer: {
+                    type: 'shadow'
+                  }
                 },
-                yAxis: {
-                type: 'value',
-                interval: 500000
+                grid: {
+                  left: '3%',
+                  right: '4%',
+                  bottom: '3%',
+                  containLabel: true
                 },
+                xAxis: [
+                  {
+                   type: 'category',
+                   data: [self['salesDay-1'], self['salesDay-2'], self['salesDay-3']]
+                  }
+                ],
+                yAxis: [
+                  {
+                   type: 'value',
+                   interval: 500000,
+                   axisLabel: {
+                      formatter: '{value} 원'
+                    }
+                  }
+                ],
                 series: [
                 {
+                    type: 'bar',
+                    barWidth: '50%',
                     data: [
-                    self['salesDay-1sales'],
-                    self['salesDay-2sales'],
-                    self['salesDay-3sales']
+                        { value: self['salesDay-1sales'], itemStyle: { color: '#cbe86b' } },
+                        { value: self['salesDay-2sales'], itemStyle: { color: '#f2e9e1' } },
+                        { value: self['salesDay-3sales'], itemStyle: { color: '#79bd9a' } }
                     ],
                     tooltip: {
-                    valueFormatter: function (value) {
-                        return value.toLocaleString() + ' 원';
-                        }
-                    },
-                    type: 'bar',
-                    barWidth: '20%',
+                          valueFormatter: function (value) {
+                            return value.toLocaleString() + ' 원';
+                          }
+                        },
                     showBackground: true,
                     backgroundStyle: {
                     color: 'rgba(180, 180, 180, 0.2)'
                     }
-                }
+                  }
                 ]
             };
 
@@ -208,13 +256,13 @@ export default {
     display: flex; 
     flex-direction: column; 
     align-items: center; 
-    justify-content: center;
+    justify-content: space-between;
 }
 
 .content {
     margin-top: 5px;
-    overflow: auto;
-    /* max-height: 11em; */
+    /* overflow: auto; */
+    max-height: 11em;
     /* 이 위는 바꾸지 마세요~ */
 }
 
@@ -234,15 +282,15 @@ export default {
 
 #HQchart {
     width: 500px;
-    height: 250px;
-    margin-top: -50px;
-    margin-left: 50px;
+    height: 200px;
+    margin-top: -40px;
+    margin-bottom: 15px;
 }
 
 #storeChart {
     width: 500px;
-    height: 250px;
-    margin-top: -50px;
-    margin-left: 50px;
+    height: 200px;
+    margin-top: -40px;
+    margin-bottom: 15px;
 }
 </style>
