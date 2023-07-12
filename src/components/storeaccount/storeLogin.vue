@@ -45,8 +45,8 @@ storeLogin.vue 일단 아래와 같이 수정해뒀습니다~
       <!-- SIGN IN -->
       <div class="col align-items-center flex-col sign-in">
 
-        <div class="loginform-wrapper align-items-center" style="margin-bottom:5%; margin-left:-10%">
-  
+        <div class="loginform-wrapper align-items-center"  style="margin-bottom:5%; margin-left:-10%">
+
           <div class="form sign-in">
             <div class="logininput-group">
               <i class='bx bxs-user'></i>
@@ -174,6 +174,9 @@ export default {
 html,
 body {
   height: 100vh;
+
+  /* overflow: hidden; */
+
 }
 
 .logincontainer {

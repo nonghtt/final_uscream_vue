@@ -8,7 +8,7 @@
           <input v-model="searchKeyword" class="form-control" type="text" placeholder="검색하실 지점명을 입력하세요" style="margin-right:10px; width:600px; text-align:left">
           <button @click="search" class="btn btncolor" style="white-space: nowrap">검색</button>
       </div>
-      <div id="storeMonthlychart" style="width: 800px; height: 600px; margin-top: 35px"></div>
+      <div id="storeMonthlychart" style="width: 700px; height: 500px; margin-top: 35px; margin-left: 30px"></div>
     </div>
   </div>
 </template> 
@@ -126,59 +126,43 @@ export default {
                   {
                     name: '2020',
                     type: 'line',
+                    color: '#F15F5F',
                     data: [
                       self['storeMonthlySales20201'], self['storeMonthlySales20202'], self['storeMonthlySales20203'], self['storeMonthlySales20204'],
                       self['storeMonthlySales20205'], self['storeMonthlySales20206'], self['storeMonthlySales20207'], self['storeMonthlySales20208'],
                       self['storeMonthlySales20209'], self['storeMonthlySales202010'], self['storeMonthlySales202011'], self['storeMonthlySales202012']
-                    ],
-                    tooltip: {
-                          valueFormatter: function (value) {
-                            return value.toLocaleString() + ' 원';
-                          }
-                        },
+                    ]
                   },
                   {
                     name: '2021',
                     type: 'line',
+                    color: '#fbd14b',
                     data: [
                       self['storeMonthlySales20211'], self['storeMonthlySales20212'], self['storeMonthlySales20213'], self['storeMonthlySales20214'],
                       self['storeMonthlySales20215'], self['storeMonthlySales20216'], self['storeMonthlySales20217'], self['storeMonthlySales20218'],
                       self['storeMonthlySales20219'], self['storeMonthlySales202110'], self['storeMonthlySales202111'], self['storeMonthlySales202112']
-                    ],
-                    tooltip: {
-                          valueFormatter: function (value) {
-                            return value.toLocaleString() + ' 원';
-                          }
-                        },
+                    ]
                   },
                   {
                     name: '2022',
                     type: 'line',
+                    color: '#4ea1d3',
                     data: [
                       self['storeMonthlySales20221'], self['storeMonthlySales20222'], self['storeMonthlySales20223'], self['storeMonthlySales20224'],
                       self['storeMonthlySales20225'], self['storeMonthlySales20226'], self['storeMonthlySales20227'], self['storeMonthlySales20228'],
                       self['storeMonthlySales20229'], self['storeMonthlySales202210'], self['storeMonthlySales202211'], self['storeMonthlySales202212']
-                    ],
-                    tooltip: {
-                          valueFormatter: function (value) {
-                            return value.toLocaleString() + ' 원';
-                          }
-                        },
+                    ]
                   },
                   {
                     name: '2023',
                     type: 'line',
+                    color: '#79bd9a',
                     data: [
                       self['storeMonthlySales20231'], self['storeMonthlySales20232'], self['storeMonthlySales20233'], self['storeMonthlySales20234'],
-                      self['storeMonthlySales20235'], self['storeMonthlySales20236'], self['storeMonthlySales20237']
-                    ],
-                    tooltip: {
-                          valueFormatter: function (value) {
-                            return value.toLocaleString() + ' 원';
-                          }
-                        },
+                      self['storeMonthlySales20235'], self['storeMonthlySales20236'], self['storeMonthlySales20237'],
+                    ]
                   }
-                ]
+                ],
               };
               myChart.setOption(option);
             }
@@ -254,6 +238,7 @@ export default {
                   {
                     name: '2020',
                     type: 'line',
+                    color: '#F15F5F',
                     data: [
                       self['storeMonthlySales20201'], self['storeMonthlySales20202'], self['storeMonthlySales20203'], self['storeMonthlySales20204'],
                       self['storeMonthlySales20205'], self['storeMonthlySales20206'], self['storeMonthlySales20207'], self['storeMonthlySales20208'],
@@ -263,6 +248,7 @@ export default {
                   {
                     name: '2021',
                     type: 'line',
+                    color: '#fbd14b',
                     data: [
                       self['storeMonthlySales20211'], self['storeMonthlySales20212'], self['storeMonthlySales20213'], self['storeMonthlySales20214'],
                       self['storeMonthlySales20215'], self['storeMonthlySales20216'], self['storeMonthlySales20217'], self['storeMonthlySales20218'],
@@ -272,6 +258,7 @@ export default {
                   {
                     name: '2022',
                     type: 'line',
+                    color: '#4ea1d3',
                     data: [
                       self['storeMonthlySales20221'], self['storeMonthlySales20222'], self['storeMonthlySales20223'], self['storeMonthlySales20224'],
                       self['storeMonthlySales20225'], self['storeMonthlySales20226'], self['storeMonthlySales20227'], self['storeMonthlySales20228'],
@@ -281,6 +268,7 @@ export default {
                   {
                     name: '2023',
                     type: 'line',
+                    color: '#79bd9a',
                     data: [
                       self['storeMonthlySales20231'], self['storeMonthlySales20232'], self['storeMonthlySales20233'], self['storeMonthlySales20234'],
                       self['storeMonthlySales20235'], self['storeMonthlySales20236'], self['storeMonthlySales20237'],
@@ -331,6 +319,11 @@ export default {
     color:#595959;
     background-color: #bee96d;
     font-weight: bolder ;
+}
+
+.form-select, .form-control {
+  height: fit-content;
+  margin-top: 7px;
 }
 </style>
 
