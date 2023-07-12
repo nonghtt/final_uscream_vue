@@ -1,6 +1,6 @@
 <template>
     <div id="container">
-        <h3>공지사항</h3>
+        <h4>공지사항</h4>
         <div style="width: 100%">
             <div>
                 <div class="container" style="padding: 24px;">

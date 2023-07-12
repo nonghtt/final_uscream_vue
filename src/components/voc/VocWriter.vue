@@ -11,23 +11,24 @@
                     <option value="2">불만</option>
                 </select>
             </div>
-
+            
             <div>
                 <label for="title">제목</label>
                 <input type="text" id="title" v-model="title">
             </div>
             <div ref="editor"></div>
-            <button type="button" class="btn btn-primary mr-2" style="background-color: #8eb443; border-color:#8eb443;"
-                @click="goToVocList">
-                목록
-            </button>
-            <button type="button" class="btn btn-primary savebtn" style="background-color: #8eb443; border-color:#8eb443;"
-                @click="saveVoc">
+        </div>
+        <div class="d-flex justify-content-end">
+            <button type="button" class="btn savebtn btn-sm" @click="saveVoc">
                 저장
+            </button>
+            <button type="button" class="btn btncolor btn-sm" @click="goToVocList">
+                목록
             </button>
         </div>
     </div>
 </template>
+
 
 <script>
 import Editor from '@toast-ui/editor';
@@ -98,3 +99,27 @@ export default {
     }
 };
 </script>
+
+<style scoped>
+.btncolor:hover {
+    background-color: #FFC67B;
+    color: #595959;
+}
+
+.btncolor {
+    height: 38px;
+    color: #595959;
+    background-color: #bee96d;
+    font-weight: bolder;
+}
+
+.savebtn {
+    color: #595959;
+    font-weight: bolder;
+}
+
+.savebtn:hover {
+    background-color: #FFC67B;
+    color: #595959;
+}
+</style>

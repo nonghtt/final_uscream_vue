@@ -44,12 +44,14 @@
                 <p>내용: {{ comment.storecomment }}</p>
                 <div v-if="voccheck==1">본사 확인</div>
                 <div v-else>본사 미확인</div>
-                <button class="btn btn-sm btn-primary" @click="editComment(comment.voccomnum, comment.storecomment)">
+                <div class="d-flex justify-content-end">
+                <button class="btn editbtn btn-sm" @click="editComment(comment.voccomnum, comment.storecomment)">
                     수정
                 </button>
-                <button class="btn btn-sm btn-danger" @click="deleteComment(comment.voccomnum)">
+                <button class="btn delbtn btn-sm" @click="deleteComment(comment.voccomnum)">
                     삭제
                 </button>
+                </div>
             </div>
             <hr>
 
@@ -247,7 +249,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .underline-input {
     position: relative;
 }
@@ -256,20 +258,88 @@ export default {
     border: none;
     outline: none;
     font-size: 16px;
-    padding: 4px 0;
+    padding-left: 64px;
     width: 100%;
 }
 
 .underline-input .underline {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 1px;
-    background-color: #000;
+    width: 96%;
+    height: 2px;
+    left: 2%;
+    background-color: rgb(172, 172, 172);
 }
 
-textarea.form-control {
+.editor-container {
     height: 300px;
+}
+</style>
+
+
+<style scoped>
+.btncolor:hover {
+    background-color: #FFC67B;
+    color: #595959;
+}
+
+.btncolor {
+    color: #595959;
+    background-color: #bee96d;
+    font-weight: bolder;
+}
+
+.savebtn {
+    color: #595959;
+    font-weight: bolder;
+}
+
+.savebtn:hover {
+    background-color: #FFC67B;
+    color: #595959;
+}
+
+.editbtn {
+    color: #595959;
+    font-weight: bolder;
+}
+
+.editbtn:hover {
+    background-color: #FFC67B;
+    color: #595959;
+}
+
+.delbtn {
+    color: #595959;
+    font-weight: bolder;
+}
+
+.delbtn:hover {
+    background-color: #FFC67B;
+    color: #595959;
+}
+
+.listbtn {
+    color: #595959;
+    background-color: #bee96d;
+    font-weight: bolder;
+}
+
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    /* 가운데 정렬을 위한 설정 */
+}
+
+.form-control {
+    height: 29px;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    margin-top: 21px;
+    margin-right: 163px;
 }
 </style>

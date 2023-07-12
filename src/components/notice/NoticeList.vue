@@ -1,31 +1,31 @@
 <template>
-    <div class="wrapper" style="padding: 40px;">
-        <div class="card">
-            <div class="card-header d-flex justify-content-between align-items-center">
-                <span class="font-weight-bold">공지사항</span>
-                <button v-if="accounttype === '1'" class="btn btncolor">
-                    <router-link v-if="accounttype === '1'" class="btn btncolor"
-                        :to="{ path: '/NoticeWriter' }">등록</router-link>
-                </button>
-            </div>
+        <div class="wrapper" style="padding: 40px;">
+            <div class="card">
+                <div class="card-header d-flex justify-content-between align-items-center">
+                    <span class="font-weight-bold">공지사항</span>
+                    <button v-if="accounttype === '1'">
+                        <router-link v-if="accounttype === '1'" class="btn savebtn" :to="{ path: '/NoticeWriter' }">등록</router-link>
+                    </button>
+                </div>
 
             <div class="card-body">
-                <div class="row mb-3">
+                <div class="row mb-3" style="display:flex; flex-direction: row; align-items:center">
                     <div class="col-6">
-                        <select class="form-select" v-model="schbox" style="width: 40%; margin-left: 30px;">
+                        <select class="form-select" v-model="schbox" style="width: 40%; margin-left: 176px; margin-top: 21px;">
                             <option value="" disabled selected>검색조건</option>
                             <option value="noticenum">글번호</option>
                             <option value="title">제목</option>
                         </select>
                     </div>
-                    <div class="col">
+                    <div class="col-auto">
                         <div class="input-group">
                             <input v-model="schVal" type="text" class="form-control " placeholder="검색어"
-                                @keypress.enter.prevent="getBoardList" />
+                                @keypress.enter.prevent="getBoardList" style="height: 30%; margin-left: -168px;"/>
                             <button type="button" class="btn btncolor" @click="getBoardList">검색</button>
                         </div>
                     </div>
                 </div>
+                
                 <div class="row">
                     <div class="col">
                         <table class="table">
@@ -49,19 +49,20 @@
                         </table>
                     </div>
                 </div>
+
                 <div class="row mt-3">
                     <div class="col">
                         <div class="row">
-                            <div class="col">
+                            <div class="col" style="padding-left: 61px; padding-bottom: 17px;">
                                 <button class="btn btncolor" @click="prevPage" :disabled="currentPage === 1">이전</button>
                             </div>
-                            <div class="col text-end">
-                                <button class="btn btncolor" @click="nextPage"
-                                    :disabled="currentPage === totalPages">다음</button>
+                            <div class="col text-end" style="padding-right: 61px; padding-bottom: 17px;">
+                                <button class="btn btncolor" @click="nextPage" :disabled="currentPage === totalPages">다음</button>
                             </div>
                         </div>
                     </div>
                 </div>
+
             </div>
         </div>
     </div>    
@@ -184,8 +185,11 @@ export default {
     color: #595959;
     background-color: #bee96d;
     font-weight: bolder;
-    margin-top: 5px;
-    margin-bottom: 5px;
+}
+
+.savebtn {
+    color: #595959;
+    font-weight: bolder;
 }
 .wrapper {
     max-width: 1200px;
@@ -193,6 +197,33 @@ export default {
 }
 
 .form-control{
-    height : 80%;
+    height: 80px;
+}
+.input-group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    margin-top: 21px;
+    margin-right: 163px;
 }
 </style>
+
+<style>
+.form-select,
+.input-group input:focus,
+.input-group select:focus,
+.input-group button:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
+</style>
+
+
+
+
+
+
+
+
