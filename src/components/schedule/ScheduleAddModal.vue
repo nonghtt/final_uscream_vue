@@ -10,7 +10,7 @@
             <div class="modal-dialog  modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">Modal title</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">스케줄 추가</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"
                             @click="close"></button>
                     </div>
@@ -144,6 +144,11 @@ export default {
 </script>
 
 <style scoped>
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+body{
+    font-family: 'Noto Sans KR', sans-serif;
+}
 .btncolor:hover {
     background-color: #FFC67B;
     color: #595959;
