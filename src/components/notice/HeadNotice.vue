@@ -1,10 +1,10 @@
 <template>
-    <div class="container" style="max-width: 800px;">
+    <div class="wrapper" style="padding: 40px;">
         <div class="card">
             <div class="card-body">
                 <div class="mb-5">
                     <label for="title" class="form-label"
-                        style="font-size: 16px; font-weight: bold; color: gray;">제목</label>
+                        style="font-size: 18px; font-weight: bold; color: gray; padding-top: 17px; padding-left: 20px;">제목</label>
                     <div class="underline-input">
                         <input type="text" id="title" class="form-control" v-model="title">
                         <div class="underline"></div>
@@ -12,16 +12,15 @@
                 </div>
                 <div class="mb-5">
                     <label for="content" class="form-label"
-                        style="font-size: 16px; font-weight: bold; color: gray;">내용</label>
+                        style="font-size: 18px; font-weight: bold; color: gray; padding-top: 17px; padding-left: 20px;">내용</label>
                     <div class="underline-input">
                         <div ref="editor" class="editor-container"></div>
                     </div>
                 </div>
-                <hr>
                 <div class="d-flex justify-content-end">
-                    <button @click="saveChanges" class="btn btn-warning btn-sm mr-1">저장</button>
-                    <button @click="deleteBoard" class="btn btn-danger btn-sm">삭제</button>
-                    <button @click="movePage('/NoticeList')" class="btn btn-secondary btn-sm">목록</button>
+                    <button @click="saveChanges" class="btn savebtn btn-sm">저장</button>
+                    <button @click="deleteBoard" class="btn delbtn btn-sm">삭제</button>
+                    <button @click="movePage('/NoticeList')" class="btn listbtn btn-sm">목록</button>
                 </div>
             </div>
         </div>
@@ -114,7 +113,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .underline-input {
     position: relative;
 }
@@ -123,20 +122,73 @@ export default {
     border: none;
     outline: none;
     font-size: 16px;
-    padding: 4px 0;
+    padding-left: 64px;
     width: 100%;
 }
 
 .underline-input .underline {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 1px;
-    background-color: #000;
+    width: 96%;
+    height: 2px;
+    left: 2%;
+    background-color: rgb(172, 172, 172);
 }
 
 .editor-container {
     height: 300px;
 }
 </style>
+
+
+<style scoped>
+.btncolor:hover {
+    background-color: #FFC67B;
+    color: #595959;
+}
+
+.btncolor {
+    color: #595959;
+    background-color: #bee96d;
+    font-weight: bolder;
+}
+
+.savebtn {
+    color: #595959;
+    font-weight: bolder;
+}
+
+.savebtn:hover {
+    background-color: #FFC67B;
+    color: #595959;
+}
+.delbtn {
+    color: #595959;
+    font-weight: bolder;
+}
+.delbtn:hover {
+    background-color: #FFC67B;
+    color: #595959;
+}
+.listbtn {
+    color: #595959;
+    background-color: #bee96d;
+    font-weight: bolder;
+}
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    /* 가운데 정렬을 위한 설정 */
+}
+
+.form-control {
+    height: 29px;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    margin-top: 21px;
+    margin-right: 163px;
+}</style>
