@@ -1,5 +1,5 @@
 <template>
-  <H3 id="branchSalesTitle" style="text-align:left">매출 조회</H3>
+  <H3 id="branchSalesTitle">매출 조회</H3>
 
   <div id="branchSalesContent">
 
@@ -467,10 +467,9 @@ export default {
 
 <style scoped>
 #branchSalesTitle {
-  font-size: 20px;
-  font-weight: bold;
   padding-left: 3%;
   padding-top: 1%;
+  text-align:left;
 }
 
 #branchSalesContent {
@@ -551,7 +550,6 @@ export default {
 
 .form-select {
   height: fit-content;
-  margin-top: 7px;
 }
 
 </style>
