@@ -24,7 +24,8 @@
                                           <i class="fa-solid fa-circle-question"
                                                 @mouseenter="iddescription=true"
                                                 @mouseleave="iddescription=false"></i>
-                                          <span><button v-on:click="idcheck" style="">중복체크</button></span></div>
+                                          <span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+                                            <button v-on:click="idcheck" class="doublechk">중복체크</button></span></div>
                               <input class="input_storeid" type="text" v-model="storeid" required placeholder="아이디">
                               <!-- <label class="label_storeid">아이디</label> -->
                               <span class="span_storeid"></span>
@@ -52,7 +53,7 @@
 
 
                                       <div class="div_pwd_confirm">
-                                        <div  style="text-align:left"><span style="color:red;">*</span>비밀번호 확인 <span style="margin:0 auto;"><button v-on:click="pwdcheck">중복확인</button></span></div>
+                                        <div  style="text-align:left"><span style="color:red;">*</span>비밀번호 확인 <span style="margin:0 auto;"><button v-on:click="pwdcheck" class="pwdchk">중복확인</button></span></div>
                                           <input class="input_pwd_confirm" type="password" @click="clean_input_pwd" v-model="pwd_confirm" placeholder="비밀번호 확인"><br/>
                                           <!-- <label class="label_pwd_confirm">비밀번호 확인</label> -->
                                           <span class="span_pwd_confirm"></span>
@@ -149,7 +150,7 @@ export default {
            pwd_confirm:'',
            text_pwd_validation:'',
            passwordErrorText:'',
-           initialImageUrl:require('../../assets/1.png')
+           initialImageUrl:require('../../assets/uscreamlogo.png')
           }
         },
         created:function(){
@@ -318,29 +319,42 @@ color:white;
 
 /* 가입버튼 색 바꾸기 */
 .btn_join{
-    color:#595959;
-    background-color: #bee96d;
+  color:#595959;
+    border-color: #bee96d;
+    background-color: white;
+    border:1px solid;
     font-weight: bolder ;
-    border:0;
-    border-radius: 10%;
-    font-size:20px;
-    font-weight:bold;
+    border-radius: 10px;
+    border:none;
+    margin:10px;
+    padding:10px;
+
 }
 .btn_join:hover{
-  background-color: #FFC67B;
-  color:#595959
+  background-color: #bee96d;
+  color:white;
+  border:1px solid;
+  border-color:#bee96d;
 }
 
 /* 취소버튼 색 바꾸기 */
 .btn_cancle{
   color:#595959;
-    background-color: #bee96d;
+    border-color: #bee96d;
+    background-color: white;
+    border:1px solid;
     font-weight: bolder ;
+    border-radius: 10px;
+    border:none;
+    margin:10px;
+    padding:10px;
 }
 
 .btn_cancle:hover{
-  background-color: #FFC67B;
-  color:#595959
+  background-color: #bee96d;
+  color:white;
+  border:1px solid;
+  border-color:#bee96d;
 }
 
 
@@ -433,12 +447,31 @@ background-color: white;
   padding: 0;
   box-sizing: border-box;
 }
+.pwdchk{
+  color:#595959;
+    border-color: #bee96d;
+    background-color: white;
+    border:1px solid;
+    font-weight: bolder ;
+    border-radius: 10px;
+    border:none;
+    margin:10px;
+    padding:10px;
+}
+.pwdchk:hover{
+  background-color: #bee96d;
+  color:white;
+  border:1px solid;
+  border-color:#bee96d;
+}
+
 
 
 .img_main{
   /* border-radius: 70%; */
   height:100%;
 }
+
 
 
 
@@ -783,6 +816,24 @@ image-container{
    
   }
 
+.doublechk{
+  color:#595959;
+    border-color: #bee96d;
+    background-color: white;
+    border:1px solid;
+    font-weight: bolder ;
+    border-radius: 10px;
+    border:none;
+    margin:10px;
+    padding:10px;
+
+}
+.doublechk:hover{
+  background-color: #bee96d;
+  color:white;
+  border:1px solid;
+  border-color:#bee96d;
+}
 
   .div_map{
     margin-top: 50px;

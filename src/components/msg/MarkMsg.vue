@@ -83,7 +83,7 @@ export default {
             checked: [],
             num: [],
             title: '',
-            pageSize: 12,              
+            pageSize: 14,              
             currentPage: 1,            
             totalpages: 0,             
             pagearray: [1, 2, 3, 4, 5]  

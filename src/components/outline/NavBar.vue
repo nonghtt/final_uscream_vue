@@ -92,7 +92,7 @@
                 </router-link>
                 <router-link class="nav-link mailicon" to="/ReceiveMsg">
                     <i class="fa-solid fa-envelope "></i>
-                    <span v-if="mail != null"
+                    <span v-if="mail != 0"
                         class="position-absolute top-30 start-250 translate-middle p-2 bg-danger border border-light rounded-circle">
                         <span class="visually-hidden">New alerts</span>
                     </span>
@@ -113,7 +113,7 @@ export default {
             // 테스트용 데이터
             accounttype: null,
             loginId: null,
-            mail: null
+            mail: 0
         }
     },
     created: function () {
@@ -121,7 +121,15 @@ export default {
         if (sessionStorage.getItem("loginId") != null) {
             self.loginId = sessionStorage.getItem("loginId");
             self.accounttype = sessionStorage.getItem("accounttype")
+            
+        
+            self.$axios.get("http://localhost:8085/msg/nav/" +sessionStorage.getItem("loginId"))
+            .then(function (res) {
+             self.mail=res.data;
+            })
         }
+
+       
     },
     methods: {
         logout() {

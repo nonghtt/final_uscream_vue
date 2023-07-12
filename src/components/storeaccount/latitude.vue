@@ -3,7 +3,7 @@
     <div>
 
       <input class="inputsearch" type="text" v-model="address" placeholder="주소를 입력하세요" />
-      <i class="fa-solid fa-magnifying-glass fa-2xl" id="icon" @click="showLocation"></i>
+      <i class="fa-solid fa-magnifying-glass fa-2xl" id="icon"></i>
     </div>
     <div id="map"></div>
     <div>
@@ -46,7 +46,7 @@
   height:100px;
   z-index:5;
   position:absolute;
-  top:462px;
+  top:529px;
   left:597px;
   border:none;
   z-index:100;
