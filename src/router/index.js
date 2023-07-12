@@ -8,13 +8,8 @@ import storeMyinfo from '@/components/storeaccount/storeMyinfo.vue'
 import storeList from '@/components/storeaccount/storeList.vue'
 import storeLogin from '@/components/storeaccount/storeLogin.vue'
 import storeState from '@/components/storeaccount/storeState.vue'
-import storeManagement from '@/components/storeaccount/storeManagement.vue'
-
 import StoreInventory from '@/components/product/StoreInventory.vue'
-
 import latitude from '@/components/storeaccount/latitude.vue'
-// import location from '@/components/storeaccount/location.vue'
-// import marker from '@/components/storeaccount/marker.vue'
 
 
 
@@ -104,11 +99,6 @@ const routes = [
     path: '/latitude',
     name: 'latitude',
     component: latitude
-  },
-  {
-    path: '/storeManagement',
-    name: 'storeManagement',
-    component: storeManagement
   },
   {
     path: '/',

@@ -1,6 +1,8 @@
+storeLogin.vue 일단 아래와 같이 수정해뒀습니다~
+
 
 <template>
-  <div :class="logincontainerClasses " class="logincontainer" id="logincontainer">
+  <div :class="logincontainerClasses" class="logincontainer" id="logincontainer">
     <!-- FORM SECTION -->
     <div class="loginrow">
       <!-- SIGN UP -->
@@ -42,7 +44,9 @@
       <!-- END SIGN UP -->
       <!-- SIGN IN -->
       <div class="col align-items-center flex-col sign-in">
+
         <div class="loginform-wrapper align-items-center"  style="margin-bottom:5%; margin-left:-10%">
+
           <div class="form sign-in">
             <div class="logininput-group">
               <i class='bx bxs-user'></i>
@@ -107,13 +111,13 @@ export default {
       storeid: '',
       pwd: '',
       accounttype: '',
-      logincontainerClasses:''
+      logincontainerClasses: ''
     };
   },
   created: function () {
-   setTimeout(() => {
-     this.logincontainerClasses ="sign-in"
-     }, 100);
+    setTimeout(() => {
+      this.logincontainerClasses = "sign-in"
+    }, 100);
   },
   methods: {
     login() {
@@ -123,7 +127,7 @@ export default {
       form.append('pwd', self.pwd);
       self.$axios
         .post('http://localhost:8085/store/login', form)
-        .then(function(res) {
+        .then(function (res) {
           if (res.status === 200) {
             if (res.data.flag) {
               sessionStorage.setItem('loginId', self.storeid);
@@ -136,14 +140,14 @@ export default {
             alert('에러코드: ' + res.status);
           }
         });
-      }
     }
   }
 
 
+
 </script>
 
-<style> 
+<style scoped> 
 :root {
   --primary-color: #bee96d;
   --secondary-color: #bee96d;
@@ -170,7 +174,9 @@ export default {
 html,
 body {
   height: 100vh;
+
   /* overflow: hidden; */
+
 }
 
 .logincontainer {
@@ -410,42 +416,310 @@ body {
   border-top-left-radius: max(50vw, 50vh);
 }
 
-.logincontainer.sign-in::before {
-  transform: translate(0, 0);
-  right: 50%;
-}
 
-.logincontainer.sign-up::before {
-  transform: translate(100%, 0);
-  right: 50%;
-}
+</script>
 
-/* RESPONSIVE */
+<style scope> :root {
+   --primary-color: #bee96d;
+   --secondary-color: #bee96d;
+   --black: #000000;
+   --white: #ffffff;
+   --gray: #efefef;
+   --gray-2: #757575;
 
-@media only screen and (max-width: 425px) {
+   --facebook-color: #4267B2;
+   --google-color: #DB4437;
+   --twitter-color: #1DA1F2;
+   --insta-color: #E1306C;
+ }
 
-  .logincontainer::before,
-  .logincontainer.sign-in::before,
-  .logincontainer.sign-up::before {
-    height: 100vh;
-    border-bottom-right-radius: 0;
-    border-top-left-radius: 0;
-    z-index: 0;
-    transform: none;
-    right: 0;
+ @import url('https://fonts.googleapis.com/css2?family=Poppins:wght@200;300;400;500;600&display=swap');
 
-  }
+ * {
+   font-family: 'Poppins', sans-serif;
+   margin: 0;
+   padding: 0;
+   box-sizing: border-box;
+ }
 
-  /* .logincontainer.sign-in .col.sign-up {
+ html,
+ body {
+   height: 100vh;
+ }
+
+ .logincontainer {
+   position: relative;
+   min-height: 100vh;
+   overflow: hidden;
+ }
+
+ .loginrow {
+   display: flex;
+   flex-wrap: wrap;
+   height: 100vh;
+ }
+
+ .col {
+   width: 50%;
+ }
+
+ .align-items-center {
+   display: flex;
+   align-items: center;
+   justify-content: center;
+   text-align: center;
+ }
+
+ .loginform-wrapper {
+   width: 100%;
+   max-width: 28rem;
+ }
+
+ .form {
+   padding: 1rem;
+   background-color: var(--white);
+   border-radius: 1.5rem;
+   width: 100%;
+   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+   transform: scale(0);
+   transition: .5s ease-in-out;
+   transition-delay: 1s;
+ }
+
+ .logininput-group {
+   position: relative;
+   width: 100%;
+   margin: 1rem 0;
+ }
+
+ .logininput-group i {
+   position: absolute;
+   top: 50%;
+   left: 1rem;
+   transform: translateY(-50%);
+   font-size: 1.4rem;
+   color: var(--gray-2);
+ }
+
+ .logininput-group input {
+   width: 100%;
+   padding: 1rem 3rem;
+   font-size: 1rem;
+   background-color: var(--gray);
+   border-radius: .5rem;
+   border: 0.125rem solid var(--white);
+   outline: none;
+ }
+
+ .logininput-group input:focus {
+   border: 0.125rem solid var(--primary-color);
+ }
+
+ .form button {
+   cursor: pointer;
+   width: 100%;
+   padding: .6rem 0;
+   border-radius: .5rem;
+   border: none;
+   background-color: var(--primary-color);
+   color: var(--white);
+   font-size: 1.2rem;
+   outline: none;
+ }
+
+ .form p {
+   margin: 1rem 0;
+   font-size: .7rem;
+ }
+
+ .flex-col {
+   flex-direction: column;
+ }
+
+ .social-list {
+   margin: 2rem 0;
+   padding: 1rem;
+   border-radius: 1.5rem;
+   width: 100%;
+   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+   transform: scale(0);
+   transition: .5s ease-in-out;
+   transition-delay: 1.2s;
+ }
+
+ .social-list>div {
+   color: var(--white);
+   margin: 0 .5rem;
+   padding: .7rem;
+   cursor: pointer;
+   border-radius: .5rem;
+   cursor: pointer;
+   transform: scale(0);
+   transition: .5s ease-in-out;
+ }
+
+ .social-list>div:nth-child(1) {
+   transition-delay: 1.4s;
+ }
+
+ .social-list>div:nth-child(2) {
+   transition-delay: 1.6s;
+ }
+
+ .social-list>div:nth-child(3) {
+   transition-delay: 1.8s;
+ }
+
+ .social-list>div:nth-child(4) {
+   transition-delay: 2s;
+ }
+
+ .social-list>div>i {
+   font-size: 1.5rem;
+   transition: .4s ease-in-out;
+ }
+
+ .social-list>div:hover i {
+   transform: scale(1.5);
+ }
+
+ .facebook-bg {
+   background-color: var(--facebook-color);
+ }
+
+ .google-bg {
+   background-color: var(--google-color);
+ }
+
+ .twitter-bg {
+   background-color: var(--twitter-color);
+ }
+
+ .insta-bg {
+   background-color: var(--insta-color);
+ }
+
+ .loginpointer {
+   cursor: pointer;
+ }
+
+ .logincontainer.sign-in .form.sign-in,
+ .logincontainer.sign-in .social-list.sign-in,
+ .logincontainer.sign-in .social-list.sign-in>div,
+ .logincontainer.sign-up .form.sign-up,
+ .logincontainer.sign-up .social-list.sign-up,
+ .logincontainer.sign-up .social-list.sign-up>div {
+   transform: scale(1);
+ }
+
+ .content-loginrow {
+   position: absolute;
+   top: 0;
+   left: 0;
+   pointer-events: none;
+   z-index: 6;
+   width: 100%;
+ }
+
+ .text {
+   margin: 4rem;
+   color: var(--white);
+ }
+
+ .text h2 {
+   font-size: 3.5rem;
+   font-weight: 800;
+   margin: 2rem 0;
+   transition: 1s ease-in-out;
+ }
+
+ .text p {
+   font-weight: 600;
+   transition: 1s ease-in-out;
+   transition-delay: .2s;
+ }
+
+ .img img {
+   width: 30vw;
+   transition: 1s ease-in-out;
+   transition-delay: .4s;
+ }
+
+ .text.sign-in h2,
+ .text.sign-in p,
+ .img.sign-in img {
+   transform: translateX(-250%);
+ }
+
+ .text.sign-up h2,
+ .text.sign-up p,
+ .img.sign-up img {
+   transform: translateX(250%);
+ }
+
+ .logincontainer.sign-in .text.sign-in h2,
+ .logincontainer.sign-in .text.sign-in p,
+ .logincontainer.sign-in .img.sign-in img,
+ .logincontainer.sign-up .text.sign-up h2,
+ .logincontainer.sign-up .text.sign-up p,
+ .logincontainer.sign-up .img.sign-up img {
+   transform: translateX(0);
+ }
+
+ /* BACKGROUND */
+
+ .logincontainer::before {
+   content: "";
+   position: absolute;
+   top: 0;
+   right: 0;
+   height: 100vh;
+   width: 300vw;
+   transform: translate(35%, 0);
+   background-image: linear-gradient(-45deg, var(--primary-color) 0%, var(--secondary-color) 100%);
+   transition: 1s ease-in-out;
+   z-index: 6;
+   box-shadow: rgba(0, 0, 0, 0.35) 0px 5px 15px;
+   border-bottom-right-radius: max(50vw, 50vh);
+   border-top-left-radius: max(50vw, 50vh);
+ }
+
+ .logincontainer.sign-in::before {
+   transform: translate(0, 0);
+   right: 50%;
+ }
+
+ .logincontainer.sign-up::before {
+   transform: translate(100%, 0);
+   right: 50%;
+ }
+
+ /* RESPONSIVE */
+
+ @media only screen and (max-width: 425px) {
+
+   .logincontainer::before,
+   .logincontainer.sign-in::before,
+   .logincontainer.sign-up::before {
+     height: 100vh;
+     border-bottom-right-radius: 0;
+     border-top-left-radius: 0;
+     z-index: 0;
+     transform: none;
+     right: 0;
+
+   }
+
+   /* .logincontainer.sign-in .col.sign-up {
         transform: translateY(100%);
     } */
 
-  .logincontainer.sign-in .col.sign-in,
-  .logincontainer.sign-up .col.sign-up {
-    transform: translateY(0);
-  }
+   .logincontainer.sign-in .col.sign-in,
+   .logincontainer.sign-up .col.sign-up {
+     transform: translateY(0);
+   }
 
-  /* @media (min-width: 768px)
+   /* @media (min-width: 768px)
   .logincontainer, .logincontainer-md, .logincontainer-sm {
     max-width: 100%;
   } */
@@ -495,4 +769,5 @@ body {
     font-size: 2rem;
   }
 }
+
 </style>

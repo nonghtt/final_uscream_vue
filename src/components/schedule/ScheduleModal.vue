@@ -234,6 +234,12 @@ export default {
 </script>
 
 <style scoped>
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+
+body{
+    font-family: 'Noto Sans KR', sans-serif;
+}
+
 #divSchedule {
     height: 400px;
     overflow: auto;
@@ -279,11 +285,11 @@ export default {
 }
 
 .pnbtn:hover{
-    background-color: #a6cc61;
+    background-color: #FFC67B;
 }
 
 .custom-btn:hover {
-    background-color: #99ab49;
+    background-color: #FFC67B;
 }
 
 #selectedyear {
@@ -295,7 +301,7 @@ export default {
     width: 40px;
     height: 40px;
     text-align: center;
-    background-color: #B3C755;
+    background-color: #BEE96D;
     font-size: 25px;
 }
 

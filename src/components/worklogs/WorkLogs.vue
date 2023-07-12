@@ -81,7 +81,7 @@
                     </tr>
                 </tbody>
             </table>
-
+            <div style="padding-bottom:10px"></div>
             <!-- 페이징 -->
             <div class="pagination" v-if="totalpages > 0">
                 <button :disabled="currentPage === 1" @click="prevPage">이전</button>
@@ -105,19 +105,38 @@
             <div class="modal-dialog modal-dialog-centered">
                 <div class="modal-content">
                     <div class="modal-header">
-                        <h1 class="modal-title fs-5" id="exampleModalLabel">하이</h1>
+                        <h1 class="modal-title fs-5" id="exampleModalLabel">{{ modalEmp }}</h1>
                         <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                     </div>
                     <div class="modal-body">
-                        <div>하이</div>
-                        <div>시간 - 시간</div>
+                        <div>{{ modaldto.wdate }} {{ modaldto.starttime }} - {{ modaldto.endtime }}</div>
+                        <hr />
+                        <div>총 {{ modaldto.alltime }}시간 근무</div>
+                        <div>{{ modalSalary.toLocaleString() }}원</div>
+                        <div style="margin-top:10px">
+                            <span v-if="modaldto.latetime > 0">
+                                {{ modaldto.latetime }}분
+                                <span class="late">지각</span>
+                            </span>
+                            <span v-else-if="modaldto.latetime < 0">
+                                {{ modaldto.latetime.toString().substring(1) }}분
+                                <span class="exceed">초과</span> 근무
+                            </span>
+                            <span v-else>
+                                <span class="regular">정상</span> 출근
+                            </span>
+
+                        </div>
+
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btncolor" data-bs-dismiss="modal" @click="delsc">삭제</button>
+                        <button type="button" class="btn btncolor" data-bs-dismiss="modal">닫기</button>
                     </div>
                 </div>
             </div>
         </div>
+
+        <div style="padding-bottom:70px"></div>
     </div>
 </template>
 
@@ -145,12 +164,9 @@ export default {
             totalpages: 0,              // 페이징 : Math.ceil(this.list / this.pageSize) "전체 리스트"에서 "한 페이지에 보여줄 글 개수"를 나눈 값
             pagearray: [1, 2, 3, 4, 5], // 페이징 : 숫자 버튼 5개 초기값
             selectedLateTime: 0,
-            modaltitle : '',
-            modaldate : '',
-            modalstarttime : 0,
-            modalendtime : 0,
-            modalalltime : 0,
-            modallatetime : 0,
+            modalSalary: 0,
+            modaldto: {},
+            modalEmp: '',
             calendarOptions: {
                 plugins: [dayGridPlugin, interactionPlugin, momentPlugin],
                 // timeGridPlugin
@@ -241,7 +257,9 @@ export default {
                                 }
 
                                 if (item.latetime > 0) {
-                                    event.title = event.title + " " + item.latetime + "분";
+                                    event.title = event.title + " " + item.latetime + "분 지각";
+                                } else if (item.latetime < 0) {
+                                    event.title = event.title + " " + (item.latetime * (-1)) + "분 초과";
                                 }
                                 // console.log(event.title + " 지각시간은 ? " + item.latetime);
                                 self.calendarOptions.events.push(event);
@@ -353,28 +371,53 @@ export default {
         },
         // 등록된 스케줄을 눌렀을 때
         workDayClick(info) {
-            /*
             const self = this;
             console.log(info)
             console.log("emp name : " + info.event._def.title)
+            console.log(info.event._def.publicId)
+            let num = info.event._def.publicId
+            self.$axios.get(`http://localhost:8085/worklogs/${num}`)
+                .then(function (res) {
+                    console.log(res.data)
+                    if (res.status == 200 && res.data.flag == true) {
+                        console.log(res.data.dto)
+                        self.modaldto = res.data.dto
+                        console.log(self.modaldto.alltime)
+                        self.modaldto.alltime = self.modaldto.alltime / 60;
 
-            console.log(info.event._instance.range.start)
-            console.log(info.event._instance.range.start)
-            console.log(info.event._instance.range)
+                        self.modalSalary = self.modaldto.emp.grade.salary * self.modaldto.alltime
 
-            const startDate = new Date(info.event._instance.range.start);
-            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+                        let startTime = JSON.stringify(self.modaldto.starttime).slice(12, 17)
+                        startTime = startTime.replace(/^0/, '').replace(/:/g, '시 ').replace(/$/, '분');
+                        // /^0/ → 첫 문자가 0 이라면, /:/g → 모든 문자에 :가 있다면, /$/ → 마지막에 추가.
+                        let endTime = JSON.stringify(self.modaldto.endtime).slice(12, 17)
+                        endTime = endTime.replace(/^0/, '').replace(/:/g, '시 ').replace(/$/, '분');
+                        self.modaldto.wdate.replace(4, '년')
 
-            let startTime = JSON.stringify(info.event._instance.range.start).slice(12, 17)
-            startTime = startTime.replace(/^0/, '').replace(/:/g, '시 ').replace(/$/, '분');
-            // /^0/ → 첫 문자가 0 이라면, /:/g → 모든 문자에 :가 있다면, /$/ → 마지막에 추가.
-            let endTime = JSON.stringify(info.event._instance.range.end).slice(12, 17)
-            endTime = endTime.replace(/^0/, '').replace(/:/g, '시 ').replace(/$/, '분');
+                        self.modaldto.endtime = endTime
+                        self.modaldto.starttime = startTime
+                        self.modalEmp = self.modaldto.emp.empname
 
-            let date = `${startDate.toLocaleDateString('ko-KR', options)}`;
-            */
+                        let date = new Date(self.modaldto.wdate);
+
+                        // 년, 월, 일 가져오기
+                        let year = date.getFullYear();
+                        let month = date.getMonth() + 1; // 월은 0부터 시작하므로 +1
+                        let day = date.getDate();
+
+                        // 변경된 형식으로 문자열 생성
+                        let formattedDate = year + '년 ' + month + '월 ' + day + '일';
+                        self.modaldto.wdate = formattedDate
+                        console.log(self.modaldto)
+                        console.log(self.modaldto.alltime)
+                        console.log(self.modaldto.endtime)
+                        console.log(self.modaldto.starttime)
+                        console.log(self.modalSalary)
+                        console.log(self.modaldto.emp.empname)
+                    }
+                })
+
             const modal = document.getElementById('scModal');
-            console.log(info)
             let myModal = new Modal(modal)
             myModal.show();
         },
@@ -389,10 +432,10 @@ export default {
 
             let empNum = self.selectedEmp;
             if (empNum === 0) {
-                console.log("전체보기 ㅇㅇㅇㅇㅇㅇㅇㅇㅇ")
+                //console.log("전체보기 ㅇㅇㅇㅇㅇㅇㅇㅇㅇ")
                 self.getWorkdLogsAllList();
             } else {
-                console.log("특정멤버로 보기")
+                //console.log("특정멤버로 보기")
                 self.getWorkLogs(empNum);
             }
         },
@@ -433,19 +476,19 @@ export default {
         },
         // 페이징 : 숫자 버튼 계산
         lookFivePage(pageNumber) {
-            if (pageNumber == 1 || pageNumber == 2) {   // 1,2페이지 클릭했을 때 1, 2, 3, 4, 5 뜨게 만들어주기
-                for (let i = 0; i < this.pagearray.length; i++) {
-                    this.pagearray[i] = i + 1;
-                }
-            } else if (pageNumber == this.totalpages || pageNumber == (this.totalpages - 1)) {  // 마지막이랑 마지막-1 페이지 클릭했을 때 
-                for (let i = 0; i < this.pagearray.length; i++) {
-                    this.pagearray[i] = this.totalpages - 4 + i;
-                }
-            } else {   // 그 중간의 것들 클릭
-                if (pageNumber > 3) {
-                    for (let i = 0; i < this.pagearray.length; i++) {
-                        this.pagearray[i] = pageNumber - 2 + i;
-                    }
+            const halfPageArraySize = Math.floor(this.pagearray.length / 2);
+            const firstPage = Math.max(pageNumber - halfPageArraySize, 1);
+            const lastPage = Math.min(pageNumber + halfPageArraySize, this.totalpages);
+
+            for (let i = 0; i < this.pagearray.length; i++) {
+                this.pagearray[i] = firstPage + i;
+            }
+
+            if (lastPage - firstPage + 1 < this.pagearray.length) {
+                const diff = this.pagearray.length - (lastPage - firstPage + 1);
+                const startIndex = Math.max(firstPage - diff, 1);
+                for (let i = 0; i < diff; i++) {
+                    this.pagearray[i] = startIndex + i;
                 }
             }
         },
@@ -540,6 +583,7 @@ h3 {
     width: 70%;
     margin: 0 auto;
     text-align: center;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
 .late {
@@ -551,6 +595,13 @@ h3 {
 
 .exceed {
     background-color: #1E90FF;
+    border-radius: 20px;
+    padding: 1px 3px;
+    color: white;
+}
+
+.regular {
+    background-color: #8CCF70;
     border-radius: 20px;
     padding: 1px 3px;
     color: white;
@@ -617,5 +668,9 @@ h3 {
 
 .pagination button.active {
     background-color: #9ec457;
+}
+
+h3 {
+    text-align: left;
 }
 </style>

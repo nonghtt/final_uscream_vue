@@ -1,6 +1,6 @@
 <template>
     <div id="container">
-        <h3>고객의 소리</h3>
+        <h4>고객의 소리</h4>
         <div style="width:100%">
             <div v-if="accounttype == 1" class="content">
                 <table class="table table-striped" v-if="voclist.length>0">

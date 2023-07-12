@@ -1,31 +1,27 @@
 <template>
-    <div class="container" style="max-width: 800px;">
-        <div class="card">
-            <div class="card-body">
-                <div class="mb-5">
-                    <label for="title" class="form-label"
-                        style="font-size: 16px; font-weight: bold; color: gray;">제목</label>
-                    <div class="underline-input">
-                        <input type="text" id="title" class="form-control" v-model="title" :readonly="!canEdit">
-                        <div class="underline"></div>
-                    </div>
-                </div>
-                <div>
-                    <div class="mb-3">
-                        <label for="content" class="form-label"
-                            style="font-size: 16px; font-weight: bold; color: gray;">내용</label>
-                        <div ref="viewer"></div>
-                        <div class="underline-input">
-                        </div>
-                    </div>
+    <div class="card">
+        <div class="card-body" style="padding-bottom: 36px;">
+            <div class="mb-5">
+                <label for="title" class="form-label"
+                    style="font-size: 18px; font-weight: bold; color: gray; padding-top: 63px; padding-left: 180px;">제목</label>
+                <div class="underline-input">
+                    <input type="text" id="title" class="form-control" v-model="title" :readonly="!canEdit">
+                    <div class="underline"></div>
                 </div>
             </div>
-            <hr>
-            <div class="d-flex justify-content-end">
-                <button v-if="accounttype === '2'" @click="movePage('/NoticeList')"
-                    class="btn btncolor">목록</button>
+            <div class="flex-grow-1 overflow-auto" style="display: flex; flex-direction: column; align-items: center;">
+                <div class="mb-5">
+                    <div ref="viewer"></div>
+                    <div class="underline-input">
+                    </div>
+                </div>
             </div>
         </div>
+        <div class="d-flex justify-content-center">
+            <button v-if="accounttype === '2'" @click="movePage('/NoticeList')"
+                class="btn btncolor">목록</button>
+        </div>
+        <hr>
     </div>
 </template>
 
@@ -133,7 +129,7 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .underline-input {
     position: relative;
 }
@@ -142,35 +138,75 @@ export default {
     border: none;
     outline: none;
     font-size: 16px;
-    padding: 4px 0;
+    padding-left: 224px;
     width: 100%;
 }
 
 .underline-input .underline {
-    position: absolute;
-    left: 0;
-    bottom: 0;
-    width: 100%;
-    height: 1px;
-    background-color: #000;
+    width: 81%;
+    height: 2px;
+    left: 10%;
+    background-color: rgb(172, 172, 172);
+}
+
+.editor-container {
+    height: 300px;
 }
 
 textarea.form-control {
     height: 300px;
 }
 
+.toastui-editor-contents img {
+    margin-left: 330px;
+    box-sizing: border-box;
+    vertical-align: top;
+    max-width: 100%;
+}    
 </style>
 
+
+
+
 <style scoped>
-.btncolor:hover{
-  background-color: #FFC67B;
-  color:#303030;
-}
-.btncolor{
-    height: 38px;
-    color:#303030;
-    background-color: #bee96d;
-    font-weight: bolder ;
+.btncolor:hover {
+    background-color: #FFC67B;
+    color: #595959;
 }
 
+.btncolor {
+    color: #595959;
+    background-color: #bee96d;
+    font-weight: bolder;
+}
+
+.btn-warning {
+    color: #595959;
+    font-weight: bolder;
+}
+
+.btn-danger {
+    color: #595959;
+    font-weight: bolder;
+}
+
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    /* 가운데 정렬을 위한 설정 */
+}
+
+.form-control {
+    height: 32px;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    margin-top: 21px;
+    margin-right: 163px;
+}
 </style>

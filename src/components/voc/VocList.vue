@@ -1,42 +1,39 @@
 <template>
-    <div class="container">
-        <div class="card">
+            <div class="wrapper" style="padding: 40px;">
+            <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span class="font-weight-bold">고객의소리</span>
-                <button v-if="accounttype === '1'" class="btn btn-primary btn-sm">
-                    <router-link v-if="accounttype === '1'" class="btn btn-primary btn-sm"
-                        :to="{ path: '/VocWriter' }">등록</router-link>
+                <button v-if="accounttype === '1'">
+                <router-link v-if="accounttype === '1'" class="btn savebtn" :to="{ path: '/VocWriter' }">등록</router-link>
                 </button>
             </div>
 
             <div class="card-body">
-                <div class="row mb-3">
-                    <div class="col">
-                        <select class="form-select" v-model="schbox">
-                            <option value="" disabled selected>검색조건</option>
-                            <option value="category">분류</option>
+                <div class="row mb-3" style="display:flex; flex-direction: row; align-items:center">
+                <div class="col-6">
+                    <select class="form-select" v-model="schbox" style="width: 40%; margin-left: 176px; margin-top: 21px;">
+                    <option value="" disabled selected>검색조건</option>
+                    <option value="category">분류</option>
+                    </select>
+                </div>
+                <div class="col">
+                    <div class="input-group">
+                    <template v-if="schbox === 'category'">
+                        <select class="form-select" v-model="categoryVal">
+                        <option value="1">칭찬</option>
+                        <option value="2">불만</option>
                         </select>
-                    </div>
-                    <div class="col" v-if="schbox === 'category'">
-                        <div class="input-group">
-                            <select class="form-select" v-model="categoryVal">
-                                <option value="1">칭찬</option>
-                                <option value="2">불만</option>
-                            </select>
-                            <button type="button" class="btn btn-primary" @click="getBoardList">검색</button>
-                        </div>
-                    </div>
-                    <div class="col" v-else>
-                        <div class="input-group">
-                            <input v-model="schVal" type="text" class="form-control" placeholder="검색어"
-                                @keypress.enter.prevent="getBoardList" />
-                            <button type="button" class="btn btn-primary" @click="getBoardList">검색</button>
-                        </div>
+                    </template>
+                    <template v-else>
+                        <input v-model="schVal" type="text" class="form-control" placeholder="검색어" @keypress.enter.prevent="getBoardList" style="height: 30%; margin-left: -168px;"/>
+                    </template>
+                    <button type="button" class="btn btncolor" @click="getBoardList">검색</button>
                     </div>
                 </div>
+                </div>
                 <div class="row">
-                    <div class="col">
-                        <table class="table">
+                <div class="col">
+                    <table class="table">`
                             <thead>
                                 <tr>
                                     <th style="text-align: center;">글번호</th>
@@ -56,23 +53,23 @@
                             </tbody>
                         </table>
                     </div>
-                </div>
-                <div class="row mt-3">
-                    <div class="col">
-                        <div class="row">
-                            <div class="col">
-                                <button class="btn btn-primary" @click="prevPage" :disabled="currentPage === 1">이전</button>
-                            </div>
-                            <div class="col text-end">
-                                <button class="btn btn-primary" @click="nextPage"
-                                    :disabled="currentPage === totalPages">다음</button>
+                    </div>
+
+                    <div class="row mt-3">
+                        <div class="col">
+                            <div class="row">
+                                <div class="col" style="padding-left: 61px; padding-bottom: 17px;">
+                                    <button class="btn btncolor" @click="prevPage" :disabled="currentPage === 1">이전</button>
+                                </div>
+                                <div class="col text-end" style="padding-right: 61px; padding-bottom: 17px;">
+                                    <button class="btn btncolor" @click="nextPage" :disabled="currentPage === totalPages">다음</button>
+                                </div>
                             </div>
                         </div>
                     </div>
                 </div>
             </div>
         </div>
-    </div>
 </template>
 
 <script>
@@ -202,21 +199,50 @@ export default {
 };
 </script>
 
-<style>
+<style scoped>
 .btncolor:hover {
     background-color: #FFC67B;
     color: #595959;
 }
+
 .btncolor {
     color: #595959;
     background-color: #bee96d;
     font-weight: bolder;
-    margin-top: 5px;
-    margin-bottom: 5px;
 }
 
-.select-height,
-.input-height {
-  height: 38px; /* 원하는 높이 값으로 설정 */
+.savebtn {
+    color: #595959;
+    font-weight: bolder;
+}
+
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    /* 가운데 정렬을 위한 설정 */
+}
+
+.form-control {
+    height: 80px;
+}
+
+.input-group {
+    position: relative;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    width: 100%;
+    margin-top: 21px;
+    margin-right: 163px;
+}
+</style>
+
+<style>
+.form-select,
+.input-group input:focus,
+.input-group select:focus,
+.input-group button:focus {
+    outline: none !important;
+    box-shadow: none !important;
 }
 </style>

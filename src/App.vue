@@ -25,9 +25,13 @@ export default {
   },
 }
 </script>
-<style scoped>
+<style >
 .nav-link {
   display: inline;
 }
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
 
+.notosanskr * {
+ font-family: 'Noto Sans KR', sans-serif;
+}
 </style>

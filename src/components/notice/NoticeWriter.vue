@@ -5,19 +5,23 @@
                 <span style="font-weight: bold; font-size: 20px;">공지사항</span>
             </div>
 
-
-            <div>
-                <label for="title">제목</label>
-                <input type="text" id="title" v-model="title">
+            <div class="mb-5">
+                <label for="title" class="form-label"
+                    style="font-size: 18px; font-weight: bold; color: gray; padding-top: 17px; padding-left: 20px;">제목</label>
+                <div class="underline-input">
+                    <input type="text" id="title" class="form-control" v-model="title">
+                    <div class="underline"></div>
+                </div>
             </div>
             <div ref="editor"></div>
-            <button type="button" class="btn btncolor" style="background-color: #8eb443; border-color:#8eb443;"
-                @click="goToNoticeList">
-                목록
-            </button>
-            <button type="button" class="btn btncolor" style="background-color: #8eb443; border-color:#8eb443;"
-                @click="saveNotice">
+
+        </div>
+        <div class="d-flex justify-content-end">    
+            <button type="button" class="btn savebtn btn-sm" @click="saveNotice">
                 저장
+            </button>
+            <button type="button" class="btn btncolor btn-sm" @click="goToNoticeList">
+                목록
             </button>
         </div>
     </div>
@@ -55,7 +59,7 @@ export default {
             this.noticeContent = this.editor.getMarkdown();
         },
         saveNotice() {
-             if (!this.title || !this.noticeContent) {
+            if (!this.title || !this.noticeContent) {
                 alert("제목과 내용을 입력해주세요.");
                 return;
             }
@@ -94,13 +98,41 @@ export default {
 <style scoped>
 .btncolor:hover {
     background-color: #FFC67B;
-    color: #303030;
+    color: #595959;
 }
 
 .btncolor {
     height: 38px;
-    color: #303030;
+    color: #595959;
     background-color: #bee96d;
     font-weight: bolder;
+}
+
+.savebtn {
+    color: #595959;
+    font-weight: bolder;
+}
+
+.savebtn:hover {
+    background-color: #FFC67B;
+    color: #595959;
+}
+
+.underline-input {
+    position: relative;
+}
+
+.underline-input input {
+    border: none;
+    outline: none;
+    font-size: 16px;
+    padding-left: 64px;
+    width: 100%;
+}
+.underline-input .underline {
+    width: 96%;
+    height: 2px;
+    left: 2%;
+    background-color: rgb(172, 172, 172);
 }
 </style>
