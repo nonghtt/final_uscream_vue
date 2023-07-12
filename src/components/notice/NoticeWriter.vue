@@ -1,5 +1,5 @@
 <template>
-    <div class="container">
+    <div class="wrapper" style="padding: 40px;">
         <div class="card">
             <div class="card-header" style="display: flex; justify-content: space-between; align-items: center;">
                 <span style="font-weight: bold; font-size: 20px;">공지사항</span>
@@ -129,10 +129,17 @@ export default {
     padding-left: 64px;
     width: 100%;
 }
+
+.wrapper {
+    max-width: 1200px;
+    margin: 0 auto;
+    /* 가운데 정렬을 위한 설정 */
+}
 .underline-input .underline {
     width: 96%;
     height: 2px;
     left: 2%;
+    margin-left: 20px;
     background-color: rgb(172, 172, 172);
 }
 </style>

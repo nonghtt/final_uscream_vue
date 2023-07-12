@@ -25,7 +25,7 @@
                     <label for="content" class="form-label"
                         style="font-size: 16px; font-weight: bold; color: gray; padding-top: 17px; padding-left: 20px;">내용</label>
                     <div class="underline-input">
-                        <div ref="editor" class="editor-container"></div>
+                        <div ref="editor"></div>
                     </div>
                     <div class="d-flex justify-content-end">
                         <button @click="saveChanges" class="btn savebtn btn-sm">저장</button>
@@ -41,8 +41,10 @@
                     <label for="title" class="form-label" style="font-size: 16px; font-weight: bold; color: gray; padding-top: 17px; padding-left: 20px;">지점의견
                         </label>
                     <div v-for="comment in storeVocComments" :key="comment.storeid">
-                            <p>내용: {{ comment.storecomment }}</p>
-                            <button class="btn btn-primary" @click="confirmHQ">본사확인</button>
+                            <p style="margin-left: 39px;">{{ comment.storecomment }}</p>
+                            <div class="d-flex justify-content-end"> 
+                            <button class="btn checkbtn btn-sm" @click="confirmHQ">본사확인</button>
+                            </div>
                         </div>
                     <div class="underline-input">
                     </div>
@@ -197,11 +199,16 @@ export default {
     width: 96%;
     height: 2px;
     left: 2%;
+    margin-left: 20px;
     background-color: rgb(172, 172, 172);
 }
 
 .editor-container {
     height: 300px;
+}
+
+.toastui-editor-contents p {
+    padding: 69px;
 }
 </style>
 
@@ -213,6 +220,17 @@ export default {
 }
 
 .btncolor {
+    color: #595959;
+    background-color: #bee96d;
+    font-weight: bolder;
+}
+
+.editbtn:hover {
+    background-color: #FFC67B;
+    color: #595959;
+}
+
+.editbtn {
     color: #595959;
     background-color: #bee96d;
     font-weight: bolder;
@@ -243,7 +261,11 @@ export default {
     background-color: #bee96d;
     font-weight: bolder;
 }
-
+.checkbtn {
+    color: #595959;
+    background-color: #bee96d;
+    font-weight: bolder;
+}
 .wrapper {
     max-width: 1200px;
     margin: 0 auto;
@@ -262,4 +284,5 @@ export default {
     width: 100%;
     margin-top: 21px;
     margin-right: 163px;
-}</style>
+}
+</style>

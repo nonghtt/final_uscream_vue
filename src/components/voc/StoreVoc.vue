@@ -1,10 +1,10 @@
 <template>
-    <div class="container" style="max-width: 800px;">
+    <div class="wrapper" style="padding: 40px;">
         <div class="card">
             <div class="card-body">
                 <div class="mb-5">
                     <label for="title" class="form-label"
-                        style="font-size: 16px; font-weight: bold; color: gray;">제목</label>
+                        style="font-size: 16px; font-weight: bold; color: gray; padding-top: 17px; padding-left: 20px;">제목</label>
                     <div class="underline-input">
                         <input type="text" id="title" class="form-control" v-model="title" :readonly="!canEdit">
                         <div class="underline"></div>
@@ -12,44 +12,42 @@
                 </div>
                 <div class="mb-5">
                     <label for="category" class="form-label"
-                        style="font-size: 16px; font-weight: bold; color: gray;">분류</label>
+                        style="font-size: 16px; font-weight: bold; color: gray; padding-top: 17px; padding-left: 20px;">분류</label>
                     <div class="underline-input">
                         <input type="text" id="category" class="form-control" v-model="categoryText" :readonly="!canEdit">
                         <div class="underline"></div>
                     </div>
                 </div>
-                <div style="height: 300px;">
+                <div class="flex-grow-1 overflow-auto" style="display: flex; flex-direction: column; align-items: center;">
                     <div class="mb-5">
                         <label for="content" class="form-label"
-                            style="font-size: 16px; font-weight: bold; color: gray;">내용</label>
+                            style="font-size: 16px; font-weight: bold; color: gray; padding-top: 17px; padding-left: 20px;">내용</label>
                         <div ref="viewer"></div>
                         <div class="underline-input"></div>
                     </div>
                 </div>
-                <div class="card-footer">
+                
                     <div class="d-flex justify-content-end">
-                        <button @click="movePage('/VocList')" class="btn btn-secondary">
-                            <i class="bi bi-arrow-left-circle-fill me-1"></i>
-                            목록
-                        </button>
+                        <button @click="movePage('/VocList')" class="btn listbtn btn-sm">목록</button>
                     </div>
-                </div>
+                
             </div>
         </div>
 
         <div class="container" style="max-width: 800px;">
-            <label for="title" class="form-label" style="font-size: 16px; font-weight: bold; color: gray;">댓글보이는 곳</label>
+            <label for="title" class="form-label" style="font-size: 16px; font-weight: bold; color: gray; padding-top: 20px;">댓글보이는 곳</label>
             <!-- 댓글 리스트 출력 -->
             <div v-for="comment in comments" :key="comment.storeid">
-                <p>내용: {{ comment.storecomment }}</p>
-                <div v-if="voccheck==1">본사 확인</div>
-                <div v-else>본사 미확인</div>
+                <p style="margin-left: 39px;">{{ comment.storecomment }}</p>
+                <div v-if="voccheck == 1" style="font-style: italic; color: #595959;"><span style="background-color: rgb(114, 164, 217); color: #ffffff; ">본사 확인</span></div>
+                <div v-else style="font-style: italic; color: #595959;"><span style="background-color: rgb(235, 209, 114); color: #595959;; ">본사 미확인</span></div>
                 <div class="d-flex justify-content-end">
-                <button class="btn editbtn btn-sm" @click="editComment(comment.voccomnum, comment.storecomment)">
-                    수정
-                </button>
+                    <hr>
                 <button class="btn delbtn btn-sm" @click="deleteComment(comment.voccomnum)">
                     삭제
+                </button>
+                <button class="btn editbtn btn-sm" @click="editComment(comment.voccomnum, comment.storecomment)">
+                    수정
                 </button>
                 </div>
             </div>
@@ -57,11 +55,13 @@
 
             <!-- 댓글 입력 칸 -->
             <div class="mb-3">
-                <label for="cmtContent" class="form-label">댓글 내용</label>
+                <label for="cmtContent" class="form-label" style="font-size: 16px; font-weight: bold; color: gray; padding-top: 20px;">댓글</label>
                 <textarea id="cmtContent" class="form-control" v-model="cmtContent"></textarea>
             </div>
-            <button class="btn btn-secondary" @click="addComment" v-if="saveclick">댓글 저장</button>
-            <button class="btn btn-secondary" @click="reeditComment" v-if="editclick">수정완료</button>
+            <div class="d-flex justify-content-end">
+            <button class="btn savebtn btn-sm" @click="addComment" v-if="saveclick">저장</button>
+            <button class="btn editbtn btn-sm" @click="reeditComment" v-if="editclick">수정완료</button>
+            </div>
         </div>
     </div>
 </template>
@@ -266,11 +266,16 @@ export default {
     width: 96%;
     height: 2px;
     left: 2%;
+    margin-left: 20px;
     background-color: rgb(172, 172, 172);
 }
 
 .editor-container {
     height: 300px;
+}
+
+.toastui-editor-contents p {
+    padding: 69px;
 }
 </style>
 
@@ -287,22 +292,23 @@ export default {
     font-weight: bolder;
 }
 
-.savebtn {
-    color: #595959;
-    font-weight: bolder;
-}
-
-.savebtn:hover {
+.editbtn:hover {
     background-color: #FFC67B;
     color: #595959;
 }
 
 .editbtn {
     color: #595959;
+    background-color: #bee96d;
+    font-weight: bolder;
+}
+.savebtn {
+    color: #595959;
+    background-color: #bee96d;
     font-weight: bolder;
 }
 
-.editbtn:hover {
+.savebtn:hover {
     background-color: #FFC67B;
     color: #595959;
 }
