@@ -80,7 +80,7 @@ export default {
             num: [],
             clickmsg: [],
             title: '',
-            pageSize: 12,              
+            pageSize: 14,              
             currentPage: 1,            
             totalpages: 0,             
             pagearray: [1, 2, 3, 4, 5] 
@@ -93,18 +93,10 @@ export default {
         self.$axios.get("http://localhost:8085/msg/" + id)
             .then(function (res) {
                 self.list = res.data.msglist;
-                
                 self.count = res.data.countByReadReceiveMsg;
                 self.countall = res.data.countAllByReadReceiveMsg;
-
                 self.totalpages=Math.ceil(self.list.length / self.pageSize)
-                //  let arr = [];
-                //  for(let i=0; i<self.totalpages-1;i++){
-                //     arr[i] = i+1; 
-                //  }
-                //  self.pagearray = arr;
             })
-            
     },
     computed: {
         totalPages() {

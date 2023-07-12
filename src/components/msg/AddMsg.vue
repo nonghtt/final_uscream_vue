@@ -173,10 +173,6 @@ export default {
             this.alertname = [];                                    
             const name = [];  
             let sender = sessionStorage.getItem("loginId");
-
-           
-            
-            
             if(self.title==''){
                     alert("제목을 입력하세요.")
             }else{
