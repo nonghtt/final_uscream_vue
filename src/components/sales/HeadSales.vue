@@ -1,5 +1,5 @@
 <template>
-  <H3 id="headSalesTitle" style="text-align:left">매출 조회</H3>
+  <H3 id="headSalesTitle">매출 조회</H3>
 
   <div id="headSalesContent">
 
@@ -9,7 +9,7 @@
       <div style="margin-bottom: 4px; display:flex; justify-content:flex-end"><router-link to="/headsalesDetail"><button class="btn btncolor">연도별 매출 상세</button></router-link></div>
 
       <div id="rankChart"
-        style="border: 1px solid lightgray; width:700px; height: 520px; padding:1%; position:relative; margin-top:9px">
+        style="border: 1px solid lightgray; width:700px; height: 520px; padding:1%; position:relative; margin-top:18px">
         <div style="display:flex; align-items:center; justify-content:space-between; padding:10px">
           <div style="font-size:16px; font-weight:bold">일간 지점 매출 TOP5</div>
           <div style="display:flex">
@@ -243,10 +243,9 @@ export default {
  */
 
 #headSalesTitle {
-  font-size: 20px;
-  font-weight: bold;
   padding-left: 3%;
   padding-top: 1%;
+  text-align:left;
 }
 
 #headSalesContent {
@@ -254,7 +253,7 @@ export default {
   padding-top: 1%;
   display: flex;
   overflow: auto;
-  font-family: 'NotoSansKR-Regular', sans-serif;
+  /* font-family: 'Noto Sans KR', sans-serif; */
 }
 
 #ranking5Chart {
@@ -276,7 +275,6 @@ export default {
 
 .form-select {
   height: fit-content;
-  margin-top: 7px;
 }
 
 #headSalesTitle {
@@ -297,7 +295,7 @@ export default {
 } */
 
 .fc-event-title {
-  font-family: 'NotoSansKR-Thin';
+  font-family: 'Noto Sans KR';
   font-weight: lighter;
 
 }
