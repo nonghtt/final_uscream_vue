@@ -480,11 +480,14 @@ export default {
 </script>
 
 <style scoped>
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+
 #eaBody {
     width: 50%;
     margin: 0 auto;
     padding-top: 30px;
     padding-bottom: 30px;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
 h3 {
@@ -555,5 +558,9 @@ li {
 
 .modal-content {
     width : 500px;
+}
+
+h3 {
+  text-align: left;
 }
 </style>
