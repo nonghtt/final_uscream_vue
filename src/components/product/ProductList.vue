@@ -1,15 +1,15 @@
 <template>
     <div class="container">
         <div class="row justify-content-end" style="margin: 0 0 20px 0;">
-            <div class="col-5"></div>
             <div class="col-4 justify-content-center">
                 <h3 style="margin-top: 10px ;">상품리스트</h3>
             </div>
+            <div class="col-5"></div>
             <div class="col-3 justify-content-end" style="align-items: center; right: 30px;position:relative;display: flex;"><button type="button"
                     class="btn btncolor" data-bs-toggle="modal" data-bs-target="#staticBackdrop">
                     제품등록
                 </button></div>
-                <button @click="addinventory">인벤토리</button>
+                <!-- <button @click="addinventory">인벤토리</button> -->
         </div>
         <div v-for="product in productlist" :key="product.productnum" class="card mb-3"
             style="float:left; width:31%; height:140px;">

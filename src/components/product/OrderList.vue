@@ -1,8 +1,8 @@
 <template>
     <div class="container ">
         <div class="row justify-content-end" style="margin: 10px 0 10px 0;" >
+            <div class="col-4 justify-content-start"><h3 style="margin-top: 10px ; text-align: start;">발주 현황</h3></div>
             <div class="col-4"></div>
-            <div class="col-4 justify-content-start"><h3 style="margin-top: 10px ;">발주 현황</h3></div>
             <div class="col-4 justify-content-end" style="align-items: center; display: flex;"><button type="button" v-if="accounttype == 2" class="col1 btn btncolor"><router-link class="orderbtn"
                     to="/productorder">발주신청</router-link></button></div>
         </div>

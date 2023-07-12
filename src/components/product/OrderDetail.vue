@@ -1,6 +1,6 @@
 <template>
     <div class="container">
-        <h3 style="margin: 20px 0 20px 0;">신청 내용</h3>
+        <h3 style="margin: 20px 0 20px 0; text-align: start;">신청 내용</h3>
         <table class="table table-light table-striped table-bordered">
             <tr class="table-primary">
                 <th>선택</th>
