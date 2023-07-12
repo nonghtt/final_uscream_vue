@@ -100,7 +100,7 @@
         </div>
 
 
-
+        <div style="padding-bottom:70px"></div>
     </div>
 </template> 
 
@@ -141,7 +141,7 @@ export default {
             .then(function (res) {
                 if (res.status == 200) {
                     console.log(res.data);
-                    self.storename = res.data.dto.storename
+                    self.storename = res.data.storelist.storename
                 } else {
                     console.log("에러 :" + res.status)
                 }
@@ -208,10 +208,13 @@ export default {
 </script>
 
 <style scoped>
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+
 #elBody {
     width: 70%;
     margin: 0 auto;
     margin-bottom: 50px;
+    font-family: 'Noto Sans KR', sans-serif;
 }
 
 .custom-btn {
@@ -277,5 +280,9 @@ h3 {
     margin-left: 3px;
     vertical-align: middle;
     margin-bottom: 3px;
+}
+
+h3 {
+  text-align: left;
 }
 </style>

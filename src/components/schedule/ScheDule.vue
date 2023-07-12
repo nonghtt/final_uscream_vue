@@ -293,12 +293,15 @@ export default {
 </script>
   
 <style scoped>
+@import url(//fonts.googleapis.com/earlyaccess/notosanskr.css);
+
 #sdBody {
   display: flex;
   padding-top: 30px;
   padding-bottom: 30px;
   width: 80%;
   margin: 0 auto;
+  font-family: 'Noto Sans KR', sans-serif;
 }
 
 #fullCalendar {
