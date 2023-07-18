@@ -110,11 +110,14 @@ export default {
     },
     methods: {
         detail(item) {
+            item.noticenum
+            
             let name = '';
             if (this.accounttype == 1) {
                 name = 'HeadNotice';
             } else if (this.accounttype == 2) {
                 name = 'StoreNotice';
+                this.upcnt(item.noticenum)
             }
             this.$router.push({
                 name,
@@ -125,6 +128,7 @@ export default {
                     cnt: item.cnt,
                 },
             });
+            
         },
         formatDate(dateString) {
             const formattedDate = dateString.substring(0, 10);
@@ -171,6 +175,13 @@ export default {
                 this.currentPage++;
             }
         },
+        upcnt(num){
+            console.log("test")
+            const self = this
+            self.$axios.patch("http://localhost:8085/notices/upcnt/"+num).then(function(res){
+                console.log(res.data.dto)
+            })
+        }
     },
 };
 </script>
