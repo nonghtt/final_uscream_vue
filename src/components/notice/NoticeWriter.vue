@@ -13,7 +13,7 @@
                     <div class="underline"></div>
                 </div>
             </div>
-            <div ref="editor"></div>
+            <div ref="editor" style="height: 1000px;"></div>
 
         </div>
         <div class="d-flex justify-content-end">    
@@ -47,7 +47,7 @@ export default {
         this.editor = new Editor({
             el: this.$refs.editor,
             height: "500px",
-            initialEditType: "markdown",
+            initialEditType: "WYSIWYG",
             previewStyle: "vertical", // 세로 모드로 WYSIWYG 미리보기 설정
             events: {
                 change: this.handleEditroChange

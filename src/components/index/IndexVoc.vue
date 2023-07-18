@@ -17,7 +17,7 @@
                             <td>{{ item.category }}</td>
                             <td>{{ item.title }}</td>
                             <td>{{ item.wdate }}</td>
-                            <td>{{ item.storeid.storename }}</td>
+                            <td>{{ item.store.storename }}</td>
                         </tr>
                     </tbody>
                 </table>
@@ -76,6 +76,7 @@ export default {
         } else {
             this.getThreeStoreid(this.id);
         }
+        console.log(this.voclist)
     },
     methods: {
         getThree() {
@@ -83,16 +84,18 @@ export default {
             self.$axios.get('http://localhost:8085/vocs/three')
                 .then(function (res) {
                     if (res.status == 200 & res.data.flag) {
-                        self.voclist = self.chageTime(res.data.list);
+                        self.voclist = res.data.list
                     }
                 })
         },
         getThreeStoreid(storeid){
+            console.log(storeid)
             const self = this;
             self.$axios.get(`http://localhost:8085/vocs/three/${storeid}`)
                 .then(function (res) {
                     if (res.status == 200 & res.data.flag) {
-                        self.voclist = self.chageTime(res.data.list);
+                        self.voclist = res.data.list
+                        console.log(self.voclist)
                     }
                 })
         },

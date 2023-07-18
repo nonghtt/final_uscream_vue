@@ -78,7 +78,10 @@ export default {
                 console.log(self['salesDay-' + i]);
 
                 const item = self.list.find(obj => {
+                  console.log(obj)
+                  console.log(self.list)
                 const itemDate = obj.SELLINGDATE.substring(0, 10);
+                console.log(itemDate)
                 return itemDate.toString() === sellingdate.toString();
                 
                 });
@@ -168,6 +171,7 @@ export default {
                 console.log(self['salesDay-' + i]);
 
                 const item = self.list2.find(obj => {
+                  console.log(obj)
                 const itemDate = obj.SELLINGDATE.substring(0, 10);
                 return itemDate.toString() === sellingdate.toString();
                 
