@@ -3,6 +3,9 @@
             <div class="card">
             <div class="card-header d-flex justify-content-between align-items-center">
                 <span class="font-weight-bold">고객의소리</span>
+                <button v-if="accounttype === '1'">
+                <router-link v-if="accounttype === '1'" class="btn savebtn" :to="{ path: '/VocWriter' }">등록</router-link>
+                </button>
             </div>
 
             <div class="card-body">
