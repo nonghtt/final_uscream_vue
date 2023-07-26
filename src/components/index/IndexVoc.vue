@@ -76,7 +76,7 @@ export default {
         } else {
             this.getThreeStoreid(this.id);
         }
-        console.log(this.voclist)
+        console.log("시작"+this.voclist)
     },
     methods: {
         getThree() {
@@ -85,6 +85,7 @@ export default {
                 .then(function (res) {
                     if (res.status == 200 & res.data.flag) {
                         self.voclist = res.data.list
+                        console.log("겟뜨리"+self.voclist)
                     }
                 })
         },

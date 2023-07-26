@@ -1,5 +1,4 @@
-네브바 
-<template>
+ <template>
     <nav v-if="loginId == null" class="navbar navbar-expand-lg bg-light shadow">
         <div class="container-fluid">
             <div></div>
