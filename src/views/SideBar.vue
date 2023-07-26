@@ -186,7 +186,8 @@ body {
 ul {
     margin-top: 1%;
     margin-bottom: 1%;
-    
+    margin-left: 20px;
+    padding: 0px;
 }
 
 .menu_bar{
@@ -194,13 +195,14 @@ ul {
 }
 
 .select_bar{
-    height:30px;
+    height:35px;
     margin-top: 10px;
     margin-bottom: 10px;
-    align-items: center;
     margin-left: 0px;
     padding-left: 0px;
-    width:130px;
+    width:180px;
+    padding-top: 6px;
+    
 }
 .select_click{
     background-color:#fff;
@@ -213,6 +215,9 @@ ul {
     border-radius: 10px;
 }
 
+.select_menu{
+    width: 150px;
+}
 
 
 

@@ -25,7 +25,7 @@
     "@toast-ui/editor": "^3.2.2",
     "@toast-ui/react-editor": "^3.2.3",
     "axios": "^1.4.0",
-    "bootstrap": "^4.6.2",
+    "bootstrap": "^5.2.3",
     "bootstrap-icons": "^1.10.5",
     "core-js": "^3.8.3",
     "echarts": "^5.4.3",
