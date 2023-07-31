@@ -1,7 +1,11 @@
 # 🍧 USCREAM(유스크림)
 <p align="center"><img src="https://github.com/nonghtt/final_uscream_vue/assets/76997276/71119b6c-78fc-4c92-b86a-da469aee166f"></p>
 
-<br/><br/>
+<div align=center>
+  
+[![Hits](https://hits.seeyoufarm.com/api/count/incr/badge.svg?url=https%3A%2F%2Fgithub.com%2Fnonghtt%2Ffinal_uscream_vue&count_bg=%23BEE96D&title_bg=%23474747&icon=&icon_color=%23E7E7E7&title=hits&edge_flat=false)](https://hits.seeyoufarm.com) 
+
+</div><br/>
 
 # USCREAM (아이스크림 매장 & 판매 관리)
 >KOSTA 웹 애플리케이션 구축 프로젝트 기반 FULL-Stack 개발자 양성 과정 257기 파이널 프로젝트 <br/>
